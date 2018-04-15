@@ -7,12 +7,12 @@
 
 <script>
 
- import "./lib/jquery-3.1.1.min.js"
- import "./lib/bootstrap.min.js"
- import "./lib/plugins/metisMenu/jquery.metisMenu.js"
- import "./lib/plugins/slimscroll/jquery.slimscroll.min.js"
- import "./lib/inspinia.js"
- import "./lib/plugins/pace/pace.min.js"
+ import "./assets/js/jquery-3.1.1.min.js"
+ import "./assets/js/bootstrap.min.js"
+ import "./assets/js/plugins/metisMenu/jquery.metisMenu.js"
+ import "./assets/js/plugins/slimscroll/jquery.slimscroll.min.js"
+ import "./assets/js/inspinia.js"
+ import "./assets/js/plugins/pace/pace.min.js"
 
  import {mapGetters} from 'vuex'
  import * as types from './store/mutation-types'
@@ -20,18 +20,10 @@
 
  import vLoading  from './components/loading/loading.vue'
 
- import { DatePicker } from 'iview';
- 
  export default {
   name: 'App',
-  data() {
-    return {
-      userType:''
-    }
-  },
   components: {
-    vLoading,
-    DatePicker
+    vLoading
   },
   computed: {
     ...mapGetters({
@@ -42,9 +34,9 @@
 </script>
 
 <style>
-  @import "assets/css/bootstrap.min.css";
-  @import "assets/font-awesome/css/font-awesome.css";
-  @import "assets/css/animate.css";
-  @import "assets/css/jasny-bootstrap.min.css";
-  @import "assets/css/style.css";
+  @import "./assets/css/bootstrap.min.css";
+  @import "./assets/font-awesome/css/font-awesome.css";
+  @import "./assets/css/animate.css";
+  @import "./assets/css/style.css";
+  @import "./assets/css/custom.css";
 </style>

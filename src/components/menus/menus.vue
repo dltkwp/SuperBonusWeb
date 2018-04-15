@@ -1,64 +1,64 @@
 <template>
   <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
-      <ul class="nav metismenu" id="side-menu">
-        <li class="nav-header">
-          <div class="dropdown profile-element">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="javascript:;;"> 
-              <span class="clear"> 
-                <span class="block m-t-xs"> 
-                  <strong class="font-bold">{{userInfo.userName}}</strong>
-                </span> 
-                <span class="text-muted text-xs block">{{userInfo.userType===1?'供应商':'分销商'}} <b class="caret"></b></span> </span> </a>
-                <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                  <li><a @click="gotoLogout()" href="javascript:;;">退出</a></li>
-                </ul>
-          </div>
-          <div class="logo-element"> KSX </div>
-        </li>
-        <li  v-if="uType=='supplier'||uType=='all'"  v-bind:class="{active:parentKey==='Supplier'}"> 
-          <a href="javascript:;;">
-            <i class="fa fa-sitemap"></i> 
-            <span class="nav-label">我是供应商</span> 
-            <span class="fa arrow"></span>
-          </a>
-          <!-- v-bind:class="{'collapse in':parentKey==='Supplier','collapse':parentKey!=='Supplier'}" -->
-          <ul class="nav nav-second-level collapse in" >
-            <li v-bind:class="{active:childrenKey==='SupplierOrder'}"><router-link to="/v_supplier_order">订单管理</router-link></li>
-            <li v-bind:class="{active:childrenKey==='SupplierDistributor'}"><router-link to="/v_distributor">分销商管理</router-link></li>
-            <li v-bind:class="{active:childrenKey==='SupplierGoods'}"><router-link to="/v_supplier_goods">商品管理</router-link></li>
-            <li v-bind:class="{active:childrenKey==='DistributorLevel'}"><router-link to="/v_level">分销等级设置</router-link></li>
-            <li v-bind:class="{active:childrenKey==='GoodsCategory'}"><router-link to="/v_category">商品分类设置</router-link></li>
-          </ul>
-        </li>
-        <li  v-if="uType=='distributor'||uType=='all'"   v-bind:class="{active:parentKey==='Distributor'}"> 
-          <a href="javascript:;;">
-          <i class="fa fa-sitemap"></i>
-          <span class="nav-label">我是分销商</span> 
-          <span class="fa arrow"></span></a>
-          <!-- v-bind:class="{'collapse in':parentKey==='Distributor','collapse':parentKey!=='Distributor'}" -->
-          <ul class="nav nav-second-level collapse in"  >
-            <li v-bind:class="{active:childrenKey==='DistributorOrder'}"><router-link to="/v_distributor_order">订单管理</router-link></li>     
-            <li v-bind:class="{active:childrenKey==='DistributorCustomer'}"><router-link to="/v_distributor_customer">顾客管理</router-link></li>            
-            <li v-bind:class="{active:childrenKey==='DistributorGoods'}"><router-link to="/v_distributor_goods">商品管理</router-link></li>
-          </ul>
-        </li>
-        <li v-bind:class="{active:parentKey==='Setting'}"> <a href="javascript:;;">
-          <i class="fa fa-gears"></i> 
-          <span class="nav-label">设置</span> 
-          <span class="fa arrow"></span></a>
-          <!-- v-bind:class="{'collapse in':parentKey==='Setting','collapse':parentKey!=='Setting'}" -->
-          <ul class="nav nav-second-level collapse in" >
-            <li v-bind:class="{active:childrenKey==='User'}"><router-link to="/v_user">个人信息</router-link></li>
-          </ul>
-        </li>
-      </ul>
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">王杰</strong>
+                        </span> <span class="text-muted text-xs block">客服 <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu  m-t-xs">
+                            <li><a href="#">个人资料</a></li>
+                            <li><a href="#">退出</a></li>
+                        </ul>
+                </div>
+                <div class="logo-element">
+                    <div class="logo-sm"></div>
+                </div>
+            </li>
+            <li  v-bind:class="{active:parentKey==='Index'}">
+                <a href="index.html"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
+            </li>
+            <li  v-bind:class="{active:parentKey==='Adv'}">
+                <a href="advertisement.html"><i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span> </a>
+            </li>
+            <li  v-bind:class="{active:parentKey==='ProgramRoom'}">
+                <a href="task.html"><i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span> </a>
+            </li>
+            <li v-bind:class="{active:parentKey==='Product'}">
+                <a href="product.html"><i class="fa fa-folder"></i> <span class="nav-label">产品管理</span> </a>
+            </li>
+            <li v-bind:class="{active:parentKey==='Member'}">
+                <a href="member.html"><i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </a>
+            </li>
+            <li v-bind:class="{active:parentKey==='Order'}">
+                <a href="order.html"><i class="fa fa-file-text"></i> <span class="nav-label">订单管理</span> </a>
+            </li>
+            <li class="hide">
+              <a href="merchant.html"><i class="fa fa-user-circle"></i> <span class="nav-label">商户管理</span> </a>
+            </li>
+            <li v-bind:class="{active:parentKey==='Employee'}">
+                <a href="worker.html"><i class="fa fa-group"></i> <span class="nav-label">员工管理</span> </a>
+            </li> 
+            <li class="hide">
+              <a href="question.html"><i class="fa fa-pencil"></i> <span class="nav-label">常见问题</span> </a>
+            </li>
+            <li class="hide">
+              <a href="opinion.html"><i class="fa fa-comment"></i> <span class="nav-label">意见反馈</span> </a>
+            </li>
+            <li v-bind:class="{active:parentKey==='SysCfg'}">
+              <a href="setting.html"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
+              <ul class="nav nav-second-level collapse">
+                  <li><a href="set-worker.html">员工设置</a></li>
+                  <li><a href="set-member.html">会员等级设置</a></li>
+              </ul>
+            </li>
+        </ul>
     </div>
-  </nav>
+</nav>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -67,14 +67,12 @@ export default {
       userInfo: {
         userName: "",
         userType: ""
-      },
-      uType:'', // supplier: 供应商  distributor： 分销商  all： 供应商
+      }
     };
   },
   mounted() {
-
     let _this = this;
-    let uType = localStorage.getItem('ksx-user-type',  'distributor')
+    let uType = localStorage.getItem("ksx-user-type", "distributor");
     _this.uType = uType;
 
     let userInfo = localStorage.getItem("ksx-user-c");
@@ -107,8 +105,7 @@ export default {
           localStorage.setItem("ksx-token-c", "");
           window.location.href = "/v_login";
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     }
   }
 };

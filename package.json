@@ -11,8 +11,16 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "iview": "^2.11.0",
+    "lodash": "^4.17.5",
+    "moment": "^2.20.1",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-loading-spinner": "^1.0.11",
+    "vue-pagination-bs": "^0.1.6",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.4.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
