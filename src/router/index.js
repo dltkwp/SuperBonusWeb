@@ -6,11 +6,13 @@ import LoginRouter from './login'
 import MemberRouter from './member'
 import OrderRouter from './order'
 import ProductRouter from './product'
+import ForgetPwdRouter from './forgetPwd'
 import Login from '@/page/login/index.vue'
 
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [{
     path: '/',
     name: 'Login',
@@ -19,5 +21,5 @@ export default new Router({
       childrenKey: 'Index'
     },
     component: Login
-  }].concat(AdvRouter).concat(LoginRouter).concat(MemberRouter).concat(OrderRouter).concat(ProductRouter)
+  }].concat(AdvRouter).concat(LoginRouter).concat(MemberRouter).concat(OrderRouter).concat(ProductRouter).concat(ForgetPwdRouter)
 })
