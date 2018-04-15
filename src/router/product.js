@@ -1,29 +1,29 @@
-import OrderIndex from '@/page/order/index.vue'
-import OrderDetail from '@/page/order/detail.vue'
-import OrderSave from '@/page/order/save.vue'
+import ProductIndex from '@/page/product/index.vue'
+import ProductDetail from '@/page/product/detail.vue'
+import ProductSave from '@/page/product/save.vue'
 
 export default [{
-  path: '/order/v_index',
-  name: 'OrderIndex',
+  path: '/product/v_index',
+  name: 'ProductIndex',
   meta: {
-    parentKey: 'Order',
+    parentKey: 'Product',
     childrenKey: 'Index'
   },
-  component: OrderIndex
+  component: ProductIndex
 },
-{ path: '/order/v_detail',
-  name: 'OrderDetail',
+{ path: '/product/v_detail',
+  name: 'ProductDetail',
   meta: {
-    parentKey: 'Order',
+    parentKey: 'Product',
     childrenKey: 'Detail'
   },
-  component: OrderDetail
+  component: ProductDetail
 },
-{ path: '/order/v_save',
-  name: 'OrderSave',
+{ path: '/product/v_save',
+  name: 'ProductSave',
   meta: {
-    parentKey: 'Order',
+    parentKey: 'Product',
     childrenKey: 'Save'
   },
-  component: OrderSave
+  component: ProductSave
 }]
