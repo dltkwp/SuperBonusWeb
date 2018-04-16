@@ -50,7 +50,7 @@
               <a href="setting.html"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
               <ul class="nav nav-second-level collapse">
                   <li><a href="set-worker.html">员工设置</a></li>
-                  <li><a href="set-member.html">会员等级设置</a></li>
+                  <li v-bind:class="{active:childrenKey==='Level'}"><router-link to="/member/v_level">会员等级设置</router-link></li>
               </ul>
             </li>
         </ul>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import superConst from '../../util/super-const'
 export default {
   data() {
     return {
@@ -72,25 +73,25 @@ export default {
   },
   mounted() {
     let _this = this;
-    let uType = localStorage.getItem("ksx-user-type", "distributor");
-    _this.uType = uType;
+    // let uType = localStorage.getItem("ksx-user-type", "distributor");
+    // _this.uType = uType;
 
-    let userInfo = localStorage.getItem("ksx-user-c");
-    if (!_this.$lodash.isEmpty(userInfo)) {
-      let u = JSON.parse(userInfo);
-      _this.userInfo.userName = u.realname;
-      _this.userInfo.userType = u.userType;
-    } else {
-      _this.$axios
-        .get("user")
-        .then(result => {
-          let res = result.data;
-          localStorage.setItem("ksx-user-c", JSON.stringify(result.data));
-          _this.userInfo.userName = res.realname;
-          _this.userInfo.userType = res.userType;
-        })
-        .catch(err => {});
-    }
+    // let userInfo = localStorage.getItem("ksx-user-c");
+    // if (!_this.$lodash.isEmpty(userInfo)) {
+    //   let u = JSON.parse(userInfo);
+    //   _this.userInfo.userName = u.realname;
+    //   _this.userInfo.userType = u.userType;
+    // } else {
+    //   _this.$axios
+    //     .get("user")
+    //     .then(result => {
+    //       let res = result.data;
+    //       localStorage.setItem("ksx-user-c", JSON.stringify(result.data));
+    //       _this.userInfo.userName = res.realname;
+    //       _this.userInfo.userType = res.userType;
+    //     })
+    //     .catch(err => {});
+    // }
     let meta = _this.$route.meta;
     _this.parentKey = meta.parentKey;
     _this.childrenKey = meta.childrenKey;
@@ -101,8 +102,7 @@ export default {
       _this.$axios
         .get("logout")
         .then(result => {
-          localStorage.setItem("ksx-user-c", ""); //清理user信息,登陆后如果为空则再次查询
-          localStorage.setItem("ksx-token-c", "");
+          localStorage.setItem(superConst.SUPER_TOKEN_KEY, ""); //清理user信息,登陆后如果为空则再次查询
           window.location.href = "/v_login";
         })
         .catch(err => {});

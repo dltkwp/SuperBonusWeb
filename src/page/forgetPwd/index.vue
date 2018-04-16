@@ -8,36 +8,116 @@
             <p>请通过手机验证码重新设置</p>
             <form class="m-t" role="form" action="login.html">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="手机号" required="">
+                    <input type="text" class="form-control" placeholder="手机号" required="" maxlength="11" v-model="phone">
                 </div>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="验证码" required="">
+                            <input type="text" class="form-control" placeholder="验证码" required="" maxlength="8" v-model="smsCode">
                         </div>
                         <div class="col-md-6">
-                            <div class="btn btn-block btn-default">发送验证码</div>
+                            <div @click="getSmsCode" class="btn btn-block btn-default">{{smsTip}}</div>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="新密码" required="">
+                    <input type="password" class="form-control" placeholder="新密码" required="" maxlength="20" v-model="newPwd">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="再次输入新密码" required="">
+                    <input type="password" class="form-control" placeholder="再次输入新密码" required="" maxlength="20" v-model="replPwd">
                 </div>
-                <button type="submit" class="btn btn-primary block full-width m-b">立即注册</button>
+                <button type="button" @click="updatePwd" class="btn btn-primary block full-width m-b">修改密码</button>
             </form>
         </div>
     </div>
 </template>
 
 <script>
-export default {
+let timer = null;
 
+import regex from '../../util/regex'
+
+export default {
+    data(){
+        return {
+            phone:'',
+            smsCode:'',
+            newPwd:'',
+            replPwd:'',
+            isActiveSms: false,
+            totalInterval: 60,
+            smsTip: '获取验证码',
+            interval: 1000
+        }
+    },
+    methods:{
+        startTimer: function (){
+            let _this = this;
+            if(!timer){
+                timer = window.setInterval(function(){
+                    let curCnt = _this.totalInterval - 1;
+                    if (_this.totalInterval != 0) {
+                        _this.isActive = true;
+                        _this.totalInterval = curCnt;
+                        _this.smsTip = curCnt + 's后重新获取';
+                    } else {
+                        _this.isActive = false;
+                        _this.smsTip = '获取验证码';
+                        _this.totalInterval = 60;
+                        if (timer) {
+                            window.clearInterval(timer);
+                            timer = null;
+                        }
+                    }
+                },_this.interval);
+            }
+        },
+        getSmsCode: function (){
+            let _this = this;
+            let phone = _this.phone.trim();
+            if(!regex.phone(phone)){
+                _this.$toast.warning('手机号格式不正确');
+                return false;
+            }
+            _this.$toast.success('验证码发送成功');
+            _this.startTimer();
+            console.log(_this._data);
+        },
+        updatePwd: function(){
+            let _this = this;
+            let phone = _this.phone.trim();
+            let smsCode = _this.smsCode.trim();
+            let newPwd = _this.newPwd.trim();
+            let replPwd = _this.replPwd.trim();
+
+            if(!regex.phone(phone)){
+                _this.$toast.warning('手机号格式不正确');
+                return false;
+            }
+            if(smsCode==''){
+                _this.$toast.warning('验证码不可为空');
+                return false;
+            }
+            if(!regex.pwd(newPwd)){
+                _this.$toast.warning('新密码格式不正确');
+                return false;
+            }
+            if(!regex.pwd(replPwd)){
+                _this.$toast.warning('再次输入新密码格式不正确');
+                return false;
+            }
+            if(newPwd!=replPwd){
+                _this.$toast.warning('两次输入的密码不一致');
+                return false;
+            }
+            console.log(_this._data)
+        }
+    }
 }
 </script>
 
 <style>
-
+    body {
+        background-color: #f3f3f4;
+    }
 </style>

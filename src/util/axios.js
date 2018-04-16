@@ -1,13 +1,14 @@
 import axios from 'axios'
+import superConst from './super-const'
 export default {
   install: function (Vue) {
     axios.defaults.timeout = 5000 // 响应时间
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8' // 配置请求头
-    axios.defaults.baseURL = 'https://api.superbonus.cn/web/'
+    axios.defaults.baseURL = superConst.API_BASE_URL
 
     axios.interceptors.request.use(
       config => {
-        let token = localStorage.getItem('ksx-token-c')
+        let token = localStorage.getItem(superConst.SUPER_TOKEN_KEY)
         if (token) {
           config.headers.Authorization = token
         }
@@ -26,7 +27,7 @@ export default {
           switch (error.response.status) {
             case 401:
               // 返回 401 清除token信息并跳转到登录页面
-              localStorage.setItem('ksx-token-c', '')
+              localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
               window.location.href = 'v_login'
           }
         }
