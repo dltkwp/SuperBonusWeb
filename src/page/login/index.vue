@@ -14,14 +14,17 @@
                     <input type="password" class="form-control" placeholder="请输入密码" required="" v-model="pwd" maxlength="20">
                 </div>
                 <button type="button" @click="loginSubmit" class="btn btn-primary block full-width m-b">登录</button>
-                <!-- <router-link to="/v_forgetpwd"><small>忘记密码?</small></router-link> -->
+                <router-link to="/v_forgetpwd"><small>忘记密码?</small></router-link>
             </form>
         </div>
     </div>
 </template>
 
 <script>
-import regex from '../../util/regex'
+import regex from '../../util/regex';
+import { mapActions , mapGetters} from 'vuex';
+import * as types from '@/store/mutation-types.js';
+import superConst from "../../util/super-const";
 export default {
     data() {
         return {
@@ -30,6 +33,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions([types.LOADING.PUSH_LOADING,types.LOADING.SHIFT_LOADING]),
         loginSubmit: function (){
             let _this = this
             let phone = _this.phone.trim()
@@ -43,7 +47,25 @@ export default {
                 return false;
             }
 
-            console.log(_this._data)
+            _this.PUSH_LOADING();
+            _this.$axios.post('login',{
+                username:userName,
+                password:password
+            }).then((result)=> {
+                var res = result.data;
+                switch (res.code) {
+                    case 1000200: {
+                        localStorage.setItem(superConst.SUPER_TOKEN_KEY,res);
+                        window.location.href = '/v_index';
+                    } break;
+                    default: {
+                        _this.$toast.error(res.msg);
+                    }
+                }
+                _this.SHIFT_LOADING();
+            }).catch((err) => {
+                _this.SHIFT_LOADING();
+            });
         }
     }
 }

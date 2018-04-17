@@ -30,6 +30,7 @@
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled readonly   value="无穷大" v-if="index==levelList.length - 1">
                               之间，会员等级为
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.name">
+                              <a href="javascript:;;" @click="removeLevel(index)"  v-if="index==levelList.length-1 && index>0"><i class="fa fa-times-circle text-danger font-xxlg"></i> </a>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -88,7 +89,10 @@ export default {
     return {
       tabType: "Level",     // Level: 等级 Point：积分
       levelList: [],        // 等级的数据集合  {start:0,end:100,name:'VOP'}
-
+      point: {
+        start:0,
+        end:0
+      }
     };
   },
   mounted() {
@@ -119,10 +123,33 @@ export default {
     tabChange: function(tabType) {
       let _this = this;
       _this.tabType = tabType;
+      switch (tabType) {
+        case "Level":{
+          _this.getLevelList();
+        }break;
+        case "Point":{
+          _this.getPoint();
+        }break;
+      }
     },
     getLevelList: function (){ // 如果没有自动加一条记录
       let _this = this;
-      _this.levelList.push({start:0,end:superConst.POINT_INTEVAL,name:'VIP'});
+      _this.PUSH_LOADING();
+      _this.$axios.get('levels').
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+            _this.data.levelList = res;
+            if(res.length==0){
+              _this.data.levelList.push({start:0,end:superConst.POINT_INTEVAL,name:'VIP'});
+            }
+          }
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
+      });
     },
     addLevel:function (){
       let _this = this;
@@ -146,8 +173,74 @@ export default {
     },
     levelSubmit:function(){
       let _this = this; // 验证
+      let errors = [];
       _this.$lodash.forEach(_this.levelList,function (item){
-        console.log(item);
+         if(!regex.gtZeroNumer(item.end)){
+           errors.push('等级【'+item.name+'】结束积分格式不正确');
+         }
+      });
+      if(errors.length>0){
+         _this.$toast.warning(errors.join('<br/>'));
+      }
+      this.PUSH_LOADING();
+      _this.$axios.post('levels',{
+        levels:_this.levelList
+      }).
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+            _this.$toast.success("操作成功");
+            _this.getLevelList();
+          }
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
+      });
+    },
+    getPoint:function(){
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios.get('proportion').
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+            _this.data.point = res;
+          }
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
+      });
+    },
+    pointSubmit:function(){
+      let _this = this;
+      if(!regex.gtZeroNumer(_this.point.start)){
+         _this.$toast.warning("起始积分格式不正确");
+        return false;
+      }
+      if(!regex.gtZeroNumer(_this.point.end)){
+         _this.$toast.warning("结束积分格式不正确");
+        return false;
+      }
+
+      _this.PUSH_LOADING();
+      _this.$axios.get('proportion',{
+        proporation:_this.point
+      }).
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+             _this.$toast.success("操作成功");
+             _this.getPoint();
+          }
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
       });
     }
   }

@@ -35,7 +35,10 @@
 <script>
 let timer = null;
 
-import regex from '../../util/regex'
+import regex from '../../util/regex';
+import { mapActions , mapGetters} from 'vuex';
+import * as types from '@/store/mutation-types.js';
+import superConst from "../../util/super-const";
 
 export default {
     data(){
@@ -51,6 +54,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions([types.LOADING.PUSH_LOADING,types.LOADING.SHIFT_LOADING]),
         startTimer: function (){
             let _this = this;
             if(!timer){
@@ -79,9 +83,22 @@ export default {
                 _this.$toast.warning('手机号格式不正确');
                 return false;
             }
-            _this.$toast.success('验证码发送成功');
-            _this.startTimer();
-            console.log(_this._data);
+            
+            _this.PUSH_LOADING();
+            _this.$axios.post('sms/send',{
+                phone:phone
+            }).then((result)=> {
+                var res = result.data;
+                if(res.code&&res.code>0){
+                    _this.$toast.error(res.msg);
+                }else{
+                    _this.$toast.success('验证码发送成功');
+                    _this.startTimer();
+                }
+                _this.SHIFT_LOADING();
+            }).catch((err) => {
+                _this.SHIFT_LOADING();
+            });
         },
         updatePwd: function(){
             let _this = this;
@@ -110,7 +127,26 @@ export default {
                 _this.$toast.warning('两次输入的密码不一致');
                 return false;
             }
-            console.log(_this._data)
+
+            _this.PUSH_LOADING();
+            _this.$axios.post('sms/send',{
+                phone:phone,
+                smsCode:smsCode,
+                password:newPwd
+            }).then((result)=> {
+                var res = result.data;
+                if(res.code&&res.code>0){
+                    _this.$toast.error(res.msg);
+                }else{
+                    _this.$toast.success('修改密码成功');
+                    localStorage.setItem(superConst.SUPER_TOKEN_KEY,'');
+                    window.location.href = '/v_login';
+                }
+                _this.SHIFT_LOADING();
+            }).catch((err) => {
+                _this.SHIFT_LOADING();
+            });
+
         }
     }
 }
