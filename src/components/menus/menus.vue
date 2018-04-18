@@ -26,7 +26,9 @@
                 <a href="task.html"><i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span> </a>
             </li>
             <li v-bind:class="{active:parentKey==='Product'}">
-                <a href="product.html"><i class="fa fa-folder"></i> <span class="nav-label">产品管理</span> </a>
+                <router-link to="product/v_index">
+                <i class="fa fa-folder"></i> <span class="nav-label">产品管理</span>
+                </router-link>
             </li>
             <li v-bind:class="{active:parentKey==='Member'}">
                 <a href="member.html"><i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </a>
