@@ -32,6 +32,10 @@ export default {
             pwd:''
         }
     },
+    mounted(){
+        let _this = this;
+        _this.SHIFT_LOADING();
+    },
     methods:{
         ...mapActions([types.LOADING.PUSH_LOADING,types.LOADING.SHIFT_LOADING]),
         loginSubmit: function (){
@@ -48,10 +52,10 @@ export default {
             }
 
             _this.PUSH_LOADING();
-            _this.$axios.post('login',{
-                username:userName,
-                password:password
-            }).then((result)=> {
+            let param = [];
+            param.push('username=' + phone);
+            param.push('password=' + pwd);
+            _this.$axios.post('login?' + param.join('&')).then((result)=> {
                 var res = result.data;
                 switch (res.code) {
                     case 1000200: {

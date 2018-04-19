@@ -20,7 +20,6 @@
                       </div>
                     </div>
                     <fieldset class="form-horizontal m-t-lg">
-
                       <div class="form-group" v-for="(item,index) in levelList" :key="index">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-10">
@@ -33,6 +32,7 @@
                               <a href="javascript:;;" @click="removeLevel(index)"  v-if="index==levelList.length-1 && index>0"><i class="fa fa-times-circle text-danger font-xxlg"></i> </a>
                         </div>
                       </div>
+                      <v-empty :isShow="levelList.length==0"></v-empty>
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
@@ -48,7 +48,7 @@
                       <div class="form-group">
                         <label class="col-lg-3 control-label">积分设置</label>
                         <div class="col-lg-8">
-                            <input class="form-control inline mw-100 m-l-sm m-r-sm" value="1">元 = <input class="form-control inline mw-100 m-l-sm m-r-sm" value="1">积分
+                            <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="proporation.money">元 = <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="proporation.point">积分
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -76,6 +76,8 @@ import * as types from "@/store/mutation-types.js";
 import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
+import vEmpty from "@/components/empty/empty.vue";
+
 import superConst  from "../../util/super-const";
 import regex from "../../util/regex";
 
@@ -83,15 +85,16 @@ export default {
   components: {
     vMenus,
     vTop,
-    vFoot
+    vFoot,
+    vEmpty
   },
   data() {
     return {
       tabType: "Level",     // Level: 等级 Point：积分
       levelList: [],        // 等级的数据集合  {start:0,end:100,name:'VOP'}
-      point: {
-        start:0,
-        end:0
+      proporation: {
+        money:0,
+        point:0
       }
     };
   },
@@ -208,7 +211,7 @@ export default {
           if(res.code&&res.code>0){
               _this.$toast.error(res.msg);
           }else{
-            _this.data.point = res;
+            _this.data.proporation = res;
           }
           _this.SHIFT_LOADING();
       }).catch((err) => {
@@ -217,19 +220,17 @@ export default {
     },
     pointSubmit:function(){
       let _this = this;
-      if(!regex.gtZeroNumer(_this.point.start)){
-         _this.$toast.warning("起始积分格式不正确");
+      if(!regex.money(_this.proporation.money)){
+         _this.$toast.warning("金额格式不正确");
         return false;
       }
-      if(!regex.gtZeroNumer(_this.point.end)){
-         _this.$toast.warning("结束积分格式不正确");
+      if(!regex.gtZeroNumer(_this.proporation.point)){
+         _this.$toast.warning("积分格式不正确");
         return false;
       }
 
       _this.PUSH_LOADING();
-      _this.$axios.get('proportion',{
-        proporation:_this.point
-      }).
+      _this.$axios.get('proportion',_this.proporation).
         then((result)=> {
           var res = result.data;
           if(res.code&&res.code>0){

@@ -85,9 +85,7 @@ export default {
             }
             
             _this.PUSH_LOADING();
-            _this.$axios.post('sms/send',{
-                phone:phone
-            }).then((result)=> {
+            _this.$axios.post('sms/send?phone=' + phone).then((result)=> {
                 var res = result.data;
                 if(res.code&&res.code>0){
                     _this.$toast.error(res.msg);
@@ -129,11 +127,12 @@ export default {
             }
 
             _this.PUSH_LOADING();
-            _this.$axios.post('sms/send',{
-                phone:phone,
-                smsCode:smsCode,
-                password:newPwd
-            }).then((result)=> {
+            let param = [];
+            param.push('phone=' + phone);
+            param.push('checkCode=' + smsCode);
+            param.push('password=' + newPwd);
+            param.push('password2=' + replPwd);
+            _this.$axios.post('forget?' + param.join('&')).then((result)=> {
                 var res = result.data;
                 if(res.code&&res.code>0){
                     _this.$toast.error(res.msg);

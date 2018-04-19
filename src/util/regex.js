@@ -1,7 +1,8 @@
 const pattern = {
   phone: /^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|166|198|199)+\d{8})$/,
   pwd: /^[a-zA-Z0-9]{8,20}$/,
-  gtZeroNumer: /^[1-9]\d*$/
+  gtZeroNumer: /^[1-9]\d*$/,
+  money: /^\d+(.\d{1,2})?$/
 }
 
 const phone = function (val) {
@@ -13,9 +14,13 @@ const pwd = function (val) {
 const gtZeroNumer = function (val) {
   return pattern.gtZeroNumer.test(val)
 }
+const money = function (val) {
+  return pattern.money.test(val)
+}
 
 module.exports = {
   phone,
   pwd,
-  gtZeroNumer
+  gtZeroNumer,
+  money
 }
