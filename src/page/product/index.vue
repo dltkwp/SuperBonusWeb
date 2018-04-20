@@ -13,7 +13,7 @@
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
                   <div class="pull-left">
-                      <router-link to="product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
+                      <router-link to="/product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
                       <a class="btn btn-white btn-sm" data-toggle="modal" href="#product-set">批量设置</a>
                   </div>
                   <div class="pull-right text-right">
@@ -48,26 +48,17 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td class="text-center"><input type="checkbox"  checked class="i-checks" name="input[]"></td>
-                        <td>
-                          <img class="img-md" src="img/gallery/2.jpg"> 超级悬赏杯
+                      <tr v-for="(item,index) in productList" :key='index'>
+                        <td class="text-center">
+                            <input type="checkbox"  checked class="i-checks" name="productCheckName">
                         </td>
-                        <td> ¥99</td>
-                        <td>开售</td>
+                        <td>
+                          <img class="img-md" v-bind:src="item.imageUrl"> {{item.productName}}
+                        </td>
+                        <td> ¥{{itme.price}}</td>
+                        <td>{{item.status==1?'开售':'停售'}}</td>
                         <td>
                           <a class="btn btn-white btn-sm" href="edit-product.html">查看</a>
-                        </td>
-                      </tr>
-                      <tr>
-                          <td class="text-center"><input type="checkbox"   class="i-checks" name="input[]"></td>
-                        <td>
-                          <img class="img-md" src="img/gallery/2.jpg"> 大威威客
-                        </td>
-                        <td> ¥10000</td>
-                        <td>停售</td>
-                        <td>
-                            <a class="btn btn-white btn-sm" href="edit-product.html">查看</a>
                         </td>
                       </tr>
                     </tbody>
@@ -141,13 +132,13 @@ export default {
           break;
         case "Sales":
           {
-            _this.adv.status = "onSales";
+            _this.adv.status = 1;
             _this.adv.statusText = "开售";
           }
           break;
         case "StopSales":
           {
-            _this.adv.status = "noSales";
+            _this.adv.status = 0;
             _this.adv.statusText = "停售";
           }
           break;
@@ -162,6 +153,7 @@ export default {
     },
     getProductList() {
       let _this = this;
+      console.log(_this.adv);
       _this.PUSH_LOADING();
       let param = [];
       param.push("pageNum=" + _this.parentCurrentpage);
@@ -169,8 +161,10 @@ export default {
       if (!_this.$lodash.isEmpty(_this.adv.queryKey)) {
         param.push("queryKey=" + _this.adv.queryKey);
       }
-      if (_this.adv.status) {
+      if (_this.adv.status != '') {
         param.push("status=" + _this.adv.status);
+      } else { // 测试代码
+        param.push("status=1");
       }
       _this.$axios
         .get("products?" + param.join("&"))
@@ -179,17 +173,16 @@ export default {
           _this.parentTotalPage = res.pages;
           try {
             _this.$lodash.forEach(res.list, function(item) {
-              _this.$lodash.forEach(item.images, function(img, imgIndex) {
-                img.realUrl = imgCdn + img.imageCode;
-              });
-              let curCategory = _this.$lodash.find(_this.categoryList, {
-                id: item.categoriesId
-              });
-              if (curCategory) {
-                item.categoriesName = curCategory.categoriesName;
-              }
-              if (_this.levelArr.length == 0) {
-                _this.levelArr = _this.$lodash.cloneDeep(item.prices);
+
+              if(item.images){
+                let imagesArr = item.images.split(',');
+                if(imagesArr.length>0){
+                  item.imageUrl = superConst.IMAGE_STATIC_URL + imagesArr[0];
+                }else {
+                  item.imageUrl = ''; // 产品默认图片
+                }
+              }else{
+                item.imageUrl = ''; // 产品默认图片
               }
             });
           } catch (e) {

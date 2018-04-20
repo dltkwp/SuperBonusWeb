@@ -31,10 +31,10 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
-                          <div class="img-upload" v-for="(item,index) in imagesList" :key="index">
+                          <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click="uploadImage">
                                 <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
                                 <div class="btn-delete" v-if="item.url&&item.code">
-                                <i class="fa fa-times-circle"></i>
+                                  <i class="fa fa-times-circle"></i>
                                 </div>
                           </div>
                         </div>
@@ -115,14 +115,14 @@ export default {
       imagesList: [],
       description: "",
       price: 0,
-      status: "",
+      status: "1",
       detail: ""
     };
   },
   mounted() {
     let _this = this;
     _this.initPage();
-    _this.getNextProductNo();
+    //_this.getNextProductNo();
   },
   methods: {
       ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -131,7 +131,6 @@ export default {
         _this.initImages();
         _this.productName="";
         _this.productNo="";
-        _this.imagesList="";
         _this.description="";
         _this.price="";
         _this.status="";
@@ -198,7 +197,8 @@ export default {
             })
             .then(result => {
               let res = result.data;
-              let cur = _this.$axios.find(_this.imagesList, { 'url': '', 'code': '' });
+              let cur = _this.$lodash.find(_this.imagesList, {'url': '', 'code': '' });
+
               cur.url= superConst.IMAGE_STATIC_URL + res.fileCode;
               cur.code = res.fileCode;
               _this.$toast.success("操作成功");
