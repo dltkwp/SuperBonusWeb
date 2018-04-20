@@ -13,6 +13,8 @@
  import "./assets/js/plugins/slimscroll/jquery.slimscroll.min.js"
  import "./assets/js/inspinia.js"
  import "./assets/js/plugins/pace/pace.min.js"
+//  import "./assets/js/plugins/summernote/summernote.min.js"
+//  import "./assets/js/plugins/slick/slick.min.js"
 
  import {mapGetters} from 'vuex'
  import * as types from './store/mutation-types'
@@ -32,11 +34,17 @@
   }
 }
 </script>
-
 <style>
   @import "./assets/css/bootstrap.min.css";
   @import "./assets/font-awesome/css/font-awesome.css";
   @import "./assets/css/animate.css";
+
+  @import "./assets/css/plugins/summernote/summernote.css";
+  @import "./assets/css/plugins/summernote/summernote-bs3.css";
+  @import "./assets/css/plugins/slick/slick.css";
+  @import "./assets/css/plugins/slick/slick-theme.css";
+
   @import "./assets/css/style.css";
   @import "./assets/css/custom.css";
+
 </style>

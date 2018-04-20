@@ -24,8 +24,8 @@
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-10">
                               当顾客积分在
-                              <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled="" v-bind:value="item.start">至
-                              <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.end" @change="endValChange(index)"  v-if="index < levelList.length - 1">
+                              <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled="" v-bind:value="item.startPoint">至
+                              <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.endPoint" @change="endValChange(index)"  v-if="index < levelList.length - 1">
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled readonly   value="无穷大" v-if="index==levelList.length - 1">
                               之间，会员等级为
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.name">
@@ -54,7 +54,7 @@
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                          <button class="btn btn-primary" type="submit">保存</button>
+                          <button class="btn btn-primary" type="button" @click="pointSubmit">保存</button>
                         </div>
                       </div>
                     </form>
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       tabType: "Level",     // Level: 等级 Point：积分
-      levelList: [],        // 等级的数据集合  {start:0,end:100,name:'VOP'}
+      levelList: [],        // 等级的数据集合  {startPoint:0,endPoint:100,name:'VOP'}
       proporation: {
         money:0,
         point:0
@@ -108,16 +108,16 @@ export default {
       let _this  = this;
       let cur = _this.levelList[curIndex];
 
-      if(!regex.gtZeroNumer(cur.end) || cur.end < cur.start){
-          cur.end = Number(cur.start) + Number(superConst.POINT_INTEVAL);
+      if(!regex.gtZeroNumer(cur.endPoint) || cur.endPoint < cur.startPoint){
+          cur.endPoint = Number(cur.startPoint) + Number(superConst.POINT_INTEVAL);
       }
       _this.$lodash.forEach(_this.levelList,function(item,index){
         if(index>curIndex){
           let pre = _this.levelList[index - 1];
           if(pre){
-            item.start = pre.end;
-            if(item.end < item.start){
-              item.end = Number(item.start) + Number(superConst.POINT_INTEVAL);
+            item.startPoint = pre.endPoint;
+            if(item.endPoint < item.startPoint){
+              item.endPoint = Number(item.startPoint) + Number(superConst.POINT_INTEVAL);
             }
           }
         }
@@ -144,9 +144,9 @@ export default {
           if(res.code&&res.code>0){
               _this.$toast.error(res.msg);
           }else{
-            _this.data.levelList = res;
+            _this.levelList = res;
             if(res.length==0){
-              _this.data.levelList.push({start:0,end:superConst.POINT_INTEVAL,name:'VIP'});
+              _this.levelList.push({startPoint:0,endPoint:superConst.POINT_INTEVAL,name:'VIP'});
             }
           }
           _this.SHIFT_LOADING();
@@ -158,16 +158,16 @@ export default {
       let _this = this;
       let len = _this.levelList.length;
       if(len == 0){
-        _this.levelList.push({start:0,end:superConst.POINT_INTEVAL,name:'VIP'});
+        _this.levelList.push({startPoint:0,endPoint:superConst.POINT_INTEVAL,name:'VIP'});
       }else{
         let lastIndex = len - 1;
         let last = _this.levelList[lastIndex];
-        last.end = Number(last.start + superConst.POINT_INTEVAL);
+        last.endPoint = Number(last.startPoint + superConst.POINT_INTEVAL);
 
-        let start = Number(last.end);
-        let end = Number(last.end) + superConst.POINT_INTEVAL;
+        let startPoint = Number(last.endPoint);
+        let endPoint = Number(last.endPoint) + superConst.POINT_INTEVAL;
 
-        _this.levelList.push({start: start,end: end,name:'VIP'});    
+        _this.levelList.push({startPoint: startPoint,endPoint: endPoint,name:'VIP'});    
       }
     },
     removeLevel:function(index){
@@ -178,7 +178,7 @@ export default {
       let _this = this; // 验证
       let errors = [];
       _this.$lodash.forEach(_this.levelList,function (item){
-         if(!regex.gtZeroNumer(item.end)){
+         if(!regex.gtZeroNumer(item.endPoint)){
            errors.push('等级【'+item.name+'】结束积分格式不正确');
          }
       });
@@ -186,9 +186,7 @@ export default {
          _this.$toast.warning(errors.join('<br/>'));
       }
       this.PUSH_LOADING();
-      _this.$axios.post('levels',{
-        levels:_this.levelList
-      }).
+      _this.$axios.post('levels',_this.levelList).
         then((result)=> {
           var res = result.data;
           if(res.code&&res.code>0){
@@ -211,7 +209,7 @@ export default {
           if(res.code&&res.code>0){
               _this.$toast.error(res.msg);
           }else{
-            _this.data.proporation = res;
+            _this.proporation = res;
           }
           _this.SHIFT_LOADING();
       }).catch((err) => {
@@ -230,7 +228,7 @@ export default {
       }
 
       _this.PUSH_LOADING();
-      _this.$axios.get('proportion',_this.proporation).
+      _this.$axios.post('proportion',_this.proporation).
         then((result)=> {
           var res = result.data;
           if(res.code&&res.code>0){

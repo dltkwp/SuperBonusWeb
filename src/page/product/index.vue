@@ -27,12 +27,11 @@
                     </div>
                     <div class="search-box">
                       <div class="input-group">
-                        <input type="text" placeholder="搜索项目名称/发布人/承接人" class="input-sm form-control" v-model="adv.queryKey" maxlength="20">
+                        <input type="text" placeholder="搜索产品名称" class="input-sm form-control" v-model="adv.queryKey" maxlength="20">
                         <span class="input-group-btn">
                         <button @click="rearchSubmit" type="button" class="btn btn-sm btn-primary"> 搜索</button>
                         </span></div>
                     </div>
-                    <button type="button" class="btn btn-sm btn-white " data-toggle="modal" href="#search-more">高级搜索</button>
                   </div>
                 </div>
                 </div>
@@ -95,26 +94,30 @@ import * as types from "@/store/mutation-types.js";
 import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
+import vEmpty from "@/components/empty/empty.vue";
+import pagination from "@/components/pagination/pagination.vue";
+
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
-import pagination from "@/components/pagination/pagination.vue";
 
 export default {
   components: {
     vMenus,
     vTop,
-    vFoot
+    vFoot,
+    vEmpty,
+    pagination
   },
   data() {
     return {
-        adv:{
-          status:'',
-          statusText:'全部',
-          queryKey:''
-        },
-        productList:[],
-        parentTotalPage: 0,
-        parentCurrentpage: 1
+      adv: {
+        status: "",
+        statusText: "全部",
+        queryKey: ""
+      },
+      productList: [],
+      parentTotalPage: 0,
+      parentCurrentpage: 1
     };
   },
   mounted() {
@@ -123,29 +126,39 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    statusChange:function(status){
-        let _this = this;
-        switch (status) {
-            case "All":{
-                _this.adv.status = '';
-                _this.adv.statusText = '全部';
-            }break;
-            case "Sales":{
-                _this.adv.status = 'onSales';
-                _this.adv.statusText = '在售';
-            }break;
-            case "StopSales":{
-                _this.adv.status = 'noSales';
-                _this.adv.statusText = '停售';
-            }break;
-        }
-        _this.parentCurrentpage = 1;
-        _this.getProductList();
+    parentCallback(cPage) {
+      this.parentCurrentpage = cPage;
+      this.listData();
     },
-    rearchSubmit:function(){
-        let _this = this;
-        _this.parentCurrentpage = 1;
-        _this.getProductList();
+    statusChange: function(status) {
+      let _this = this;
+      switch (status) {
+        case "All":
+          {
+            _this.adv.status = "";
+            _this.adv.statusText = "全部";
+          }
+          break;
+        case "Sales":
+          {
+            _this.adv.status = "onSales";
+            _this.adv.statusText = "开售";
+          }
+          break;
+        case "StopSales":
+          {
+            _this.adv.status = "noSales";
+            _this.adv.statusText = "停售";
+          }
+          break;
+      }
+      _this.parentCurrentpage = 1;
+      _this.getProductList();
+    },
+    rearchSubmit: function() {
+      let _this = this;
+      _this.parentCurrentpage = 1;
+      _this.getProductList();
     },
     getProductList() {
       let _this = this;
@@ -156,7 +169,7 @@ export default {
       if (!_this.$lodash.isEmpty(_this.adv.queryKey)) {
         param.push("queryKey=" + _this.adv.queryKey);
       }
-      if (parseInt(_this.adv.status) > -1) {
+      if (_this.adv.status) {
         param.push("status=" + _this.adv.status);
       }
       _this.$axios
@@ -164,20 +177,22 @@ export default {
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.pages;
-          try{
-                _this.$lodash.forEach(res.list, function(item) {
-                  _this.$lodash.forEach(item.images,function(img,imgIndex){
-                      img.realUrl = imgCdn + img.imageCode;
-                  })
-                  let curCategory = _this.$lodash.find(_this.categoryList,{id:item.categoriesId});
-                  if(curCategory){
-                    item.categoriesName = curCategory.categoriesName;
-                  }
-                  if(_this.levelArr.length == 0){
-                      _this.levelArr = _this.$lodash.cloneDeep(item.prices);
-                  }
+          try {
+            _this.$lodash.forEach(res.list, function(item) {
+              _this.$lodash.forEach(item.images, function(img, imgIndex) {
+                img.realUrl = imgCdn + img.imageCode;
               });
-          }catch(e){
+              let curCategory = _this.$lodash.find(_this.categoryList, {
+                id: item.categoriesId
+              });
+              if (curCategory) {
+                item.categoriesName = curCategory.categoriesName;
+              }
+              if (_this.levelArr.length == 0) {
+                _this.levelArr = _this.$lodash.cloneDeep(item.prices);
+              }
+            });
+          } catch (e) {
             console.error(e);
           }
           _this.productList = res.list;

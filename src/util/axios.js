@@ -10,7 +10,7 @@ export default {
       config => {
         let token = localStorage.getItem(superConst.SUPER_TOKEN_KEY)
         if (token) {
-          config.headers.Authorization = token
+          config.headers.token = JSON.parse(token).token
         }
         return config
       },
@@ -28,7 +28,7 @@ export default {
             case 401:
               // 返回 401 清除token信息并跳转到登录页面
               localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
-              window.location.href = 'v_login'
+              window.location.href = '/v_login'
           }
         }
         return Promise.reject(error.response.data)

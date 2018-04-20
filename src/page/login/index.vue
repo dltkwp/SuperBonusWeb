@@ -57,14 +57,12 @@ export default {
             param.push('password=' + pwd);
             _this.$axios.post('login?' + param.join('&')).then((result)=> {
                 var res = result.data;
-                switch (res.code) {
-                    case 1000200: {
-                        localStorage.setItem(superConst.SUPER_TOKEN_KEY,res);
-                        window.location.href = '/v_index';
-                    } break;
-                    default: {
-                        _this.$toast.error(res.msg);
-                    }
+                console.log(res);
+                if(res.code){
+                    _this.$toast.error(res.msg);
+                }else{
+                    localStorage.setItem(superConst.SUPER_TOKEN_KEY, JSON.stringify(res));
+                    window.location.href = '/product/v_index';
                 }
                 _this.SHIFT_LOADING();
             }).catch((err) => {
