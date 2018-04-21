@@ -30,8 +30,10 @@ export default {
               localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
               window.location.href = '/v_login'
           }
+          return Promise.reject(error.response.data)
+        } else {
+          return Promise.reject(error)
         }
-        return Promise.reject(error.response.data)
       })
 
     Object.defineProperty(Vue.prototype, '$axios', { value: axios })
