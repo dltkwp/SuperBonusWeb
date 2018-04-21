@@ -64,10 +64,10 @@
                         <label class="col-sm-2 control-label">产品介绍:</label>
                         <div class="col-sm-10">
                           <div class="summernote">
-                            <!-- 测试代码  开始-->
+                              <!-- 测试代码  开始-->
                              <input type="text" class="form-control" placeholder="请输入售价" v-model="description" maxlength="200">
-                            <!-- 测试代码  结束-->
-                            <h3>请添加产品描述</h3>
+                              <!-- 测试代码  结束-->
+                              <h3>请添加产品描述</h3>
                           </div>
                         </div>
                       </div>
@@ -118,7 +118,7 @@ export default {
       description: "", //  描述
       price: 0,
       status: "1",
-      intoduction: "" //  简介
+      intoduction: "", //  简介
     };
   },
   mounted() {
