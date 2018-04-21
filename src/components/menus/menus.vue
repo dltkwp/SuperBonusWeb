@@ -34,7 +34,9 @@
                 <a href="member.html"><i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </a>
             </li>
             <li v-bind:class="{active:parentKey==='Order'}">
-                <a href="order.html"><i class="fa fa-file-text"></i> <span class="nav-label">订单管理</span> </a>
+                <router-link to="/order/v_index"> 
+                  <i class="fa fa-file-text"></i> <span class="nav-label">订单管理</span>
+                </router-link>
             </li>
             <!-- <li class="hide">
               <a href="merchant.html"><i class="fa fa-user-circle"></i> <span class="nav-label">商户管理</span> </a>
@@ -50,7 +52,7 @@
             </li> -->
             <li v-bind:class="{active:parentKey==='SysCfg'}">
               <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
-              <ul class="nav nav-second-level collapse">
+              <ul class="nav nav-second-level">
                   <!-- <li><a href="set-worker.html">员工设置</a></li> -->
                   <li v-bind:class="{active:childrenKey==='Level'}"><router-link to="/member/v_level">会员等级设置</router-link></li>
               </ul>
