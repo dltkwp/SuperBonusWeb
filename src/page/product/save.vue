@@ -31,18 +31,18 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
-                          <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click="uploadImage">
-                                <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
-                                <div class="btn-delete" v-if="item.url&&item.code">
+                          <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click.stop="uploadImage(index,$event)">
+                                <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
                                   <i class="fa fa-times-circle"></i>
                                 </div>
+                                <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
                           </div>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">简介:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入产品简介" v-model="description" maxlength="140">
+                          <input type="text" class="form-control" placeholder="请输入产品简介" v-model="intoduction" maxlength="140">
                         </div>
                       </div>
                       <div class="form-group">
@@ -64,6 +64,9 @@
                         <label class="col-sm-2 control-label">产品介绍:</label>
                         <div class="col-sm-10">
                           <div class="summernote">
+                            <!-- 测试代码  开始-->
+                             <input type="text" class="form-control" placeholder="请输入售价" v-model="description" maxlength="200">
+                            <!-- 测试代码  结束-->
                             <h3>请添加产品描述</h3>
                           </div>
                         </div>
@@ -71,8 +74,7 @@
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                          <button class="btn btn-primary" type="submit">保存</button>
-                          <button class="btn btn-white" type="submit">取消</button>
+                          <button class="btn btn-primary" type="button" @click="saveSubmit">保存</button>
                         </div>
                       </div>
                     </fieldset>
@@ -113,56 +115,61 @@ export default {
       productName: "",
       productNo: "",
       imagesList: [],
-      description: "",
+      description: "", //  描述
       price: 0,
       status: "1",
-      detail: ""
+      intoduction: "" //  简介
     };
   },
   mounted() {
     let _this = this;
+    _this.SHIFT_LOADING();
     _this.initPage();
     //_this.getNextProductNo();
   },
   methods: {
-      ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    initPage: function(){
-        let _this = this;
-        _this.initImages();
-        _this.productName="";
-        _this.productNo="";
-        _this.description="";
-        _this.price="";
-        _this.status="";
-        _this.detail="";
+    ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    initPage: function() {
+      let _this = this;
+      _this.initImages();
+      _this.productName = "";
+      _this.productNo = "";
+      _this.description = "";
+      _this.price = "";
+      _this.status = "";
+      _this.intoduction = "";
     },
     getNextProductNo: function() {
       let _this = this;
       _this.PUSH_LOADING();
       _this.$axios
-        .get("next")
+        .get("product/next")
         .then(result => {
           let res = result.data;
-          _this.productNo = res.nextProductNo
+          _this.productNo = res.nextProductNo;
           _this.SHIFT_LOADING();
         })
         .catch(err => {
           _this.SHIFT_LOADING();
         });
     },
-    initImages:function(){
-        this.imagesList.push({ url: "", code: ""});
-        this.imagesList.push({ url: "", code: ""});
-        this.imagesList.push({ url: "", code: ""});
-        this.imagesList.push({ url: "", code: ""});
-        this.imagesList.push({ url: "", code: ""});
+    initImages: function() {
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
     },
-    uploadImage: function() {
-      $("#uploadFile").val(null);
-      if ($("#uploadFile").val()) {
-        document.getElementById("uploadImgForm").reset();
+    uploadImage: function(index) {
+      let _this = this;
+      let curImage = _this.imagesList[index];
+      if(curImage&&curImage.url==''&&curImage.code==''){
+        $("#uploadFile").val(null);
+        if ($("#uploadFile").val()) {
+          document.getElementById("uploadImgForm").reset();
+        }
+        document.getElementById("uploadFile").click();
       }
-      document.getElementById("uploadFile").click();
     },
     imgUploadFileChange: function(event) {
       if (event) {
@@ -197,17 +204,88 @@ export default {
             })
             .then(result => {
               let res = result.data;
-              let cur = _this.$lodash.find(_this.imagesList, {'url': '', 'code': '' });
-
-              cur.url= superConst.IMAGE_STATIC_URL + res.fileCode;
+              let cur = _this.$lodash.find(_this.imagesList, function(item){
+                return item.url == '' && item.code =='';
+              });
+              cur.url = superConst.IMAGE_STATIC_URL + res.fileCode;
               cur.code = res.fileCode;
               _this.$toast.success("操作成功");
             })
             .catch(err => {});
         }
       }
-    }
+    },
+    removeImage: function (index) {
+       let _this = this;
+       let curImage = _this.imagesList[index];
+       if (curImage){
+         curImage.url = '';
+         curImage.code = '';
+       }
+    },
+    saveSubmit: function() {
+      let _this = this;
+      let productName = _this.productName.trim();
+      let intoduction = _this.intoduction.trim();
+      let price = _this.price.trim();
+      let description = _this.description.trim();
 
+      let imageCodes = [];
+      _this.$lodash.forEach(_this.imagesList,function(item){
+          if(item.code){
+            imageCodes.push(item.code);
+          }
+      });
+
+
+      if (productName == "") {
+        _this.$toast.warning("名称不可为空");
+        return false;
+      }
+      if(imageCodes.length==0){
+        _this.$toast.warning('至少上传一张图片');
+        return false;
+      }
+      if (intoduction == "") {
+        _this.$toast.warning("简介不可为空");
+        return false;
+      }
+      if (!regex.money(price)) {
+        _this.$toast.warning("价格格式不正确");
+        return false;
+      }
+      if (description == "") {
+        _this.$toast.warning("产品介绍不可为空");
+        return false;
+      }
+      
+      
+      let param = {
+        "description": description,
+        "price": price,
+        "productName": productName,
+        "images" : imageCodes.join(','),
+        "intoduction":intoduction
+      }
+      _this.PUSH_LOADING();
+      _this.$axios
+        .post("products",param)
+        .then(result => {
+          let res = result.data;
+          if(res.code&&res.code>0){
+
+          }else{
+            _this.$toast.success("操作成功");
+            _this.SHIFT_LOADING();
+            setTimeout(function() {
+              window.location.href = "/product/v_index";
+            }, 800);
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    }
   }
 };
 </script>
