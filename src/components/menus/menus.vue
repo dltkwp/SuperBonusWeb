@@ -17,7 +17,9 @@
                 </div>
             </li>
             <li  v-bind:class="{active:parentKey==='Index'}">
-                <a href="index.html"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
+               <router-link to="/v_index"> 
+                <i class="fa fa-home"></i> <span class="nav-label">首页</span>
+               </router-link>
             </li>
             <li  v-bind:class="{active:parentKey==='Adv'}">
                 <router-link to="/adv/v_index"> 

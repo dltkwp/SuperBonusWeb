@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import IndexRouter from '@/page/index/index.vue'
 import AdvRouter from './adv'
 import LoginRouter from './login'
 import MemberRouter from './member'
@@ -21,5 +22,14 @@ export default new Router({
       childrenKey: 'Index'
     },
     component: Login
+  },
+  {
+    path: '/v_index',
+    name: 'Index',
+    meta: {
+      parentKey: 'Index',
+      childrenKey: 'Index'
+    },
+    component: IndexRouter
   }].concat(AdvRouter).concat(LoginRouter).concat(MemberRouter).concat(OrderRouter).concat(ProductRouter).concat(ForgetPwdRouter)
 })

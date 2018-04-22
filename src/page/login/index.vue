@@ -62,7 +62,7 @@ export default {
                     _this.$toast.error(res.msg);
                 }else{
                     localStorage.setItem(superConst.SUPER_TOKEN_KEY, JSON.stringify(res));
-                    window.location.href = '/product/v_index';
+                    window.location.href = 'v_index';
                 }
                 _this.SHIFT_LOADING();
             }).catch((err) => {
