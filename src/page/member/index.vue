@@ -11,9 +11,6 @@
               <div class="ibox-content">
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
-                    <!-- <div class="pull-left">
-                      <a class="btn btn-primary btn-sm" href="add-member.html">新增会员</a>
-                    </div> -->
                     <div class=" pull-right text-right">
                       <div class="btn-group btn-group-sm">
                         <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" aria-expanded="false">{{curLevel.name||'全部'}} <span class="caret"></span></button>
@@ -49,48 +46,34 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
+                      <tr v-for="(item,index) in userList" :key="index">
+                        <td>{{index + 1}}</td>
                         <td>
                           001
-
                         </td>
-                        <td> <img class="img-sm pull-left img-circle" src="img/gallery/2.jpg">
-                          <div class="pull-left m-l-sm"> <a href="member-detail.html">张三<br>
-                                        15100000000
-                                  </a></div>
+                        <td> 
+                          <img v-if="item.headImage" class="img-sm pull-left img-circle" v-bind:src="item.headImage">
+                          <div class="pull-left m-l-sm"> 
+                             <router-link :to="{path:'/member/v_detail',query:{memberId:item.id}}">
+                                {{item.realname}}<br>{{item.username}}
+                             </router-link>
+                          </div>
                         </td>
-                        <td> 大威威客</td>
-                        <td>2018/04/01</td>
-                        <td>大连乐维科技有限公司</td>
-                        <td>经理</td>
-
-                        <td>15242612898</td>
-                        <td>
-                          <a class="btn btn-white btn-sm" href="member-detail.html">查看</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>
-                          002
-                        </td>
-                        <td> <img class="img-sm pull-left img-circle" src="img/gallery/1.jpg">
-                          <div class="pull-left m-l-sm"> <a href="member-detail.html">张三<br>
-                                15100000000
-                            </a></div>
-                        </td>
-                        <td> 超级大威</td>
-                        <td>2018/04/01</td>
+                        <td> {{item.levelname}}</td>
+                        <td>{{item.created}}</td>
                         <td>大连乐维科技有限公司</td>
                         <td>经理</td>
                         <td>15242612898</td>
                         <td>
-                          <a class="btn btn-white btn-sm" href="member-detail.html">查看</a>
+                          <router-link :to="{path:'/member/v_detail',query:{memberId:item.id}}" class="btn btn-white btn-sm">查看</router-link>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+
+                  <v-empty :isShow="parentTotalPage==0"></v-empty>
+                  <pagination :totalPage="parentTotalPage" :currentPage="parentCurrentpage" :changeCallback="parentCallback"></pagination>
+
                 </div>
               </div>
             </div>
@@ -129,7 +112,8 @@ export default {
       curLevel: {},
       queryKey: '',
       parentTotalPage: 0,
-      parentCurrentpage: 1
+      parentCurrentpage: 1,
+      userList: []
     };
   },
   mounted() {
@@ -179,7 +163,12 @@ export default {
                 _this.parentTotalPage = res.pages;
                 try {
                     _this.$lodash.forEach(res.list, function(item) {
-                        
+                        let image = item.headImage;
+                        let index = image.indexOf('http');
+                        if(index == -1){
+                          item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
+                        }
+                        item.created = moment(item.created).format('YYYY/MM/DD HH:mm')
                     });
                 } catch (e) {
                     console.error(e);

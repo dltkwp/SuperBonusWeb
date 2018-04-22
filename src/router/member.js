@@ -1,6 +1,7 @@
 import MemberIndex from '@/page/member/index.vue'
 import MemberDetail from '@/page/member/detail.vue'
 import MemberLevel from '@/page/member/level.vue'
+import MemberEdit from '@/page/member/edit.vue'
 
 export default [{
   path: '/member/v_index',
@@ -18,6 +19,14 @@ export default [{
     childrenKey: 'Detail'
   },
   component: MemberDetail
+},
+{ path: '/member/v_edit',
+  name: 'MemberEdit',
+  meta: {
+    parentKey: 'Member',
+    childrenKey: 'Edit'
+  },
+  component: MemberEdit
 },
 { path: '/member/v_level',
   name: 'MemberLevel',
