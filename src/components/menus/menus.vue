@@ -33,7 +33,7 @@
                 </router-link>
             </li>
             <li v-bind:class="{active:parentKey==='Member'}">
-                <a href="member.html"><i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </a>
+                <router-link to="/member/v_index"> <i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </router-link>
             </li>
             <li v-bind:class="{active:parentKey==='Order'}">
                 <router-link to="/order/v_index"> 
