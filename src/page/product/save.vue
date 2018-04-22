@@ -86,7 +86,7 @@
         </div>
       </div>
       </div>
-     <form action="" id="uploadImgForm" style="display:none;">
+      <form action="" id="uploadImgForm" style="display:none;">
         <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
       </form>
    </div>

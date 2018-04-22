@@ -61,11 +61,11 @@ export default {
                 timer = window.setInterval(function(){
                     let curCnt = _this.totalInterval - 1;
                     if (_this.totalInterval != 0) {
-                        _this.isActive = true;
+                        _this.isActiveSms = true;
                         _this.totalInterval = curCnt;
                         _this.smsTip = curCnt + 's后重新获取';
                     } else {
-                        _this.isActive = false;
+                        _this.isActiveSms = false;
                         _this.smsTip = '获取验证码';
                         _this.totalInterval = 60;
                         if (timer) {
@@ -78,6 +78,9 @@ export default {
         },
         getSmsCode: function (){
             let _this = this;
+            if(_this.isActiveSms){
+                return false;
+            }
             let phone = _this.phone.trim();
             if(!regex.phone(phone)){
                 _this.$toast.warning('手机号格式不正确');
@@ -88,8 +91,10 @@ export default {
             _this.$axios.post('sms/send?phone=' + phone).then((result)=> {
                 var res = result.data;
                 if(res.code&&res.code>0){
+                    _this.isActiveSms = false;
                     _this.$toast.error(res.msg);
                 }else{
+                    _this.isActiveSms = true;
                     _this.$toast.success('验证码发送成功');
                     _this.startTimer();
                 }

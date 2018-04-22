@@ -20,7 +20,9 @@
                 <a href="index.html"><i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
             </li>
             <li  v-bind:class="{active:parentKey==='Adv'}">
-                <a href="advertisement.html"><i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span> </a>
+                <router-link to="/adv/v_index"> 
+                  <i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span>
+                </router-link>
             </li>
             <!-- <li  v-bind:class="{active:parentKey==='ProgramRoom'}">
                 <a href="task.html"><i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span> </a>
