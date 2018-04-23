@@ -153,6 +153,7 @@ export default {
         document.getElementById("uploadFile").click();
     },
     imgUploadFileChange: function(event) {
+      let _this = this;ßß
       if (event) {
         var filePath = "";
         var size = 0;
@@ -178,7 +179,6 @@ export default {
           var formData = new FormData();
           formData.append("file", file);
 
-          let _this = this;
           _this.$axios
             .post("upload", formData, {
               headers: { "Content-Type": "multipart/form-data" }

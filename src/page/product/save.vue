@@ -63,16 +63,16 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">产品介绍:</label>
                         <div class="col-sm-10">
-                          <div class="summernote">
-                              <!-- 测试代码  开始-->
-                             <input type="text" class="form-control" placeholder="请输入售价" v-model="description" maxlength="200">
-                              <!-- 测试代码  结束-->
-                              <h3>请添加产品描述</h3>
-                          </div>
+                            <quill-editor v-model="description" style="height:260px;"
+                                ref="myQuillEditor"
+                                :options="editorOption"
+                                @blur="onEditorBlur($event)"
+                                @focus="onEditorFocus($event)"
+                                @ready="onEditorReady($event)">
+                            </quill-editor>
                         </div>
                       </div>
-                      <div class="hr-line-dashed"></div>
-                      <div class="form-group">
+                      <div class="form-group" style=" margin-top:  82px">
                         <div class="col-sm-4 col-sm-offset-2">
                           <button class="btn btn-primary" type="button" @click="saveSubmit">保存</button>
                         </div>
@@ -103,22 +103,28 @@ import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
+import { quillEditor } from 'vue-quill-editor'
+
 
 export default {
   components: {
     vMenus,
     vTop,
-    vFoot
+    vFoot,
+    quillEditor
   },
   data() {
     return {
       productName: "",
       productNo: "",
+      intoduction: "", //  简介
       imagesList: [],
-      description: "", //  描述
       price: 0,
       status: "1",
-      intoduction: "", //  简介
+      description: "", //  描述
+      editorOption: {
+        
+      }
     };
   },
   mounted() {
@@ -126,9 +132,28 @@ export default {
     _this.SHIFT_LOADING();
     _this.initPage();
     //_this.getNextProductNo();
+    
+  },
+  computed: {
+    editor() {
+      return this.$refs.myQuillEditor.quill
+    }
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    onEditorBlur(quill) {
+      console.log('editor blur!', quill)
+    },
+    onEditorFocus(quill) {
+      console.log('editor focus!', quill)
+    },
+    onEditorReady(quill) {
+      console.log('editor ready!', quill)
+    },
+    onEditorChange({ quill, html, text }) {
+      console.log('editor change!', quill, html, text)
+      this.description = html
+    },
     initPage: function() {
       let _this = this;
       _this.initImages();
@@ -172,6 +197,7 @@ export default {
       }
     },
     imgUploadFileChange: function(event) {
+      let _this = this;
       if (event) {
         var filePath = "";
         var size = 0;
@@ -197,7 +223,6 @@ export default {
           var formData = new FormData();
           formData.append("file", file);
 
-          let _this = this;
           _this.$axios
             .post("upload", formData, {
               headers: { "Content-Type": "multipart/form-data" }
