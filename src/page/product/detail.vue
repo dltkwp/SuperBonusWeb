@@ -69,7 +69,6 @@
                                   @blur="onEditorBlur($event)"
                                   @focus="onEditorFocus($event)"
                                   @ready="onEditorReady($event)"
-                                  @change="onEditorChange($event)"
                                   >
                               </quill-editor>
                         </div>
@@ -310,7 +309,6 @@ export default {
         "images" : imageCodes.join(','),
         "intoduction":intoduction
       }
-      console.log(param),233234234234234;
       _this.PUSH_LOADING();
       _this.$axios
         .put("products",param)
