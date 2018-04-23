@@ -131,8 +131,7 @@ export default {
     let _this = this;
     _this.SHIFT_LOADING();
     _this.initPage();
-    //_this.getNextProductNo();
-    
+    _this.getNextProductNo();
   },
   computed: {
     editor() {
@@ -170,8 +169,7 @@ export default {
       _this.$axios
         .get("product/next")
         .then(result => {
-          let res = result.data;
-          _this.productNo = res.nextProductNo;
+          _this.productNo = result.data;
           _this.SHIFT_LOADING();
         })
         .catch(err => {
@@ -286,6 +284,7 @@ export default {
       
       
       let param = {
+        "productNo":_this.productNo,
         "description": description,
         "price": price,
         "productName": productName,
