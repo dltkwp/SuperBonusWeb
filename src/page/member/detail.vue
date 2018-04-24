@@ -11,13 +11,13 @@
                 <div class="row ">
                   <div class="col-md-8">
                     <div class="profile-image">
-                      <img src="img/a4.jpg" class="img-circle circle-border m-b-md" alt="profile">
+                      <img v-bind:src="user.headImage" class="img-circle circle-border m-b-md" alt="profile">
                     </div>
                     <div class="profile-info">
                       <div class="m-t-sm">
                         <div>
                           <h2 class="no-margins">
-                            张三<span class="font-md m-l-sm">超级大威</span>
+                            {{user.realname}}<span class="font-md m-l-sm">{{user.levelname}}</span>
                          </h2>
                         </div>
                       </div>
@@ -25,35 +25,33 @@
                         <tbody>
                           <tr>
                             <td>
-                              <strong>编号：</strong> 1524261288
+                              <strong>编号：</strong> {{'编号没有写'}}
                             </td>
                             <td>
-                              <strong>手机：</strong> 1524261288
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <strong>企业：</strong> 大连乐维科技有限公司
-                            </td>
-                            <td>
-                              <strong>职位：</strong> 经理
+                              <strong>手机：</strong> {{user.username}}
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <strong>注册时间：</strong> 2018/04/01
+                              <strong>企业：</strong> {{user.enterprise}}
                             </td>
                             <td>
-                              <strong>支付宝：</strong> 15242612898
+                              <strong>职位：</strong>  {{user.position}}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <strong>注册时间：</strong> {{user.createDate}}
+                            </td>
+                            <td>
+                              <strong>支付宝：</strong> {{user.alipay}}
                             </td>
 
                           </tr>
                           <tr>
-
                             <td colspan="2">
-                              <strong>联系地址：</strong> 辽宁省大连市高新园区招商兰溪谷
+                              <strong>联系地址：</strong> {{user.addr}}
                             </td>
-
                           </tr>
                         </tbody>
                       </table>
@@ -90,19 +88,19 @@
                               <tbody>
                                 <tr v-for="(item,index) in order.list" :key='index'>
                                   <td>
-                                    0001
+                                    {{item.orderNo}}
                                   </td>
                                   <td>
-                                    超级悬赏杯
+                                    {{item.productName}}
                                   </td>
                                   <td>
-                                    2018/04/01 12:20
+                                    {{item.createDate}}}
                                   </td>
                                   <td>
-                                    微信
+                                    {{item.payType}}
                                   </td>
                                   <td>
-                                    ¥100
+                                    ¥{{item.payment}}
                                   </td>
                                   <td>
                                     已完成
@@ -137,6 +135,7 @@ import vFoot from "@/components/foot/foot.vue";
 import vEmpty from "@/components/empty/empty.vue";
 import pagination from "@/components/pagination/pagination.vue";
 
+import moment from "../../util/moment"
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
@@ -183,6 +182,9 @@ export default {
         .then(result => {
           let res = result.data;
           _this.order.parentTotalPage = res.pages;
+          _this.$lodash.forEach(res.list, function(item) {
+            item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm');
+          });
           _this.order.list = res.list;
           _this.SHIFT_LOADING();
         })
@@ -200,6 +202,11 @@ export default {
             .get("users/" + id)
             .then(result => {
                 let res = result.data;
+                let httpIndex = res.headImage.indexOf('http');
+                if (httpIndex == -1) {
+                  res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
+                } 
+                res.createDate = moment(res.createDate).format('YYYY/MM/DD HH:mm');
                 _this.user = res;
             _this.SHIFT_LOADING();
             })

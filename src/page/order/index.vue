@@ -38,25 +38,23 @@
                     <tbody>
                       <tr v-for="(item,index) in orderList" :key="index">
                         <td>
-                          0001
+                          {{item.orderNo}}
                         </td>
                         <td>
-                          超级悬赏杯
+                          {{item.productName}}
                         </td>
-
-                          <td> <img class="img-sm pull-left img-circle" src="img/gallery/2.jpg">
-                            <div class="pull-left m-l-sm"> <a href="member-detail.html">张三<br>
-                                          15100000000
-                                    </a></div>
+                          <td> 
+                            <img class="img-sm pull-left img-circle" src="img/gallery/2.jpg">
+                            <div class="pull-left m-l-sm"> <a href="member-detail.html">张三****<br>15100000000</a></div>
                           </td>
-                            <td>
-                              2018/04/01 12:20
+                          <td>
+                              {{item.createDate}}
+                          </td>
+                        <td>
+                          微信***
                         </td>
                         <td>
-                          微信
-                        </td>
-                        <td>
-                          ¥100
+                          ¥{{item.payment}}
                         </td>
                         <td>
                           已完成
@@ -139,6 +137,9 @@ export default {
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.pages;
+          _this.$lodash.forEach(res.list, function(item) {
+            item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm');
+          });
           _this.orderList = res.list;
           _this.SHIFT_LOADING();
         })
