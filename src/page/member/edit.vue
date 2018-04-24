@@ -8,10 +8,10 @@
           <div class="col-lg-12">
             <div class="tabs-container">
               <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-1"> 个人资料</a></li>
+                <li class="active"><a  href="javascript:;;"> 个人资料</a></li>
               </ul>
               <div class="tab-content">
-                <div id="tab-1" class="tab-pane active">
+                <div class="tab-pane active">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
                       <div class="form-group">
@@ -24,33 +24,33 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工姓名" value="张三">
+                          <input type="text" class="form-control" placeholder="请输入员工姓名" maxlength="10" v-model="user.realName">
                         </div>
                       </div>
-                                                                                                                           <div class="form-group">
+                      <div class="form-group">
                         <label class="col-sm-2 control-label">手机号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工手机号" value="15242612898" disabled>
+                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="user.userName" disabled>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">照片:</label>
                         <div class="col-sm-6">
                           <div class="img-upload" @click="uploadImage">
-                            <img v-bind:src="item.headImage" style="width:90px;height:90px;">
+                            <img v-bind:src="user.headImage" style="width:90px;height:90px;">
                           </div>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <!-- <div class="form-group">
                         <label class="col-sm-2 control-label">权限:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" value="管理员" disabled>
+                          <input type="text" class="form-control" value="管理员" disabled v-model="user.position" >
                         </div>
-                      </div>
+                      </div> -->
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" value="管理员" disabled>
+                          <input type="text" class="form-control" v-model="user.position" disabled>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -137,6 +137,10 @@ export default {
             .get("users/" + id)
             .then(result => {
                 let res = result.data;
+                let httpIndex = res.headImage.indexOf('http');
+                if (httpIndex == -1) {
+                  res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
+                } 
                 _this.user = res;
                 _this.SHIFT_LOADING();
             })
