@@ -262,7 +262,7 @@ export default {
       }
     },
     imgUploadFileChange: function(event) {
-      let _this = this;ß
+      let _this = this;
       if (event) {
         var filePath = "";
         var size = 0;

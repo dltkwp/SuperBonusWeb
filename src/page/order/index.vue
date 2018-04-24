@@ -110,6 +110,8 @@ export default {
   },
   mounted() {
     let _this = this;
+    _this.parentCurrentpage = 1;
+    _this.getOrderList();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),

@@ -191,12 +191,12 @@ export default {
     bathSubmit: function (){
       let _this = this;
       _this.PUSH_LOADING();
-      let param = [];
-      param.push("productIds=" + _this.productIds.join(','));
-      param.push("status=" + _this.batch.status);
      
       _this.$axios
-        .get("products?" + param.join("&"))
+        .post("product/status",{
+          productIds: _this.productIds,
+          status: _this.batch.status?true:false
+        })
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0){
