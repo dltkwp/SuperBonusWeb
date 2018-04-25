@@ -59,8 +59,8 @@
                              </router-link>
                           </div>
                         </td>
-                        <td> {{item.levelname}}</td>
-                        <td>{{item.createDate}}</td>
+                        <td> {{item.levelName}}</td>
+                        <td>{{item.createDateStr}}</td>
                         <td>{{item.enterprise || ''}}</td>
                         <td>{{item.userPosition||''}}</td>
                         <td>{{item.alipay}}</td>
@@ -97,7 +97,6 @@ import pagination from "@/components/pagination/pagination.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
-import moment from "../../util/moment";
 
 export default {
   components: {
@@ -162,19 +161,23 @@ export default {
             .then(result => {
                 let res = result.data;
                 _this.parentTotalPage = res.pages;
-                try {
-                    _this.$lodash.forEach(res.list, function(item) {
-                        let image = item.headImage;
-                        let index = image.indexOf('http');
-                        if(index == -1){
-                          item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
-                        }
-                        item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm')
-                    });
-                } catch (e) {
-                    console.error(e);
-                }
-                _this.userList = res.list;
+                let arr = [];
+                _this.$lodash.forEach(res.list, function(item) {
+                    let image = item.headImage;
+                    if (image){
+                      let index = image.indexOf('http');
+                      if(index == -1){
+                        item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
+                      }
+                    }else {
+                      item.headImage = superConst.HEAD_IMAGE_DEFAULT;
+                    }
+                    if (item.createDate) {
+                      item.createDateStr = _this.$moment(item.createDate).format('YYYY/MM/DD HH:mm');
+                    }
+                    arr.push(item);
+                });
+                _this.userList = arr;
                 _this.SHIFT_LOADING();
             })
             .catch(err => {

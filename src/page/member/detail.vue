@@ -17,7 +17,7 @@
                       <div class="m-t-sm">
                         <div>
                           <h2 class="no-margins">
-                            {{user.realname}}<span class="font-md m-l-sm">{{user.levelname}}</span>
+                            {{user.realname || user.nickname}}<span class="font-md m-l-sm">&nbsp;&nbsp;{{user.levelName}}</span>
                          </h2>
                         </div>
                       </div>
@@ -25,7 +25,7 @@
                         <tbody>
                           <tr>
                             <td>
-                              <strong>编号：</strong> {{'编号没有写'}}
+                              <strong>编号：</strong> 01
                             </td>
                             <td>
                               <strong>手机：</strong> {{user.username}}
@@ -36,12 +36,12 @@
                               <strong>企业：</strong> {{user.enterprise}}
                             </td>
                             <td>
-                              <strong>职位：</strong>  {{user.position}}
+                              <strong>职位：</strong>  {{user.userPosition}}
                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <strong>注册时间：</strong> {{user.createDate}}
+                              <strong>注册时间：</strong> {{user.createDateStr}}
                             </td>
                             <td>
                               <strong>支付宝：</strong> {{user.alipay}}
@@ -50,7 +50,7 @@
                           </tr>
                           <tr>
                             <td colspan="2">
-                              <strong>联系地址：</strong> {{user.addr}}
+                              <strong>联系地址：</strong> {{user.address}}
                             </td>
                           </tr>
                         </tbody>
@@ -58,7 +58,7 @@
                     </div>
                   </div>
                   <div class="col-md-2 col-md-offset-2 text-right">
-                      <router-link :to="{path:'/product/v_edit',query:{ productId: item.id }}" class="btn btn-white">编辑资料</router-link>
+                      <router-link :to="{path:'/product/v_edit',query:{ productId: user.id }}" class="btn btn-white">编辑资料</router-link>
                   </div>
                 </div>
                 <div class="row m-t-sm">
@@ -94,7 +94,7 @@
                                     {{item.productName}}
                                   </td>
                                   <td>
-                                    {{item.createDate}}}
+                                    {{item.createDateStr}}
                                   </td>
                                   <td>
                                     {{item.payType}}
@@ -155,12 +155,15 @@ export default {
         parentTotalPage: 0,
         parentCurrentpage: 1
       },
-      user:{}
+      user:{},
+      memberId:0
     };
   },
   mounted() {
     let _this = this;
-    _this.getUserDetail();
+    _this.SHIFT_LOADING();
+    
+    _this.memberId = _this.$route.query.memberId;
     _this.getUserDetail();
   },
   methods: {
@@ -176,16 +179,19 @@ export default {
       let param = [];
       param.push("pageNum=" + _this.order.parentCurrentpage);
       param.push("pageSize=" + 15);
+      param.push("userId=" + _this.memberId);
       
       _this.$axios
         .get("orders?" + param.join("&"))
         .then(result => {
           let res = result.data;
           _this.order.parentTotalPage = res.pages;
+          let arr = [];
           _this.$lodash.forEach(res.list, function(item) {
-            item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm');
+            item.createDateStr = _this.$moment(item.createDate).format('YYYY/MM/DD HH:mm');
+            arr.push(item);
           });
-          _this.order.list = res.list;
+          _this.order.list = arr;
           _this.SHIFT_LOADING();
         })
         .catch(err => {
@@ -194,26 +200,33 @@ export default {
     },
     getUserDetail: function () {
         let _this = this;
-        console.log(_this.$route,_this.$router);;
-
-        let id = _this.$route.query.memberId;
-
         _this.PUSH_LOADING();
-
         _this.$axios
-            .get("users/" + id)
+            .get("users/" + _this.memberId)
             .then(result => {
-                let res = result.data;
-                let httpIndex = res.headImage.indexOf('http');
-                if (httpIndex == -1) {
-                  res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
-                } 
-                res.createDate = moment(res.createDate).format('YYYY/MM/DD HH:mm');
-                _this.user = res;
-            _this.SHIFT_LOADING();
+                try{
+                  let res = result.data;
+                  if (res.headImage){
+                    let httpIndex = res.headImage.indexOf('http');
+                    if (httpIndex == -1) {
+                      res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
+                    } 
+                  }else{
+                    res.headImage = superConst.HEAD_IMAGE_DEFAULT;
+                  }
+                  if(res.createDate) {
+                    res.createDateStr = _this.$moment(res.createDate).format('YYYY/MM/DD HH:mm');
+                  }
+                  _this.user = res;
+                  _this.SHIFT_LOADING();
+                  _this.getOrderList();
+
+                }catch (e) {
+                  console.error(e);
+                }
             })
             .catch(err => {
-            _this.SHIFT_LOADING();
+              _this.SHIFT_LOADING();
             });
     }
   }
