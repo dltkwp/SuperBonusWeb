@@ -23,7 +23,7 @@ export default {
         return response
       },
       error => {
-        if (error.response) {
+        if (error && error.response) {
           switch (error.response.status) {
             case 401:
               // 返回 401 清除token信息并跳转到登录页面
@@ -32,6 +32,10 @@ export default {
           }
           return Promise.reject(error.response.data)
         } else {
+          if (error.message === 'Network Error') {
+            localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
+            window.location.href = '/v_login'
+          }
           return Promise.reject(error)
         }
       })
