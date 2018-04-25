@@ -58,7 +58,7 @@
                     </div>
                   </div>
                   <div class="col-md-2 col-md-offset-2 text-right">
-                      <router-link :to="{path:'/product/v_edit',query:{ productId: user.id }}" class="btn btn-white">编辑资料</router-link>
+                      <router-link :to="{path:'/member/v_edit',query:{ memberId: user.id }}" class="btn btn-white">编辑资料</router-link>
                   </div>
                 </div>
                 <div class="row m-t-sm">

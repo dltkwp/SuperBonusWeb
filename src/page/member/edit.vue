@@ -24,13 +24,13 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工姓名" maxlength="10" v-model="user.realName">
+                          <input type="text" class="form-control" placeholder="请输入员工姓名" maxlength="10" v-model="user.realname">
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">手机号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="user.userName" disabled>
+                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="user.username" disabled>
                         </div>
                       </div>
                       <div class="form-group">
@@ -50,7 +50,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" v-model="user.position" disabled>
+                          <input type="text" class="form-control" v-model="user.userPosition" disabled>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -88,7 +88,7 @@ import pagination from "@/components/pagination/pagination.vue";
 
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
-import util from "../../util/util"
+import util from "../../util/util";
 
 export default {
   components: {
@@ -98,66 +98,76 @@ export default {
   },
   data() {
     return {
-        user:{}
+      user: {},
+      memberId: 0,
+      code:''
     };
   },
   mounted() {
     let _this = this;
+    _this.memberId = _this.$route.query.memberId;
     _this.SHIFT_LOADING();
     _this.getUserDetail();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    submit: function (){
-        let _this = this;
-        let id = _this.$route.query.memberId;
+    submit: function() {
+      let _this = this;
 
-        _this.PUSH_LOADING();
-        _this.$axios
-            .post("users",_this.user)
-            .then(result => {
-                let res = result.data;
-                if(res.code && res.code >0){
-                    _this.$toast.error(res.msg);
-                }else{
-                    _this.$toast.success('操作成功');
-                }
-                _this.SHIFT_LOADING();
-            })
-            .catch(err => {
-            _this.SHIFT_LOADING();
-            });
+      _this.PUSH_LOADING();
+      _this.$axios
+        .put("users", {
+          id:_this.memberId,
+          realname:_this.user.realname,
+          headImage:_this.code
+        })
+        .then(result => {
+          let res = result.data;
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.$toast.success("操作成功");
+          }
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
-    getUserDetail: function () {
-        let _this = this;
-        let id = _this.$route.query.memberId;
-
-        _this.PUSH_LOADING();
-        _this.$axios
-            .get("users/" + id)
-            .then(result => {
-                let res = result.data;
-                let httpIndex = res.headImage.indexOf('http');
-                if (httpIndex == -1) {
-                  res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
-                } 
-                _this.user = res;
-                _this.SHIFT_LOADING();
-            })
-            .catch(err => {
-            _this.SHIFT_LOADING();
-            });
+    getUserDetail: function() {
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("users/" + _this.memberId)
+        .then(result => {
+          let res = result.data;
+          if (res.headImage) {
+            let httpIndex = res.headImage.indexOf("http");
+            if (httpIndex == -1) {
+              _this.code =  res.headImage;
+              res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
+            }
+          } else {
+            res.headImage = superConst.HEAD_IMAGE_DEFAULT;
+          }
+          res.realName = res.realname || res.nickname;
+          _this.user = res;
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
     uploadImage: function(index) {
-        let _this = this;
-        $("#uploadFile").val(null);
-        if ($("#uploadFile").val()) {
-          document.getElementById("uploadImgForm").reset();
-        }
-        document.getElementById("uploadFile").click();
+      let _this = this;
+      $("#uploadFile").val(null);
+      if ($("#uploadFile").val()) {
+        document.getElementById("uploadImgForm").reset();
+      }
+      document.getElementById("uploadFile").click();
     },
     imgUploadFileChange: function(event) {
-      let _this = this;ßß
+      let _this = this;
       if (event) {
         var filePath = "";
         var size = 0;
@@ -190,6 +200,7 @@ export default {
             .then(result => {
               let res = result.data;
               _this.user.headImage = superConst.IMAGE_STATIC_URL + res.fileCode;
+              _this.code = res.fileCode;
               _this.$toast.success("操作成功");
             })
             .catch(err => {});
