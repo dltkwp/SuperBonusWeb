@@ -5,10 +5,13 @@
             <li class="nav-header">
                 <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">王杰</strong>
-                        </span> <span class="text-muted text-xs block">客服 <b class="caret"></b></span> </span> </a>
+                          <span class="clear"> 
+                            <span class="block m-t-xs"> <strong class="font-bold">王杰</strong></span> 
+                              <!-- <span class="text-muted text-xs block">客服 <b class="caret"></b></span>  -->
+                            </span> 
+                        </a>
                         <ul class="dropdown-menu  m-t-xs">
-                            <li><a href="#">个人资料</a></li>
+                            <!-- <li><a href="#">个人资料</a></li> -->
                             <li @click="gotoLogout"><a href="javascript:;;">退出</a></li>
                         </ul>
                 </div>
