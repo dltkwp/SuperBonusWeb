@@ -194,6 +194,8 @@ export default {
     },
     getUserDetail: function () {
         let _this = this;
+        console.log(_this.$route,_this.$router);;
+
         let id = _this.$route.query.memberId;
 
         _this.PUSH_LOADING();

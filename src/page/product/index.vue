@@ -95,9 +95,9 @@
                     <label class="col-lg-3 control-label">状态</label>
                     <div class="col-lg-8">
                       <label class="radio-inline">
-                        <input type="radio" class="i-radio" v-bind:checked="batch.status==1" name="bathStatus" v-model="batch.status" value='1'>开售 </label>
+                        <input type="radio" class="i-radio" v-bind:checked="batch.status==1" name="bathStatus" v-model="batch.status" @click="batchStatusChange(1)" value="1">开售 </label>
                       <label class="checkbox-inline">
-                        <input type="radio"  v-bind:checked="batch.status==0"   name="bathStatus" v-model="batch.status" value='0'>停售 </label>
+                        <input type="radio"  v-bind:checked="batch.status==0"   name="bathStatus" v-model="batch.status"  @click="batchStatusChange(0)" value="0">停售 </label>
                     </div>
                   </div>
                 </form>
@@ -164,6 +164,10 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    batchStatusChange: function (status) {
+      let _this = this;
+      _this.batch.status = Number(status);
+    },
     selectAllClick: function(){
       let _this = this;
       let tempProductIds = _this.$lodash.map(_this.productList,'id');
@@ -195,17 +199,17 @@ export default {
       _this.$axios
         .post("product/status",{
           productIds: _this.productIds,
-          status: _this.batch.status?true:false
+          status: _this.batch.status == 1
         })
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0){
             _this.$toast.error(res.msg);
           } else {
+            _this.productIds = [];
             _this.$toast.success('操作成功');
             $("#batchOptModal").modal('hide');
-            _this.parentCurrentpage = 1;
-            _this.listData();
+            _this.getProductList();
           }
           _this.SHIFT_LOADING();
         })

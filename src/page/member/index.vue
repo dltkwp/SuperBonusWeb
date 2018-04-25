@@ -49,21 +49,21 @@
                       <tr v-for="(item,index) in userList" :key="index">
                         <td>{{index + 1}}</td>
                         <td>
-                          001
+                          
                         </td>
                         <td> 
                           <img v-if="item.headImage" class="img-sm pull-left img-circle" v-bind:src="item.headImage">
                           <div class="pull-left m-l-sm"> 
                              <router-link :to="{path:'/member/v_detail',query:{memberId:item.id}}">
-                                {{item.realname}}<br>{{item.username}}
+                                {{item.realname||item.nickname}}<br>{{item.username}}
                              </router-link>
                           </div>
                         </td>
                         <td> {{item.levelname}}</td>
-                        <td>{{item.created}}</td>
-                        <td>大连乐维科技有限公司</td>
-                        <td>经理</td>
-                        <td>15242612898</td>
+                        <td>{{item.createDate}}</td>
+                        <td>{{item.enterprise || ''}}</td>
+                        <td>{{item.userPosition||''}}</td>
+                        <td>{{item.alipay}}</td>
                         <td>
                           <router-link :to="{path:'/member/v_detail',query:{memberId:item.id}}" class="btn btn-white btn-sm">查看</router-link>
                         </td>
@@ -97,6 +97,7 @@ import pagination from "@/components/pagination/pagination.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
+import moment from "../../util/moment";
 
 export default {
   components: {
@@ -168,12 +169,12 @@ export default {
                         if(index == -1){
                           item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
                         }
-                        item.created = moment(item.created).format('YYYY/MM/DD HH:mm')
+                        item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm')
                     });
                 } catch (e) {
                     console.error(e);
                 }
-                _this.productList = res.list;
+                _this.userList = res.list;
                 _this.SHIFT_LOADING();
             })
             .catch(err => {
