@@ -49,7 +49,7 @@
                       <tr v-for="(item,index) in userList" :key="index">
                         <td>{{index + 1}}</td>
                         <td>
-                          
+                          {{item.id}}
                         </td>
                         <td> 
                           <img v-if="item.headImage" class="img-sm pull-left img-circle" v-bind:src="item.headImage">
@@ -59,7 +59,7 @@
                              </router-link>
                           </div>
                         </td>
-                        <td> {{item.levelName}}</td>
+                        <td>{{item.levelName}}</td>
                         <td>{{item.createDateStr}}</td>
                         <td>{{item.enterprise || ''}}</td>
                         <td>{{item.userPosition||''}}</td>

@@ -8,6 +8,16 @@ const authToLogin = function (res) {
   }
 }
 
+const getPayTypeName = function (key) {
+  let res = ''
+  switch (key) {
+    case 'wechat' :
+      res = '微信'
+  }
+  return res
+}
+
 module.exports = {
-  authToLogin
+  authToLogin,
+  getPayTypeName
 }

@@ -17,7 +17,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入会员编号" value="001" disabled>
+                          <input type="text" class="form-control" placeholder="请输入会员编号" v-bind:value="user.id" disabled>
                         </div>
                       </div>
 
@@ -113,14 +113,16 @@ export default {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
     submit: function() {
       let _this = this;
-
+      let  param = {
+        id:_this.memberId,
+        realname:_this.user.realname,
+      };
+      if(_this.code){
+        param.headImage = _this.code;
+      }
       _this.PUSH_LOADING();
       _this.$axios
-        .put("users", {
-          id:_this.memberId,
-          realname:_this.user.realname,
-          headImage:_this.code
-        })
+        .put("users", param)
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0) {
@@ -148,9 +150,11 @@ export default {
               res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
             }
           } else {
+            _this.code = '';
             res.headImage = superConst.HEAD_IMAGE_DEFAULT;
           }
-          res.realName = res.realname || res.nickname;
+          res.id = _this.memberId;
+          res.realname = res.realname || res.nickname;
           _this.user = res;
           _this.SHIFT_LOADING();
         })

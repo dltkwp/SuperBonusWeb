@@ -48,7 +48,7 @@
                       <div class="form-group">
                         <label class="col-lg-3 control-label">积分设置</label>
                         <div class="col-lg-8">
-                            <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="proporation.money">元 = <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="proporation.point">积分
+                            <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="proporation.money" maxlength="8">元 = <input class="form-control inline mw-100 m-l-sm m-r-sm" maxlength="5" v-model="proporation.point">积分
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -185,6 +185,9 @@ export default {
       if(errors.length>0){
          _this.$toast.warning(errors.join('<br/>'));
       }
+      let len = _this.levelList.length;
+      let last = _this.levelList[len - 1];
+      last.endPoint = 2147483647;
       this.PUSH_LOADING();
       _this.$axios.post('levels',_this.levelList).
         then((result)=> {

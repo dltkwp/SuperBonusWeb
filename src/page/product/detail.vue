@@ -320,7 +320,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              window.location.href = "/product/v_index";
+              //window.location.href = "/product/v_index";
             }, 800);
           }
         })

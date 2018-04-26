@@ -25,7 +25,7 @@
                         <tbody>
                           <tr>
                             <td>
-                              <strong>编号：</strong> 01
+                              <strong>编号：</strong> {{user.id}}
                             </td>
                             <td>
                               <strong>手机：</strong> {{user.username}}
@@ -97,7 +97,7 @@
                                     {{item.createDateStr}}
                                   </td>
                                   <td>
-                                    {{item.payType}}
+                                    {{item.payTypeName}}
                                   </td>
                                   <td>
                                     ¥{{item.payment}}
@@ -189,6 +189,7 @@ export default {
           let arr = [];
           _this.$lodash.forEach(res.list, function(item) {
             item.createDateStr = _this.$moment(item.createDate).format('YYYY/MM/DD HH:mm');
+            item.payTypeName = util.getPayTypeName(item.payType);
             arr.push(item);
           });
           _this.order.list = arr;

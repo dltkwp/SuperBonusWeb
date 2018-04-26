@@ -36,7 +36,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item,index) in orderList" :key="index">
+                      <tr v-for="(item,index) in list" :key="index">
                         <td>
                           {{item.orderNo}}
                         </td>
@@ -44,14 +44,16 @@
                           {{item.productName}}
                         </td>
                           <td> 
-                            <img class="img-sm pull-left img-circle" src="img/gallery/2.jpg">
-                            <div class="pull-left m-l-sm"> <a href="member-detail.html">张三****<br>15100000000</a></div>
+                            <img class="img-sm pull-left img-circle" v-bind:src="item.headImage">
+                            <div class="pull-left m-l-sm"> 
+                               <router-link :to="{path:'/member/v_detail',query:{memberId:item.createUser}}">{{item.realname||item.nickname}}<br>{{item.username}}</router-link>
+                            </div>
                           </td>
                           <td>
-                              {{item.createDate}}
+                              {{item.payDateStr}}
                           </td>
                         <td>
-                          微信***
+                              {{item.payTypeName}}
                         </td>
                         <td>
                           ¥{{item.payment}}
@@ -100,7 +102,7 @@ export default {
   },
   data() {
     return {
-      orderList: [],
+      list: [],
       queryKey: '',
       parentTotalPage: 0,
       parentCurrentpage: 1
@@ -135,12 +137,29 @@ export default {
       _this.$axios
         .get("orders?" + param.join("&"))
         .then(result => {
-          let res = result.data;
-          _this.parentTotalPage = res.pages;
-          _this.$lodash.forEach(res.list, function(item) {
-            item.createDate = moment(item.createDate).format('YYYY/MM/DD HH:mm');
-          });
-          _this.orderList = res.list;
+          try{
+            let res = result.data;
+            _this.parentTotalPage = res.pages;
+            let arr  = [];
+            _this.$lodash.forEach(res.list, function(item) {
+              let image = item.headImage;
+              if (image){
+                let index = image.indexOf('http');
+                if(index == -1){
+                  item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
+                }
+              }else {
+                item.headImage = superConst.HEAD_IMAGE_DEFAULT;
+              }
+              item.payTypeName = util.getPayTypeName(item.payType);
+              item.createDateStr = _this.$moment(item.createDate).format('YYYY/MM/DD HH:mm');
+              item.payDateStr = _this.$moment(item.payDate).format('YYYY/MM/DD HH:mm');
+              arr.push(item);
+            });
+            _this.list = arr;
+          }catch(e){
+            console.error(e);
+          }
           _this.SHIFT_LOADING();
         })
         .catch(err => {
