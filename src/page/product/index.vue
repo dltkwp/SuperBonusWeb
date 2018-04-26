@@ -145,7 +145,7 @@ export default {
   data() {
     return {
       adv: {
-        status: "",
+        status: -1,
         statusText: "全部",
         queryKey: ""
       },
@@ -228,7 +228,7 @@ export default {
       switch (status) {
         case "All":
           {
-            _this.adv.status = "";
+            _this.adv.status = -1;
             _this.adv.statusText = "全部";
           }
           break;
@@ -262,7 +262,7 @@ export default {
       if (!_this.$lodash.isEmpty(_this.adv.queryKey)) {
         param.push("queryKey=" + _this.adv.queryKey);
       }
-      if (_this.adv.status != '') {
+      if (_this.adv.status != -1) {
         param.push("status=" + _this.adv.status);
       } 
       _this.$axios
