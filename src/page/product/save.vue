@@ -95,6 +95,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
 import * as types from "@/store/mutation-types.js";
 
@@ -240,11 +241,7 @@ export default {
     },
     removeImage: function (index) {
        let _this = this;
-       let curImage = _this.imagesList[index];
-       if (curImage){
-         curImage.url = '';
-         curImage.code = '';
-       }
+       Vue.set(_this.imagesList, index, {url:'',code:''})
     },
     saveSubmit: function() {
       let _this = this;

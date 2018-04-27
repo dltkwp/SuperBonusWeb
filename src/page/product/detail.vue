@@ -31,14 +31,12 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
-                          <div v-for="(item,index) in imagesList" :key="index">
-                              <div class="btn-delete" v-if="item.url&&item.code" @click="removeImage(index)">
-                                <i class="fa fa-times-circle"></i>
-                              </div>
-                              <div class="img-upload"  @click="uploadImage(index,$event)">
-                                  <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;" >
-                              </div>
-                          </div>
+                            <div class="img-upload" @click.stop="uploadImage(index,$event)"  v-for="(item,index) in imagesList" :key="index">
+                                <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
+                                  <i class="fa fa-times-circle"></i>
+                                </div>
+                                <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;" >
+                            </div>
                         </div>
                       </div>
                       <div class="form-group">
@@ -98,6 +96,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
 import * as types from "@/store/mutation-types.js";
 
@@ -261,16 +260,8 @@ export default {
       }
     },
     removeImage: function (index) {
-      console.log(index,2122222);
-       let _this = this;
-       let curImage = _this.imagesList[index];
-       console.log(_this.imagesList);
-       if (curImage){
-         console.log(curImage);
-         _this.imagesList[index].url = '';
-         _this.imagesList[index].code = '';
-       console.log(_this.imagesList);
-       }
+      let _this = this;
+      Vue.set(_this.imagesList, index, {url:'',code:''})
     },
     saveSubmit: function() {
       let _this = this;
