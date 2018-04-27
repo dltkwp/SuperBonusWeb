@@ -162,10 +162,10 @@ export default {
       }else{
         let lastIndex = len - 1;
         let last = _this.levelList[lastIndex];
-        last.endPoint = Number(last.startPoint + superConst.POINT_INTEVAL);
+        last.endPoint = Number(last.startPoint) + Number(superConst.POINT_INTEVAL);
 
         let startPoint = Number(last.endPoint);
-        let endPoint = Number(last.endPoint) + superConst.POINT_INTEVAL;
+        let endPoint = Number(last.endPoint) + Number(superConst.POINT_INTEVAL);
 
         _this.levelList.push({startPoint: startPoint,endPoint: endPoint,name:'VIP'});    
       }
