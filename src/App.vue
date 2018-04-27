@@ -41,7 +41,7 @@
   @import './assets/css/quill.snow.css';
   @import './assets/css/quill.bubble.css';
 
-  @import "./assets/css/style.css";
-  @import "./assets/css/custom.css";
+  /* @import "./assets/css/style.css";
+  @import "./assets/css/custom.css"; */
 
 </style>
