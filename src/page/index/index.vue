@@ -8,10 +8,9 @@
                 <div class="col-lg-12">
                     <div class="text-center m-t-lg">
                         <h1>
-                            Welcome in INSPINIA Static SeedProject
+                            超级悬赏管理平台（后续统计位置显示区域）
                         </h1>
                         <small>
-                            It is an application skeleton for a typical web app. You can use it to quickly bootstrap your webapp projects and dev environment for these projects.
                         </small>
                     </div>
                 </div>

@@ -6,7 +6,7 @@
                 <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                           <span class="clear"> 
-                            <span class="block m-t-xs"> <strong class="font-bold">王杰</strong></span> 
+                            <span class="block m-t-xs"> <strong class="font-bold">管理员</strong></span> 
                               <!-- <span class="text-muted text-xs block">客服 <b class="caret"></b></span>  -->
                             </span> 
                         </a>
