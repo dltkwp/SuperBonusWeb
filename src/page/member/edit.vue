@@ -8,7 +8,7 @@
           <div class="col-lg-12">
             <div class="tabs-container">
               <ul class="nav nav-tabs">
-                <li class="active"><a  href="javascript:;;"> 个人资料</a></li>
+                <li class="active"><a  href="javascript:;;">  会员信息</a></li>
               </ul>
               <div class="tab-content">
                 <div class="tab-pane active">
@@ -41,18 +41,44 @@
                           </div>
                         </div>
                       </div>
-                      <!-- <div class="form-group">
-                        <label class="col-sm-2 control-label">权限:</label>
-                        <div class="col-sm-6">
-                          <input type="text" class="form-control" value="管理员" disabled v-model="user.position" >
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label">性别:</label>
+                          <div class="col-sm-6">
+                            <label class="radio-inline">
+                              <input type="radio" value="1" v-model="user.sex" v-bind:checked="user.sex==1" >男</label>
+                            <label class="radio-inline">
+                              <input type="radio" value="2"  v-model="user.sex"  v-bind:checked="user.sex==2">女</label>
                         </div>
-                      </div> -->
+                      </div>
+
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label">会员等级:</label>
+                        <div class="col-sm-6">
+                          <input type="text" class="form-control" maxlength="50" v-model="user.levelName" disabled>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label">企业:</label>
+                        <div class="col-sm-6">
+                          <input type="text" class="form-control" placeholder="请输入会员所在企业" maxlength="50" v-model="user.enterprise">
+                        </div>
+                      </div>
+                      
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
                           <input type="text" class="form-control" v-model="user.userPosition" maxlength="20">
                         </div>
                       </div>
+
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label">支付宝账号:</label>
+                        <div class="col-sm-6">
+                          <input type="text" class="form-control" placeholder="请输入会员收款支付宝账号"  v-model="user.alipay" maxlength="20">
+                        </div>
+                      </div>
+
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
@@ -100,7 +126,7 @@ export default {
     return {
       user: {},
       memberId: 0,
-      code:''
+      code: ""
     };
   },
   mounted() {
@@ -111,15 +137,30 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    sexChange: function (sex) {
+      _this.user.sex = sex || 1;
+    },
     submit: function() {
       let _this = this;
-      let  param = {
-        id:_this.memberId,
-        realname:_this.user.realname,
+      let param = {
+        id: _this.memberId,
+        realname: _this.user.realname,
+        sex: _this.user.sex,
+
       };
-      if(_this.code){
+      if (_this.code) {
         param.headImage = _this.code;
       }
+      if (_this.user.userPosition) {
+        param.userPosition = _this.user.userPosition;
+      }
+      if(_this.user.enterprise){
+        param.enterprise = _this.user.enterprise;
+      }
+      if(_this.user.alipay){
+        param.alipay = _this.user.alipay;
+      }
+
       _this.PUSH_LOADING();
       _this.$axios
         .put("users", param)
@@ -146,11 +187,11 @@ export default {
           if (res.headImage) {
             let httpIndex = res.headImage.indexOf("http");
             if (httpIndex == -1) {
-              _this.code =  res.headImage;
+              _this.code = res.headImage;
               res.headImage = superConst.IMAGE_STATIC_URL + res.headImage;
             }
           } else {
-            _this.code = '';
+            _this.code = "";
             res.headImage = superConst.HEAD_IMAGE_DEFAULT;
           }
           res.id = _this.memberId;

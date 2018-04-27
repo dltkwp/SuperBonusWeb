@@ -24,8 +24,8 @@
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-10">
                               当顾客积分在
-                              <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled="" v-bind:value="item.startPoint">至
-                              <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.endPoint" @change="endValChange(index)"  v-if="index < levelList.length - 1">
+                              <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled="" v-bind:value="item.startPoint" maxlength="7">至
+                              <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.endPoint" @change="endValChange(index)"  v-if="index < levelList.length - 1"  maxlength="8">
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" disabled readonly   value="无穷大" v-if="index==levelList.length - 1">
                               之间，会员等级为
                               <input class="form-control inline mw-100 m-l-sm m-r-sm" v-model="item.name">
