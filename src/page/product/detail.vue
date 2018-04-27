@@ -90,6 +90,9 @@
      <form action="" id="uploadImgForm" style="display:none;">
         <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
       </form>
+        <form action="" id="uploadImgFormEdit" style="display:none;">
+        <input type="file" name="uploadFileEdit" id="uploadFileEdit" multiple="multiple" style="display:none;" @change="imgUploadEditFileChange($event)">
+      </form>
    </div>
 
 
@@ -141,6 +144,16 @@ export default {
     _this.SHIFT_LOADING();
     _this.initPage();
     _this.getProductDetail();
+    var imgHandler = async function(state) {
+      if (state) {
+          $("#uploadFileEdit").val(null);
+          if ($("#uploadFileEdit").val()) {
+            document.getElementById("uploadImgFormEdit").reset();
+          }
+          document.getElementById("uploadFileEdit").click();
+      }
+    }
+    _this.$refs.myQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler)
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -254,6 +267,51 @@ export default {
               cur.url = superConst.IMAGE_STATIC_URL + res.fileCode;
               cur.code = res.fileCode;
               _this.$toast.success("操作成功");
+            })
+            .catch(err => {});
+        }
+      }
+    },
+    imgUploadEditFileChange: function(event) {
+      let _this = this;
+      if (event) {
+        var filePath = "";
+        var size = 0;
+        var updatingCount = 0;
+
+        if (event && event.target && event.target.files) {
+          var file = event.target.files[0];
+          size = file.size || 0;
+          filePath = file.name;
+          var index = filePath.lastIndexOf(".");
+          var suffix = filePath.substring(index, filePath.length);
+
+          if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(suffix)) {
+            _this.$toast.warning("图片类型必须是.gif,jpeg,jpg,png中的一种");
+            return false;
+          }
+
+          var imgSize = size / 1024 / 1024;
+          if (imgSize > 3) {
+            _this.$toast.warning("图片大小超过3M,请上传小于3M的图片.");
+            return false;
+          }
+          var formData = new FormData();
+          formData.append("file", file);
+
+          _this.$axios
+            .post("upload", formData, {
+              headers: { "Content-Type": "multipart/form-data" }
+            })
+            .then(result => {
+              let res = result.data;
+              _this.$toast.success("操作成功");
+              var len = _this.$refs.myQuillEditor.quill.getLength();
+              try {
+                _this.$refs.myQuillEditor.quill.insertEmbed(len + 1, 'image', superConst.IMAGE_STATIC_URL + res.fileCode , Quill.sources.USER)
+              }catch(e){
+                console.error(e);
+              }
             })
             .catch(err => {});
         }
