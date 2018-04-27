@@ -4,6 +4,7 @@ export default [{
   path: '/v_forgetpwd',
   name: 'ForgetPwd',
   meta: {
+    isShowBack: false,
     parentKey: 'ForgetPwd',
     childrenKey: 'Index'
   },

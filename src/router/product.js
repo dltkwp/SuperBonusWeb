@@ -6,6 +6,7 @@ export default [{
   path: '/product/v_index',
   name: 'ProductIndex',
   meta: {
+    isShowBack: false,
     parentKey: 'Product',
     childrenKey: 'Index'
   },
@@ -14,6 +15,7 @@ export default [{
 { path: '/product/v_detail',
   name: 'ProductDetail',
   meta: {
+    isShowBack: true,
     parentKey: 'Product',
     childrenKey: 'Detail'
   },
@@ -22,6 +24,7 @@ export default [{
 { path: '/product/v_save',
   name: 'ProductSave',
   meta: {
+    isShowBack: true,
     parentKey: 'Product',
     childrenKey: 'Save'
   },

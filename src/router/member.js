@@ -7,6 +7,7 @@ export default [{
   path: '/member/v_index',
   name: 'MemberIndex',
   meta: {
+    isShowBack: false,
     parentKey: 'Member',
     childrenKey: 'Index'
   },
@@ -15,6 +16,7 @@ export default [{
 { path: '/member/v_detail',
   name: 'MemberDetail',
   meta: {
+    isShowBack: true,
     parentKey: 'Member',
     childrenKey: 'Detail'
   },
@@ -23,6 +25,7 @@ export default [{
 { path: '/member/v_edit',
   name: 'MemberEdit',
   meta: {
+    isShowBack: true,
     parentKey: 'Member',
     childrenKey: 'Edit'
   },
@@ -31,6 +34,7 @@ export default [{
 { path: '/member/v_level',
   name: 'MemberLevel',
   meta: {
+    isShowBack: false,
     parentKey: 'SysCfg',
     childrenKey: 'Level'
   },

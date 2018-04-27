@@ -4,6 +4,7 @@ export default [{
   path: '/adv/v_index',
   name: 'Adv',
   meta: {
+    isShowBack: false,
     parentKey: 'Adv',
     childrenKey: 'Index'
   },

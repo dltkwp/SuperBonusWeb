@@ -18,6 +18,7 @@ export default new Router({
     path: '/',
     name: 'Login',
     meta: {
+      isShowBack: false,
       parentKey: 'Login',
       childrenKey: 'Index'
     },
@@ -27,6 +28,7 @@ export default new Router({
     path: '/v_index',
     name: 'Index',
     meta: {
+      isShowBack: false,
       parentKey: 'Index',
       childrenKey: 'Index'
     },
