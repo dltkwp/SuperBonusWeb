@@ -55,7 +55,7 @@
                         <label class="col-sm-2 control-label">状态:</label>
                         <div class="col-sm-6">
                           <select class="form-control" v-model="status">
-                            <option value="1">在售</option>
+                            <option value="1">开售</option>
                             <option value="0">停售</option>
                           </select>
                         </div>
@@ -160,7 +160,7 @@ export default {
       _this.productNo = "";
       _this.description = "";
       _this.price = "";
-      _this.status = "";
+      _this.status = "1";
       _this.intoduction = "";
     },
     getNextProductNo: function() {

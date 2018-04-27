@@ -28,6 +28,7 @@
                         <td>
                           <div class="m-t">
                             <div @click="showSelectProductModal(index)" class="btn btn-sm btn-white">选择产品</div>
+                            &nbsp;&nbsp; {{item.name || ''}}
                           </div>
                         </td>
                         <td>
@@ -151,6 +152,7 @@ export default {
               let cur = _this.advList[index];
               cur.code = item.image;
               cur.image = superConst.IMAGE_STATIC_URL + item.image;
+              cur.name = item.name;
               cur.href = item.href;
             });
           }
@@ -163,11 +165,11 @@ export default {
     initAdv: function() {
       let _this = this;
       let arr = [];
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 1 });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 2 });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 3 });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 4 });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 5 });
+      arr.push({ image: "", code: "", type: "product", href: "", sort: 1, name:'' });
+      arr.push({ image: "", code: "", type: "product", href: "", sort: 2, name:'' });
+      arr.push({ image: "", code: "", type: "product", href: "", sort: 3, name:'' });
+      arr.push({ image: "", code: "", type: "product", href: "", sort: 4, name:'' });
+      arr.push({ image: "", code: "", type: "product", href: "", sort: 5, name:'' });
       _this.advList = arr;
     },
     submit: function() {
@@ -179,7 +181,7 @@ export default {
             type: item.type,
             href: item.href||'',
             image: item.code,
-            name: ""
+            name: item.name ||''
           });
         }
       });
@@ -238,6 +240,7 @@ export default {
       $("#choose-product").modal("hide");
       let cur = _this.productList[index];
       if (cur){
+        _this.advList[_this.selectProductIndex].name = cur.productName;
         _this.advList[_this.selectProductIndex].href = cur.id;
       }
       _this.submit();
@@ -252,14 +255,11 @@ export default {
     uploadImage: function(index) {
       let _this = this;
       _this.curIndex = index;
-      let curAdv = _this.advList[index];
-      if (curAdv && curAdv.image == "" && curAdv.code == "") {
-        $("#uploadFile").val(null);
-        if ($("#uploadFile").val()) {
-          document.getElementById("uploadImgForm").reset();
-        }
-        document.getElementById("uploadFile").click();
+      $("#uploadFile").val(null);
+      if ($("#uploadFile").val()) {
+        document.getElementById("uploadImgForm").reset();
       }
+      document.getElementById("uploadFile").click();
     },
     imgUploadFileChange: function(event) {
       let _this = this;

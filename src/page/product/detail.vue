@@ -31,11 +31,13 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
-                          <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click.stop="uploadImage(index,$event)">
-                                <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
-                                  <i class="fa fa-times-circle"></i>
-                                </div>
-                                <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
+                          <div v-for="(item,index) in imagesList" :key="index">
+                              <div class="btn-delete" v-if="item.url&&item.code" @click="removeImage(index)">
+                                <i class="fa fa-times-circle"></i>
+                              </div>
+                              <div class="img-upload"  @click="uploadImage(index,$event)">
+                                  <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;" >
+                              </div>
                           </div>
                         </div>
                       </div>
@@ -55,7 +57,7 @@
                         <label class="col-sm-2 control-label">状态:</label>
                         <div class="col-sm-6">
                           <select class="form-control" v-model="status">
-                            <option value="1">在售</option>
+                            <option value="1">开售</option>
                             <option value="0">停售</option>
                           </select>
                         </div>
@@ -163,7 +165,7 @@ export default {
       _this.productNo = "";
       _this.description = "";
       _this.price = "";
-      _this.status = "";
+      _this.status = "1";
       _this.intoduction = "";
     },
     getProductDetail: function() {
@@ -178,7 +180,7 @@ export default {
           _this.productNo = res.productNo;
           _this.description = res.description;
           _this.price = res.price;
-          _this.status = res.status;
+          _this.status = res.status? "1" : "0";
           _this.intoduction = res.intoduction;
           // 图片处理   
           if (res.images && res.images.length>0) {
@@ -259,11 +261,15 @@ export default {
       }
     },
     removeImage: function (index) {
+      console.log(index,2122222);
        let _this = this;
        let curImage = _this.imagesList[index];
+       console.log(_this.imagesList);
        if (curImage){
-         curImage.url = '';
-         curImage.code = '';
+         console.log(curImage);
+         _this.imagesList[index].url = '';
+         _this.imagesList[index].code = '';
+       console.log(_this.imagesList);
        }
     },
     saveSubmit: function() {
@@ -307,7 +313,8 @@ export default {
         "price": price,
         "productName": productName,
         "images" : imageCodes.join(','),
-        "intoduction":intoduction
+        "intoduction":intoduction,
+        "status":_this.status==1?true:false
       }
       _this.PUSH_LOADING();
       _this.$axios
