@@ -34,6 +34,7 @@ export default {
     },
     mounted(){
         let _this = this;
+         document.getElementsByTagName("body")[0].className="gray-bg"
         _this.SHIFT_LOADING();
     },
     methods:{
@@ -57,7 +58,6 @@ export default {
             param.push('password=' + pwd);
             _this.$axios.post('login?' + param.join('&')).then((result)=> {
                 var res = result.data;
-                console.log(res);
                 if(res.code){
                     _this.$toast.error(res.msg);
                 }else{
@@ -72,9 +72,3 @@ export default {
     }
 }
 </script>
-
-<style>
-    body {
-        background-color: #f3f3f4;
-    }
-</style>
