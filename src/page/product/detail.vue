@@ -153,7 +153,7 @@ export default {
           document.getElementById("uploadFileEdit").click();
       }
     }
-    _this.$refs.myQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler)
+    _this.$refs.myQuillEditor1.quill.getModule("toolbar").addHandler("image", imgHandler)
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -306,9 +306,9 @@ export default {
             .then(result => {
               let res = result.data;
               _this.$toast.success("操作成功");
-              var len = _this.$refs.myQuillEditor.quill.getLength();
+              var len = _this.$refs.myQuillEditor1.quill.getLength();
               try {
-                _this.$refs.myQuillEditor.quill.insertEmbed(len + 1, 'image', superConst.IMAGE_STATIC_URL + res.fileCode , Quill.sources.USER)
+                _this.$refs.myQuillEditor1.quill.insertEmbed(len + 1, 'image', superConst.IMAGE_STATIC_URL + res.fileCode , Quill.sources.USER)
               }catch(e){
                 console.error(e);
               }
