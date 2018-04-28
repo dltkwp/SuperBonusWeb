@@ -14,7 +14,13 @@
                   <div class="col-lg-12">
                   <div class="pull-left">
                       <router-link to="/product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
-                      <a class="btn btn-white btn-sm" @click="showBathOptModal">批量设置</a>
+                      <div class="btn-group btn-group-sm">
+                          <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
+                          <ul class="dropdown-menu">
+                              <li><a href="javascript:;;"  @click="showBathOptModal">设置</a></li>
+                              <li><a href="javascript:;;"  @click="showBathDelConfirmModal">删除</a></li>
+                          </ul>
+                      </div>
                   </div>
                   <div class="pull-right text-right">
                     <div class="btn-group btn-group-sm">
@@ -113,6 +119,31 @@
     </div>
     <!-- 批量操作 end-->
 
+    <!-- 批量操作 删除 开始-->
+    <div id="deleteConfirmMdoal" class="modal fade" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">温馨提示</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="alert alert-danger">
+                  确定要删除吗？
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" @click="batchDeleteSubmit" class="btn btn-primary">确定</button>
+            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 批量操作 删除 结束-->
 
    </div>
 
@@ -164,6 +195,39 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    batchDeleteSubmit: function () {
+       let _this = this;
+        console.log(_this.productIds,11111111111);
+
+        _this.PUSH_LOADING();
+     
+        _this.$axios
+          .delete("products?productIds=" + _this.productIds.join(','))
+          .then(result => {
+            let res = result.data;
+            if (res.code && res.code > 0){
+              _this.$toast.error(res.msg);
+            } else {
+              _this.productIds = [];
+              _this.$toast.success('操作成功');
+              $("#deleteConfirmMdoal").modal('hide');
+              _this.getProductList();
+            }
+            _this.SHIFT_LOADING();
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+
+    },
+    showBathDelConfirmModal: function () {
+      let _this = this;
+      if(_this.productIds.length === 0){
+        _this.$toast.warning('请选择要操作的产品');
+        return false;
+      }
+      $("#deleteConfirmMdoal").modal('show');
+    },
     batchStatusChange: function (status) {
       let _this = this;
       _this.batch.status = Number(status);
