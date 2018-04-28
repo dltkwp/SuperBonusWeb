@@ -68,7 +68,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" v-model="user.userPosition" maxlength="20">
+                          <input type="text" class="form-control" placeholder="请输入会员职位" v-model="user.userPosition" maxlength="20">
                         </div>
                       </div>
 
