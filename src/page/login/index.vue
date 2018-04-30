@@ -36,6 +36,10 @@ export default {
         let _this = this;
          document.getElementsByTagName("body")[0].className="gray-bg"
         _this.SHIFT_LOADING();
+        let _phone = localStorage.getItem(superConst.LOGIN_USER_NAME_KEY);
+        if(_phone){
+            _this.phone = _phone;
+        }
     },
     methods:{
         ...mapActions([types.LOADING.PUSH_LOADING,types.LOADING.SHIFT_LOADING]),
@@ -61,6 +65,8 @@ export default {
                 if(res.code){
                     _this.$toast.error(res.msg);
                 }else{
+                    // localStorage 登录账号
+                    localStorage.setItem(superConst.LOGIN_USER_NAME_KEY,phone);
                     localStorage.setItem(superConst.SUPER_TOKEN_KEY, JSON.stringify(res));
                     window.location.href = 'v_index';
                 }

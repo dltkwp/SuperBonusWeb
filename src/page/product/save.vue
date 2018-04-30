@@ -138,7 +138,7 @@ export default {
     _this.initPage();
     _this.getNextProductNo();
 
-    var imgHandler = async function(state) {
+    let imgHandler = async function(state) {
       if (state) {
           $("#uploadFileEdit").val(null);
           if ($("#uploadFileEdit").val()) {
