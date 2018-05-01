@@ -1,6 +1,7 @@
 import TaskIndex from '@/page/task/index.vue'
 import TaskDetail from '@/page/task/detail.vue'
 import TaskSave from '@/page/task/save.vue'
+import TaskEdit from '@/page/task/edit.vue'
 
 export default [{
   path: '/task/v_index',
@@ -29,4 +30,13 @@ export default [{
     childrenKey: 'Save'
   },
   component: TaskSave
+}, {
+  path: '/task/v_edit',
+  name: 'Task',
+  meta: {
+    isShowBack: true,
+    parentKey: 'Task',
+    childrenKey: 'Edit'
+  },
+  component: TaskEdit
 }]

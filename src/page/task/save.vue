@@ -3,7 +3,7 @@
       <v-menus></v-menus>
       <div id="page-wrapper" class="gray-bg">
         <v-top></v-top>
-       <div class="wrapper wrapper-content ">
+       <div class="wrapper wrapper-context ">
           <div class="row">
           <div class="col-lg-12">
             <div class="tabs-container">
@@ -11,20 +11,20 @@
                 <li class="active"><a data-toggle="tab" href="#tab-1"> 项目信息</a></li>
                 <!-- <li><a data-toggle="tab" href="#tab-2"> 项目资料</a></li> -->
               </ul>
-              <div class="tab-content">
+              <div class="tab-context">
                 <div id="tab-1" class="tab-pane active">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
-                      <div class="form-group" style="margin-top:10px;">
+                      <!-- <div class="form-group" >
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入产品编号" readonly disabled maxlength="20" v-model="task.No">
+                          <input type="text" class="form-control" placeholder="请输入产品编号" readonly disabled maxlength="20" v-model="task.project_no">
                         </div>
-                      </div>
-                      <div class="form-group">
+                      </div> -->
+                      <div class="form-group" style="margin-top:10px;">
                         <label class="col-sm-2 control-label">标题:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入项目标题" maxlength="50" v-model="task.title">
+                          <input type="text" class="form-control" placeholder="请输入项目标题" maxlength="50" v-model="task.project_name">
                         </div>
                       </div>
                       <div class="form-group">
@@ -37,7 +37,7 @@
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
 
-                             <div class="img-upload" v-for="(item,index) in task.imagesList" :key="index" @click.stop="uploadImage(index,$event)">
+                             <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click.stop="uploadImage(index,$event)">
                                 <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
                                     <i class="fa fa-times-circle"></i>
                                 </div>
@@ -49,7 +49,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">产品数量:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入产品数量" maxlength="5" v-model="task.cnt">
+                          <input type="text" class="form-control" placeholder="请输入产品数量" maxlength="5" v-model="task.project_number">
                         </div>
                       </div>
                       <div class="form-group">
@@ -62,7 +62,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">有效期:</label>
                         <div class="col-sm-6">
-                            <date-picker :value="datePicker" format="yyyy-MM-dd" type="daterange" placement="bottom-end" @on-change="handleChange" placeholder="Select date" style="width: 200px"></date-picker>
+                            <date-picker :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" @on-change="handleChange" placeholder="Select date" style="width: 200px"></date-picker>
                         </div>
                       </div>
                       <div class="form-group">
@@ -74,13 +74,13 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">目标客户:</label>
                         <div class="col-sm-6">
-                          <textarea class="form-control" maxlength="140" v-model="task.baseCustumer"></textarea>
+                          <textarea class="form-control" maxlength="140" v-model="task.target"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">项目背景:</label>
                         <div class="col-sm-6">
-                          <textarea class="form-control" maxlength="140" v-model="task.remark"></textarea>
+                          <textarea class="form-control" maxlength="140" v-model="task.context"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
@@ -105,7 +105,7 @@
                     </fieldset>
                   </div>
                 </div>
-                <div id="tab-2" class="tab-pane">
+                <div id="tab-2" class="tab-pane hide">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
                         <h3>企业信息</h3>
@@ -262,17 +262,17 @@ export default {
   data() {
     return {
         datePicker: ["", ""],
+        imagesList:[],  //  图片列表
         editorOption: {},
         task:{
-            No:'',  //  项目编号
-            title:'',   //  标题
+            project_no:'',  //  项目编号
+            project_name:'',   //  标题
             intoduction: "", //  简介
-            imagesList:[],  //  图片列表
-            cnt:'',     //  产品数量
+            project_number:'',     //  产品数量
             price:'',   //  赏金
             area:'',    //地区
-            baseCustumer:'',//   目标客户
-            remark:'',      //  项目背景
+            target:'',//   目标客户
+            context:'',      //  项目背景
             description: "", //  详细介绍
         }
     };
@@ -313,8 +313,8 @@ export default {
     },
     submit: function () {
       let _this = this;
-      let title = _this.task.title.trim();
-      if(!title){
+      let project_name = _this.task.project_name.trim();
+      if(!project_name){
          _this.$toast.warning("标题不可为空");
         return false;
       }
@@ -325,18 +325,70 @@ export default {
       }
 
       let imageCodes = [];
-      _this.$lodash.forEach(_this.task.imagesList,function(item){
+      _this.$lodash.forEach(_this.imagesList,function(item){
           if(item.code){
             imageCodes.push(item.code);
           }
       });
       if(imageCodes.length == 0){
-        _this.$toast.warning('至少上传一张图片');
-        return false;
+          _this.$toast.warning('至少上传一张图片');
+          return false;
       }
 
-      let cnt = _this.task.cnt+'';
-      // if(superConst.)
+      let project_number = _this.task.project_number+'';
+      if(!regex.numberTest(project_number)){
+          _this.$toast.warning('数量格式不正确');
+          return false;
+      }
+      if (project_number == 0){
+          _this.$toast.warning('数量不可为零');
+          return false;
+      }
+      if(!regex.money(_this.task.price)){
+          _this.$toast.warning('赏金格式不正确');
+          return false;
+      }
+      if(!(_this.datePicker[0] + _this.datePicker[1])){
+          _this.$toast.warning('请选择有效期');
+          return false;
+      }
+      if(!_this.task.area) {
+         _this.$toast.warning('地区不可为空');
+        return false;
+      }
+      if (!_this.task.target) {
+        _this.$toast.warning('目标客户不可为空');
+        return false;
+      }
+      if (!_this.task.context) {
+        _this.$toast.warning('项目背景不可为空');
+        return false;
+      }
+      _this.task.datePicker = _this.datePicker;
+      console.log(_this.task);
+
+      return false;
+      let param = {
+        
+      }
+      _this.PUSH_LOADING();
+      _this.$axios
+        .post("task",param)
+        .then(result => {
+          let res = result.data;
+          if(res.code&&res.code>0){
+
+          }else{
+            _this.$toast.success("操作成功");
+            _this.SHIFT_LOADING();
+            setTimeout(function() {
+              window.location.href = "/task/v_index";
+            }, 800);
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
 
     },
     handleChange(date) {
@@ -344,15 +396,15 @@ export default {
       _this.datePicker = date;
     },
     initImages: function() {
-      this.task.imagesList.push({ url: "", code: "" });
-      this.task.imagesList.push({ url: "", code: "" });
-      this.task.imagesList.push({ url: "", code: "" });
-      this.task.imagesList.push({ url: "", code: "" });
-      this.task.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
+      this.imagesList.push({ url: "", code: "" });
     },
     uploadImage: function(index) {
       let _this = this;
-      let curImage = _this.task.imagesList[index];
+      let curImage = _this.imagesList[index];
       if(curImage&&curImage.url==''&&curImage.code==''){
         $("#uploadFile").val(null);
         if ($("#uploadFile").val()) {
@@ -394,7 +446,7 @@ export default {
             })
             .then(result => {
               let res = result.data;
-              let cur = _this.$lodash.find(_this.task.imagesList, function(item){
+              let cur = _this.$lodash.find(_this.imagesList, function(item){
                 return item.url == '' && item.code =='';
               });
               cur.url = superConst.IMAGE_STATIC_URL + res.fileCode;
@@ -452,7 +504,7 @@ export default {
     },
     removeImage: function (index) {
        let _this = this;
-       Vue.set(_this.task.imagesList, index, {url:'',code:''})
+       Vue.set(_this.imagesList, index, {url:'',code:''})
     },
   }
 };

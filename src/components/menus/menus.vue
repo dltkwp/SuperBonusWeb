@@ -29,9 +29,11 @@
                   <i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span>
                 </router-link>
             </li>
-            <!-- <li  v-bind:class="{active:parentKey==='ProgramRoom'}">
-                <a href="task.html"><i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span> </a>
-            </li> -->
+            <li  v-bind:class="{active:parentKey==='Task'}">
+                <router-link to="/task/v_index"> 
+                  <i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span> 
+                </router-link>
+            </li>
             <li v-bind:class="{active:parentKey==='Product'}">
                 <router-link to="/product/v_index">
                 <i class="fa fa-folder"></i> <span class="nav-label">产品管理</span>
