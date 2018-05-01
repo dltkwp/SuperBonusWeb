@@ -18,12 +18,14 @@
  import * as types from './store/mutation-types'
  import * as components from './components'
 
+ import { DatePicker } from 'iview';
  import vLoading  from './components/loading/loading.vue'
 
  export default {
   name: 'App',
   components: {
-    vLoading
+    vLoading,
+    DatePicker
   },
   computed: {
     ...mapGetters({
@@ -40,5 +42,5 @@
   @import './assets/css/quill.core.css';
   @import './assets/css/quill.snow.css';
   @import './assets/css/quill.bubble.css';
-
+  @import './assets/iview.css'
 </style>

@@ -15,8 +15,7 @@
                 <div id="tab-1" class="tab-pane active">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
-
-                      <div class="form-group">
+                      <div class="form-group" style="margin-top:10px;">
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
                           <input type="text" class="form-control" placeholder="请输入产品编号" readonly disabled maxlength="20" v-model="task.No">
@@ -63,7 +62,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">有效期:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="2017/05/01～2018/05/01">
+                            <date-picker :value="datePicker" format="yyyy-MM-dd" type="daterange" placement="bottom-end" @on-change="handleChange" placeholder="Select date" style="width: 200px"></date-picker>
                         </div>
                       </div>
                       <div class="form-group">
@@ -98,7 +97,6 @@
                           </div>
                         </div>
                       </div>
-                      <div class="hr-line-dashed"></div>
                       <div class="form-group" style=" margin-top:  82px">
                         <div class="col-sm-4 col-sm-offset-2">
                           <button class="btn btn-primary" type="button" @click="submit">发布</button>
@@ -250,16 +248,20 @@ import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import { quillEditor } from 'vue-quill-editor'
 import Quill from 'quill'
+import { DatePicker } from "iview";
+
 
 export default {
   components: {
     vMenus,
     vTop,
     vFoot,
-    quillEditor
+    quillEditor,
+    DatePicker
   },
   data() {
     return {
+        datePicker: ["", ""],
         editorOption: {},
         task:{
             No:'',  //  项目编号
@@ -310,7 +312,36 @@ export default {
       this.description = html
     },
     submit: function () {
+      let _this = this;
+      let title = _this.task.title.trim();
+      if(!title){
+         _this.$toast.warning("标题不可为空");
+        return false;
+      }
+      let intoduction = _this.task.intoduction.trim();
+      if(!intoduction){
+        _this.$toast.warning('简介不可为空');
+        return false;
+      }
 
+      let imageCodes = [];
+      _this.$lodash.forEach(_this.task.imagesList,function(item){
+          if(item.code){
+            imageCodes.push(item.code);
+          }
+      });
+      if(imageCodes.length == 0){
+        _this.$toast.warning('至少上传一张图片');
+        return false;
+      }
+
+      let cnt = _this.task.cnt+'';
+      // if(superConst.)
+
+    },
+    handleChange(date) {
+      let _this = this;
+      _this.datePicker = date;
     },
     initImages: function() {
       this.task.imagesList.push({ url: "", code: "" });
