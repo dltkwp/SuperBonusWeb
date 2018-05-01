@@ -47,7 +47,7 @@
                     <thead>
                       <tr>
                         <th class="text-center"> 
-                          <input type="checkbox" @click="selectAllClick" class="i-checks" name="selectAll"> 
+                          <input type="checkbox" @click="selectAllClick($event)" class="i-checks" name="selectAll"> 
                         </th>
                         <th> 名称 </th>
                         <th> 售价 </th>
@@ -56,9 +56,9 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item,index) in productList" :key='index'>
+                      <tr v-for="(item,index) in productList" :key='index' @click.stop="gotoDetail(index)" style="cursor:pointer;">
                         <td class="text-center">
-                            <input type="checkbox" v-bind:checked="productIds.indexOf(item.id)>=0" @click="itemClick(index)" class="i-checks" name="productCheckName">
+                            <input type="checkbox" v-bind:checked="productIds.indexOf(item.id)>=0" @click.stop="itemClick(index)" class="i-checks" name="productCheckName" style="z-index:9999">
                         </td>
                         <td>
                           <img class="img-md" v-bind:src="item.imageUrl"> {{item.productName}}
@@ -191,14 +191,19 @@ export default {
   },
   mounted() {
     let _this = this;
+    _this.SHIFT_LOADING();
+    
     _this.getProductList();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    gotoDetail: function (index) {
+      let _this = this;
+      let cur = _this.productList[index];
+      window.location.href = '/product/v_detail?productId=' + cur.id;
+    },
     batchDeleteSubmit: function () {
        let _this = this;
-        console.log(_this.productIds,11111111111);
-
         _this.PUSH_LOADING();
      
         _this.$axios
@@ -232,10 +237,14 @@ export default {
       let _this = this;
       _this.batch.status = Number(status);
     },
-    selectAllClick: function(){
+    selectAllClick: function(event){
       let _this = this;
-      let tempProductIds = _this.$lodash.map(_this.productList,'id');
-      _this.productIds = tempProductIds;
+      if(event.target.checked){
+        let tempProductIds = _this.$lodash.map(_this.productList,'id');
+        _this.productIds = tempProductIds;
+      }else{
+        _this.productIds = [];
+      }
     },
     itemClick: function(index){
       let _this = this;
