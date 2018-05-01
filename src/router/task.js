@@ -5,7 +5,7 @@ import TaskEdit from '@/page/task/edit.vue'
 
 export default [{
   path: '/task/v_index',
-  name: 'Task',
+  name: 'TaskIndex',
   meta: {
     isShowBack: false,
     parentKey: 'Task',
@@ -14,7 +14,7 @@ export default [{
   component: TaskIndex
 }, {
   path: '/task/v_detail',
-  name: 'Task',
+  name: 'TaskDeail',
   meta: {
     isShowBack: true,
     parentKey: 'Task',
@@ -23,7 +23,7 @@ export default [{
   component: TaskDetail
 }, {
   path: '/task/v_save',
-  name: 'Task',
+  name: 'TaskSave',
   meta: {
     isShowBack: true,
     parentKey: 'Task',
@@ -32,7 +32,7 @@ export default [{
   component: TaskSave
 }, {
   path: '/task/v_edit',
-  name: 'Task',
+  name: 'TaskEdit',
   meta: {
     isShowBack: true,
     parentKey: 'Task',

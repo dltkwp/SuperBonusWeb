@@ -19,7 +19,7 @@ let router = new Router({
   mode: 'history',
   routes: [{
     path: '/',
-    name: 'Login',
+    name: 'LoginEx',
     meta: {
       isShowBack: false,
       parentKey: 'Login',

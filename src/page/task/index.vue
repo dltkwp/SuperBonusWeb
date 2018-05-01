@@ -143,22 +143,16 @@
                     <div class="form-group">
                     <label class="col-lg-3 control-label">有效期</label>
                     <div class="col-lg-8">
-                        <input type="email" placeholder="2018/02/10～2018/05/10" class="form-control">
+                      <date-picker :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" 
+                            @on-change="handleChange" placeholder="选择有效期" style="width: 200px"></date-picker>                        
                     </div>
 
                     </div>
                     <div class="form-group">
                     <label class="col-lg-3 control-label">地区</label>
                     <div class="col-lg-8">
-                        <label class="checkbox-inline">
-                        <input type="checkbox" value="option1" id="inlineCheckbox1">
-                        全部 </label>
-                        <label class="checkbox-inline">
-                        <input type="checkbox" value="option2" id="inlineCheckbox2">
-                        中国 </label>
-                        <label class="checkbox-inline">
-                        <input type="checkbox" value="option3" id="inlineCheckbox3">
-                        印度 </label>
+                        <label class="checkbox-inline" v-for="(item,index) in areaList" :key='index'>
+                        <input type="checkbox"  name="inputAreaAdvRearch" @click="advAreaItemClick(index)">{{item.name}}</label>
                     </div>
                     </div>
                 </form>
@@ -166,7 +160,7 @@
             </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary">保存</button>
+            <button type="button" class="btn btn-primary">搜索</button>
             <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
         </div>
@@ -190,6 +184,8 @@ import pagination from "@/components/pagination/pagination.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
+import { DatePicker } from "iview";
+
 
 export default {
   components: {
@@ -197,10 +193,12 @@ export default {
     vTop,
     vFoot,
     vEmpty,
+    DatePicker,
     pagination
   },
   data() {
     return {
+      datePicker: ["", ""],
       parentTotalPage: 0,
       parentCurrentpage: 1,
       taskIds: [], //  当前页面选择的id集合
@@ -210,6 +208,8 @@ export default {
       status: "", // 项目状态
       statusList:[], // 高级检索的集合
       curStatus:{key:'',name:'全部项目'}, // 当前选择的状态
+      areaList:[],  // 数据库查询出来的集合
+      areaArr: [], // 已经选择的的区域，不能包含 all 的关键字
     };
   },
   mounted() {
@@ -218,6 +218,35 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    advAreaItemClick: function (event,index){
+      let _this = this;
+      let cur = _this.areaList[index];
+      if(cur.key == 'all') {
+        if(event.target.checked){
+          _this.areaArr = _this.$lodash.map(_this.areaList,function(item){
+          return item!='all'
+        });
+        }else{
+          _this.areaArr = [];
+        }
+      }else{
+        let _index = _this.areaArr.indexOf(cur.key);
+        if(event.target.checked){
+          if (_index==-1){
+              _this.areaArr.push(cur.key);
+          }
+        }else{
+          if (_index>0){
+            _this.areaArr.splice(_index,1);
+          }
+        }
+      }
+      _this.parentCallback(1);
+    },
+    handleChange(date) {
+      let _this = this;
+      _this.datePicker = date;
+    },
     statusItemClick: function (index) {
         let _this = this;
         _this.curStatus = _this.statusList[index];
@@ -276,6 +305,14 @@ export default {
       if (_this.curStatus && _this.curStatus.key != "") {
         param.push("status=" + _this.curStatus.key);
       }
+      if(_this.datePicker[0] + _this.datePicker[1]) {
+        param.push('start_date=' + _this.datePicker[0]);
+        param.push('end_date=' + _this.datePicker[1]);
+      }
+      if(_this.areaArr.length>0){
+          param.push('area=' + _this.areaArr.join(','));
+      }
+
       _this.$axios
         .get("taskIds?" + param.join("&"))
         .then(result => {
@@ -345,6 +382,28 @@ export default {
         arr.push({key:'ycj',name:'已承接'});
         arr.push({key:'ywc',name:'已完成'});
         _this.statusList = arr;
+    },
+    getAreaList: function () {
+        _this.PUSH_LOADING();
+        _this.$axios
+        .get("task/area")
+        .then(result => {
+          let res = result.data;
+          try {
+            let arr = [];
+            arr.push({key:'all',name:'全部'})
+            _this.$lodash.forEach(res, function(key) {
+              arr.push({key: key ,name: key})
+            });
+            _this.areaList = arr;
+          } catch (e) {
+            console.error(e);
+          }
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     }
   }
 };
