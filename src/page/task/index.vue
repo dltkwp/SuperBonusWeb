@@ -65,7 +65,7 @@
                         </td>
                         <td>{{item.projectNo}}</td>
                         <td class="project-title text-left">
-                          <img class="img-md pull-left"  v-bind:src='item.imageUrl'>
+                          <img class="img-md pull-left"  v-bind:src='item.imageUrl' v-if="item.imageUrl">
                           <div class="pull-left m-l-sm">
                             <a href="javascript:;;">
                                 {{item.projectName}}<br>
@@ -341,6 +341,17 @@ export default {
               } else {
                 item.imageUrl = ""; // 产品默认图片
               }
+
+              if(item.users&&item.users.length>0){
+                _this.$lodash.forEach(item.users,function(user){
+                    let headImageIndex = user.headImage.indexOf('http');
+                    if(headImageIndex==-1){
+                      user.headImage = superConst.IMAGE_STATIC_URL + user.headImage;
+                    }
+                })
+              }
+
+
             });
           } catch (e) {
             console.error(e);

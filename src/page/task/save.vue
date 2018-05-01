@@ -72,6 +72,14 @@
                         </div>
                       </div>
                       <div class="form-group">
+                        <label class="col-sm-2 control-label">最低等级:</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" v-model="levelId" @change="leveChange(levelId)">
+                              <option v-for="(item,index) in levelList" :key='index' v-bind:value="item.id">{{item.name}}</option>
+                            </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <label class="col-sm-2 control-label">目标客户:</label>
                         <div class="col-sm-6">
                           <textarea class="form-control" maxlength="140" v-model="task.target"></textarea>
@@ -264,6 +272,8 @@ export default {
         datePicker: ["", ""],
         imagesList:[],  //  图片列表
         editorOption: {},
+        levelList:[],
+        levelId:'',
         task:{
             project_no:'',  //  项目编号
             project_name:'',   //  标题
@@ -299,6 +309,10 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    leveChange: function (levelId) {
+        let _this = this;
+        _this.levelId = levelId;
+    },
      onEditorBlur(quill) {
       console.log('editor blur!', quill)
     },
@@ -377,7 +391,8 @@ export default {
           "projectName": _this.task.project_name,
           "projectNumber": _this.task.project_number,
           "startDate":  _this.$moment(_this.datePicker[0]).valueOf(),
-          "target": _this.task.target
+          "target": _this.task.target,
+          "levelId":_this.levelId
         }
       _this.PUSH_LOADING();
       _this.$axios
@@ -513,6 +528,23 @@ export default {
     removeImage: function (index) {
        let _this = this;
        Vue.set(_this.imagesList, index, {url:'',code:''})
+    },
+     getLevelList: function (){ // 如果没有自动加一条记录
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios.get('levels').
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+            _this.levelList = res;
+            _this.levelId = res[0].id;
+          }
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
+      });
     },
   }
 };
