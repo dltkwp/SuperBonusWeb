@@ -62,7 +62,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">有效期:</label>
                         <div class="col-sm-6">
-                            <date-picker :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" @on-change="handleChange" placeholder="Select date" style="width: 200px"></date-picker>
+                            <date-picker :editable="false" :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" @on-change="handleChange" placeholder="请选择有效期" style="width: 200px"></date-picker>
                         </div>
                       </div>
                       <div class="form-group">
@@ -284,6 +284,7 @@ export default {
   },
   mounted() {
     let _this = this;
+     _this.SHIFT_LOADING();
     let imgHandler = async function(state) {
       if (state) {
           $("#uploadFileEdit").val(null);
@@ -364,20 +365,27 @@ export default {
         _this.$toast.warning('项目背景不可为空');
         return false;
       }
-      _this.task.datePicker = _this.datePicker;
-      console.log(_this.task);
 
-      return false;
       let param = {
-        
-      }
+          "area": _this.task.area,
+          "context": _this.task.context,
+          "description": _this.task.description,
+          "intoduction":_this.task.intoduction,
+          "endDate": _this.$moment(_this.datePicker[1]).valueOf(),
+          "images": imageCodes.join(','),
+          "price": _this.task.price,
+          "projectName": _this.task.project_name,
+          "projectNumber": _this.task.project_number,
+          "startDate":  _this.$moment(_this.datePicker[0]).valueOf(),
+          "target": _this.task.target
+        }
       _this.PUSH_LOADING();
       _this.$axios
-        .post("task",param)
+        .post("projects",param)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
-
+             _this.$toast.error(res.msg);
           }else{
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();

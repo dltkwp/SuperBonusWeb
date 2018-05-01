@@ -26,7 +26,7 @@
                     <div class="btn-group btn-group-sm">
                       <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" aria-expanded="false">{{curStatus.name}} <span class="caret"></span></button>
                       <ul class="dropdown-menu">
-                        <li><a href="javascript:;;" @click="statusItemClick($event,index)" v-for="(item,index) in statusList" :key="index">{{item.name}}</a></li>
+                        <li><a href="javascript:;;" @click="statusItemClick(index)" v-for="(item,index) in statusList" :key="index">{{item.name}}</a></li>
                       </ul>
                     </div>
                     <div class="search-box">
@@ -61,34 +61,35 @@
                     <tbody>
                       <tr v-for="(item,index) in taskList" :key="index">
                         <td>
-                            <input type="checkbox"   class="i-checks" v-bind:checked="taskIds.indexOf(item.id)>=0" @click="itemClick" data-index='index'>
+                            <input type="checkbox"   class="i-checks" v-bind:checked="taskIds.indexOf(item.id)>=0" @click="itemClick($event,index)" data-index='index'>
                         </td>
-                        <td>1</td>
-                        <td class="project-title text-left"><img class="img-md pull-left" src="img/gallery/2.jpg">
+                        <td>{{item.projectNo}}</td>
+                        <td class="project-title text-left">
+                          <img class="img-md pull-left"  v-bind:src='item.imageUrl'>
                           <div class="pull-left m-l-sm">
-                            <a href="member-detail.html">天津户口对外推送 <br>
-                                有效期：2018/04/01～2018/05/01
+                            <a href="javascript:;;">
+                                {{item.projectName}}<br>
+                                有效期：{{item.startDateStr}}～{{item.endDateStr}}
                             </a>
                           </div>
                         </td>
-                        <td>
-                          5
-                        </td>
-                        <td>
-                            ¥1000
-                        </td>
+                        <td>{{item.projectNumber}}</td>
+                        <td>¥{{item.price}}</td>
                         <td >
-                          <a href="member-detail.html"><img alt="image" class="img-circle img-sm" title="用户1" src="img/a3.jpg"></a>
-                          <a href="member-detail.html"><img alt="image" class="img-circle img-sm" title="用户1" src="img/a1.jpg"></a>
-                          <a href="member-detail.html"><img alt="image" class="img-circle img-sm" title="用户1" src="img/a2.jpg"></a>
-                          <a href="member-detail.html"><img alt="image" class="img-circle img-sm" title="用户1" src="img/a4.jpg"></a>
-                          <a href="member-detail.html"><img alt="image" class="img-circle img-sm"  title="用户1" src="img/a5.jpg"></a>
+                            <router-link :to="{path:'/member/v_detail',query:{memberId:user.id}}" v-for="(user,uindex) in item.users" :key="uindex">
+                              <img class="img-circle img-sm" v-bind:title="user.realname||user.nickname" v-bind:src="user.headImage">
+                            </router-link>
                         </td>
                         <td class="project-status">
-                          <span class="label label-primary">已完成</span>
+                          <span class="label label-danger"  v-if="item.status=='wait'">待审核</span>
+                          <span class="label label-danger"  v-if="item.status=='onCall'">待承接</span>
+                          <span class="label label-warning" v-if="item.status=='undertake'">已承接</span>
+                          <span class="label label-primary" v-if="item.status=='done'">已完成</span>
                         </td>
                         <td>
-                          <a href="task-detail.html" class="btn btn-white btn-sm">查看 </a>
+                          <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" v-if="item.status=='undertake'||item.status=='done'">查看</router-link>
+                          <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" v-if="item.status=='onCall'"  class="btn btn-primary btn-sm">待处理</router-link>
+                          <router-link :to="{path:'/task/v_edit',query:{taskId:item.id}}" v-if="item.status=='wait'"  class="btn btn-primary btn-sm">审核</router-link>
                         </td>
                       </tr>
                     </tbody>
@@ -143,7 +144,7 @@
                     <div class="form-group">
                     <label class="col-lg-3 control-label">有效期</label>
                     <div class="col-lg-8">
-                      <date-picker :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" 
+                      <date-picker :editable="false" :clearable="true"  :value="datePicker" format="yyyy/MM/dd" type="daterange" placement="bottom-end" 
                             @on-change="handleChange" placeholder="选择有效期" style="width: 200px"></date-picker>                        
                     </div>
 
@@ -160,7 +161,7 @@
             </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary">搜索</button>
+            <button type="button" class="btn btn-primary" @click="advRearchClick">搜索</button>
             <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
         </div>
@@ -214,7 +215,9 @@ export default {
   },
   mounted() {
     let _this = this;
+    _this.SHIFT_LOADING();
     _this.initStatusList();
+    _this.list();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -255,6 +258,11 @@ export default {
     },
     showAdvModal: function() {
       $("#advSearchModal").modal("show");
+    },
+    advRearchClick: function () {
+      let _this = this;
+      _this.parentCallback(1);
+      $("#advSearchModal").modal("hide");
     },
     batchDeleteSubmit: function() {
       let _this = this;
@@ -306,20 +314,23 @@ export default {
         param.push("status=" + _this.curStatus.key);
       }
       if(_this.datePicker[0] + _this.datePicker[1]) {
-        param.push('start_date=' + _this.datePicker[0]);
-        param.push('end_date=' + _this.datePicker[1]);
+        param.push('startDate=' + _this.$moment(_this.datePicker[0]).valueOf());
+        param.push('endDate=' + _this.$moment(_this.datePicker[1]).valueOf());
       }
       if(_this.areaArr.length>0){
-          param.push('area=' + _this.areaArr.join(','));
+          param.push('areas=' + _this.areaArr.join(','));
       }
 
       _this.$axios
-        .get("taskIds?" + param.join("&"))
+        .get("projects?" + param.join("&"))
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.pages;
           try {
             _this.$lodash.forEach(res.list, function(item) {
+              item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');
+              item.endDateStr = _this.$moment(item.endDate).format('YYYY/MM/DD');
+
               if (item.images) {
                 let imagesArr = item.images.split(",");
                 if (imagesArr.length > 0) {
@@ -377,10 +388,10 @@ export default {
         let _this = this;
         let arr = [];
         arr.push({key:'',name:'全部项目'});
-        arr.push({key:'dsh',name:'待审核'});
-        arr.push({key:'dcj',name:'待承接'});
-        arr.push({key:'ycj',name:'已承接'});
-        arr.push({key:'ywc',name:'已完成'});
+        arr.push({key:'wait',name:'待审核'});
+        arr.push({key:'onCall',name:'待承接'});
+        arr.push({key:'undertake',name:'已承接'});
+        arr.push({key:'done',name:'已完成'});
         _this.statusList = arr;
     },
     getAreaList: function () {

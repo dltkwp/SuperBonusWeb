@@ -2,7 +2,7 @@ import axios from 'axios'
 import superConst from './super-const'
 export default {
   install: function (Vue) {
-    axios.defaults.timeout = 5000 // 响应时间
+    axios.defaults.timeout = 9000 // 响应时间
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8' // 配置请求头
     axios.defaults.baseURL = superConst.API_BASE_URL
 

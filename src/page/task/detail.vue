@@ -32,10 +32,10 @@
                   <div class="user-button m-t-md">
                     <div class="row">
                       <div class="col-md-6">
-                        <a type="button" class="btn btn-default btn-sm btn-block" href="add-task.html"><i class="fa fa-pencil"></i> 编辑项目</a>
+                        <router-link :to="{path:'/task/v_edit',query:{taskId:taskId}}" class="btn btn-default btn-sm btn-block"><i class="fa fa-pencil"></i> 编辑项目</router-link>
                       </div>
                       <div class="col-md-6">
-                        <a  class="btn btn-default btn-sm btn-block"  data-toggle="modal" href="#remind-info"><i class="fa fa-check"></i> 项目完成</a>
+                        <a href="javascript:;;" @click="showOverModal" class="btn btn-default btn-sm btn-block" ><i class="fa fa-check"></i> 项目完成</a>
                       </div>
                     </div>
                   </div>
@@ -46,7 +46,6 @@
           <div class="col-md-8">
             <div class="ibox">
               <div class="ibox-content">
-
                 <h2>承接信息</h2>
                 <p>
                   您可以选择指定申请人承接该项目
@@ -149,6 +148,37 @@
         </div>
       </div>
       </div>
+
+
+
+
+      <!-- 项目完成弹出提示框  开始 -->
+      <div id="remind-info" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">温馨提示</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="alert alert-danger">确定该项目已经全部完成了吗？项目状态一旦变更，无法进行修改。</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" @click="projectOver" class="btn btn-primary">确定</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 项目完成弹出提示框  结束 -->
+
+
+
+
    </div>
 </template>
 
@@ -195,7 +225,14 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    showOverModal: function () {
+      $("#remind-info").modal('show');
+    },
+    projectOver: function () {
+      $("#remind-info").modal('hide');
+    },
     getDetail: function () {
+      return false;
         let _this = this;
         _this.PUSH_LOADING();
         _this.$axios
@@ -219,6 +256,9 @@ export default {
             _this.SHIFT_LOADING();
           });
     },
+    gerPersons: function (key,callback) {
+      
+    }
   }
 };
 </script>
