@@ -268,7 +268,7 @@ export default {
       let _this = this;
       _this.PUSH_LOADING();
       _this.$axios
-        .delete("tasks?taskIds=" + _this.taskIds.join(","))
+        .delete("projects?projectIds=" + _this.taskIds.join(","))
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0) {

@@ -306,6 +306,7 @@ export default {
     }
     _this.$refs.taskQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler);
     _this.initImages();
+    _this.getLevelList();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -313,7 +314,7 @@ export default {
         let _this = this;
         _this.levelId = levelId;
     },
-     onEditorBlur(quill) {
+    onEditorBlur(quill) {
       console.log('editor blur!', quill)
     },
     onEditorFocus(quill) {
@@ -405,7 +406,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              window.location.href = "/task/v_index";
+              // window.location.href = "/task/v_index";
             }, 800);
           }
         })
