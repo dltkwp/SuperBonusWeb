@@ -11,6 +11,9 @@
               <div class="ibox-content">
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
+                     <div class="pull-left">
+                        <router-link :to="{path:'/member/v_save'}" class="btn btn-white btn-sm">新增会员</router-link>
+                    </div>
                     <div class=" pull-right text-right">
                       <div class="btn-group btn-group-sm">
                         <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" aria-expanded="false">{{curLevel.name||'全部'}} <span class="caret"></span></button>

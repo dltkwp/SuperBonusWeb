@@ -2,6 +2,7 @@ import MemberIndex from '@/page/member/index.vue'
 import MemberDetail from '@/page/member/detail.vue'
 import MemberLevel from '@/page/member/level.vue'
 import MemberEdit from '@/page/member/edit.vue'
+import MemberSave from '@/page/member/save.vue'
 
 export default [{
   path: '/member/v_index',
@@ -39,4 +40,13 @@ export default [{
     childrenKey: 'Level'
   },
   component: MemberLevel
+},
+{ path: '/member/v_save',
+  name: 'MemberSave',
+  meta: {
+    isShowBack: true,
+    parentKey: 'Member',
+    childrenKey: 'Save'
+  },
+  component: MemberSave
 }]
