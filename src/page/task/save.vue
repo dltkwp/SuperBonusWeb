@@ -53,6 +53,12 @@
                         </div>
                       </div>
                       <div class="form-group">
+                        <label class="col-sm-2 control-label">悬赏标价:</label>
+                        <div class="col-sm-6">
+                          <input type="text" class="form-control" placeholder="请输入悬赏标价" maxlength="250" v-model="task.pricing">
+                        </div>
+                      </div>
+                      <div class="form-group">
                         <label class="col-sm-2 control-label">赏金:</label>
                         <div class="col-sm-6">
                           <input type="text" class="form-control" placeholder="请输入项目赏金" maxlength="8" v-model="task.price">
@@ -284,6 +290,7 @@ export default {
             target:'',//   目标客户
             context:'',      //  项目背景
             description: "", //  详细介绍
+            pricing:'', // 悬赏价格
         }
     };
   },
@@ -360,6 +367,10 @@ export default {
           _this.$toast.warning('数量不可为零');
           return false;
       }
+      if (!_this.task.pricing) {
+        _this.$toast.warning('悬赏标价不可为空');
+        return false;
+      }
       if(!regex.money(_this.task.price)){
           _this.$toast.warning('赏金格式不正确');
           return false;
@@ -393,7 +404,8 @@ export default {
           "projectNumber": _this.task.project_number,
           "startDate":  _this.$moment(_this.datePicker[0]).valueOf(),
           "target": _this.task.target,
-          "levelId":_this.levelId
+          "levelId":_this.levelId,
+          "pricing":_this.task.pricing
         }
       _this.PUSH_LOADING();
       _this.$axios

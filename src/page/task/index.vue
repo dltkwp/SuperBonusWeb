@@ -52,6 +52,7 @@
                             <th class="text-center">编号</th>
                             <th  class="text-center">项目</th>
                             <th  class="text-center">数量</th>
+                            <th class="text-center">悬赏标价</th>
                             <th  class="text-center">赏金</th>
                             <th  class="text-center">承接人</th>
                             <th  class="text-center">状态</th>
@@ -74,6 +75,7 @@
                           </div>
                         </td>
                         <td>{{item.projectNumber}}</td>
+                        <td>{{item.pricing}}</td>
                         <td>¥{{item.price}}</td>
                         <td >
                             <router-link :to="{path:'/member/v_detail',query:{memberId:user.id}}" v-for="(user,uindex) in item.users" :key="uindex">

@@ -54,19 +54,21 @@ body, html {
   float: left;
   margin-right: 5px;
 }
+
 .btn-delete {
-  position: relative;
-  float: right;
-  margin-top: -5px;
-  margin-right: -5px;
-  margin-bottom: -24px;
-  color: #E26A6A;
+
+  margin-top: -10px;
+
+  color: #e26a6a;
   text-align: center;
   font-size: 25px;
   line-height: 20px;
   background: #fff;
   border-radius: 50%;
+  float: left;
+  margin-left: -20px;
 }
+
 .btn-delete:hover{
   opacity: .8;
 }
@@ -194,4 +196,25 @@ body, html {
   height: 225px;
   background-image: url("../img/logo-red.png");
   background-size: 100% 100%;
+}
+.empty {
+  padding: 30px 0 0 0;
+  width: 100%;
+  text-align: center;
+}
+
+.empty .img {
+  display: block;
+  margin: 20px auto 0 auto;
+  width: 187px;
+  height: 150px;
+  background: url(../img/empty.png);
+  background-size: 100% 100%;
+}
+
+.empty-info {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
 }
