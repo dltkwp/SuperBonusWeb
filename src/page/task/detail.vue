@@ -71,7 +71,7 @@
                                 <td class="client-avatar">
                                   <img alt="image" v-bind:src="item.headImage"> </td>
                                 <td>
-                                  <router-link :to="{path:'/member/v_detail',query:{memberId:item.id}}">{{item.realname||item.nickname}}</router-link>
+                                  <router-link :to="{path:'/member/v_detail',query:{memberId:item.userId}}">{{item.realname||item.nickname}}</router-link>
                                 </td>
                                 <td>{{item.enterprise}}</td>
                                 <td>{{item.userPosition}}</td>
@@ -84,10 +84,10 @@
                                     <span v-if="item.status=='done'">已完成</span>
                                 </td>
                                 <td> 
-                                    <button class="btn btn-white btn-sm" v-if="personTabChange=='undertake' && item.status!='done'" @click="userCompleteProject(index)">完成项目</button>
-                                    <button class="btn btn-white btn-sm" @click="agree" v-if="personTabChange=='apply'" >同意</button> 
-                                    <button class="btn btn-white btn-sm" @click="refuse"  v-if="personTabChange=='apply'">拒绝</button>  
-                                    <button class="btn btn-white btn-sm" @click="showStatusModal" v-if="personTabChange=='apply'" >调整</button>
+                                    <button class="btn btn-white btn-sm" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
+                                    <button class="btn btn-white btn-sm" @click="agree" v-if="personType=='apply'" >同意</button> 
+                                    <button class="btn btn-white btn-sm" @click="refuse"  v-if="personType=='apply'">拒绝</button>  
+                                    <button class="btn btn-white btn-sm" @click="showStatusModal" v-if="personType=='apply'" >调整</button>
                                 </td>
                               </tr>
                             </tbody>
@@ -128,7 +128,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" @click="projectOver" class="btn btn-primary">确定</button>
+              <button type="button" @click="projectOver()" class="btn btn-primary">确定</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
@@ -324,8 +324,15 @@ export default {
       _this.completeType = 'project';
       $("#remind-info").modal('show');
     },
+    showUserCompleteModal: function (index) {
+      let _this = this;
+      _this.userIndex = index;
+      _this.completeType = 'user';
+      $("#remind-info").modal('show');
+    },
     projectOver: function () {
       let _this = this;
+      console.log(_this.completeType);
       if(_this.completeType == 'project') {
         _this.PUSH_LOADING();
         _this.$axios
@@ -341,7 +348,7 @@ export default {
           .catch(err => {
             _this.SHIFT_LOADING();
           });
-      } else {
+      } else if(_this.completeType == 'user') {
         let curUser = _this.personList[_this.userIndex];
         if (curUser) {
           _this.updateStatus('done',function(){
@@ -520,8 +527,9 @@ export default {
       let _this = this;
       _this.PUSH_LOADING();
       _this.loading = true;
+      let curUser = _this.personList[_this.userIndex];
       _this.$axios
-        .post("projects/"+_this.taskId+'/users/' + curUser.id + '?status=' + status)
+        .post("projects/"+_this.taskId+'/users/' + curUser.userId + '?status=' + status)
         .then(result => {
           let res = result.data;
           if(res.code && res.code >=0) {

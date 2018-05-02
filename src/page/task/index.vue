@@ -151,11 +151,11 @@
                     </div>
 
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hide">
                     <label class="col-lg-3 control-label">地区</label>
                     <div class="col-lg-8">
                         <label class="checkbox-inline" v-for="(item,index) in areaList" :key='index'>
-                        <input type="checkbox"  name="inputAreaAdvRearch" @click="advAreaItemClick(index)">{{item.name}}</label>
+                        <input type="checkbox"  name="inputAreaAdvRearch" @click="advAreaItemClick($event,index)">{{item.name}}</label>
                     </div>
                     </div>
                 </form>
@@ -226,11 +226,10 @@ export default {
     advAreaItemClick: function (event,index){
       let _this = this;
       let cur = _this.areaList[index];
+      console.log(event,index,_this.areaList,3333,cur,4444);
       if(cur.key == 'all') {
         if(event.target.checked){
-          _this.areaArr = _this.$lodash.map(_this.areaList,function(item){
-          return item!='all'
-        });
+         _this.areaArr = _this.$lodash.map(_this.areaList,'key');
         }else{
           _this.areaArr = [];
         }
@@ -241,8 +240,12 @@ export default {
               _this.areaArr.push(cur.key);
           }
         }else{
-          if (_index>0){
-            _this.areaArr.splice(_index,1);
+          if (_index>=0){
+              _this.areaArr.splice(_index,1);
+              let allIndex = _this.areaArr.indexOf('all');
+              if(allIndex>=0) {
+                _this.areaArr.splice(allIndex,1);
+              }
           }
         }
       }

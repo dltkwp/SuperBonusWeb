@@ -52,6 +52,12 @@
                           <input type="text" class="form-control" placeholder="请输入产品数量" maxlength="5" v-model="task.projectNumber">
                         </div>
                       </div>
+                       <div class="form-group">
+                        <label class="col-sm-2 control-label">悬赏标价:</label>
+                        <div class="col-sm-6">
+                          <input type="text" class="form-control" placeholder="请输入悬赏标价" maxlength="250" v-model="task.pricing">
+                        </div>
+                      </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">赏金:</label>
                         <div class="col-sm-6">
@@ -350,8 +356,8 @@ export default {
           }
       });
       if(imageCodes.length == 0){
-          //_this.$toast.warning('至少上传一张图片');
-          //return false;
+          _this.$toast.warning('至少上传一张图片');
+          return false;
       }
 
       let projectNumber = _this.task.projectNumber+'';
@@ -362,6 +368,10 @@ export default {
       if (projectNumber == 0){
           _this.$toast.warning('数量不可为零');
           return false;
+      }
+      if (!_this.task.pricing) {
+        _this.$toast.warning('悬赏标价不可为空');
+        return false;
       }
       if(!regex.money(_this.task.price)){
           _this.$toast.warning('赏金格式不正确');
@@ -397,7 +407,8 @@ export default {
           "projectNumber": _this.task.projectNumber,
           "startDate":  _this.$moment(_this.datePicker[0]).valueOf(),
           "target": _this.task.target,
-          "levelId":_this.levelId
+          "levelId":_this.levelId,
+          "pricing":_this.task.pricing
         }
       _this.PUSH_LOADING();
       _this.$axios
@@ -558,7 +569,6 @@ export default {
         .get("projects/" + _this.taskId+'?hasDesc=true')
         .then(result => {
           let res = result.data;
-
           // 图片处理   
           if (res.images && res.images.length>0) {
               let arr = res.images.split(',')
