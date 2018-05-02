@@ -257,7 +257,9 @@ export default {
         _this.list();
     },
     showAdvModal: function() {
+      let _this = this;
       $("#advSearchModal").modal("show");
+      _this.getAreaList();
     },
     advRearchClick: function () {
       let _this = this;
@@ -406,15 +408,17 @@ export default {
         _this.statusList = arr;
     },
     getAreaList: function () {
+        let _this = this;
         _this.PUSH_LOADING();
         _this.$axios
-        .get("task/area")
+        .get("area")
         .then(result => {
           let res = result.data;
           try {
             let arr = [];
             arr.push({key:'all',name:'全部'})
-            _this.$lodash.forEach(res, function(key) {
+            _this.$lodash.forEach(res, function(item) {
+              let key = item.area;
               arr.push({key: key ,name: key})
             });
             _this.areaList = arr;
