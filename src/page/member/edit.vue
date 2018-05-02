@@ -13,14 +13,13 @@
               <div class="tab-content">
                 <div class="tab-pane active">
                   <div class="panel-body">
-                    <fieldset class="form-horizontal">
+                    <fieldset class="form-horizontal" style="border:0px;">
                       <div class="form-group">
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
                           <input type="text" class="form-control" placeholder="请输入会员编号" v-bind:value="user.id" disabled>
                         </div>
                       </div>
-
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
@@ -54,7 +53,9 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">会员等级:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" maxlength="50" v-model="user.levelName" disabled>
+                           <select class="form-control" v-model="user.levelId" @change="leveChange(user.levelId)">
+                            <option v-for="(item,index) in levelList" :key='index' v-bind:value="item.id">{{item.name}}</option>
+                          </select>
                         </div>
                       </div>
 
@@ -126,14 +127,17 @@ export default {
     return {
       user: {},
       memberId: 0,
-      code: ""
+      code: "",
+      levelList:[]
     };
   },
   mounted() {
     let _this = this;
     _this.memberId = _this.$route.query.memberId;
     _this.SHIFT_LOADING();
-    _this.getUserDetail();
+    _this.getLevelList(function(){
+      _this.getUserDetail();
+    });
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
@@ -146,7 +150,7 @@ export default {
         id: _this.memberId,
         realname: _this.user.realname,
         sex: _this.user.sex,
-
+        levelId:_this.user.levelId
       };
       if (_this.code) {
         param.headImage = _this.code;
@@ -251,7 +255,28 @@ export default {
             .catch(err => {});
         }
       }
-    }
+    },
+    getLevelList: function (callback){ // 如果没有自动加一条记录
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios.get('levels').
+        then((result)=> {
+          var res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+            _this.levelList = res;
+          }
+          callback && callback();
+          _this.SHIFT_LOADING();
+      }).catch((err) => {
+          _this.SHIFT_LOADING();
+      });
+    },
+    leveChange: function (levelId) {
+        let _this = this;
+        _this.levelId = levelId;
+    },
   }
 };
 </script>

@@ -265,7 +265,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              // window.location.href = "/member/v_index";
+               window.location.href = "/member/v_index";
             }, 800);
           }
         })
