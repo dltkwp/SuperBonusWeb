@@ -35,12 +35,14 @@
 }
 </script>
 <style>
-  @import "./assets/css/bootstrap.min.css";
-  @import "./assets/font-awesome/css/font-awesome.css";
-  @import "./assets/css/animate.css";
+  @import './assets/iview.css';
 
   @import './assets/css/quill.core.css';
   @import './assets/css/quill.snow.css';
   @import './assets/css/quill.bubble.css';
-  @import './assets/iview.css'
+  
+  @import "./assets/css/bootstrap.min.css";
+  @import "./assets/font-awesome/css/font-awesome.css";
+  @import "./assets/css/animate.css";
+
 </style>

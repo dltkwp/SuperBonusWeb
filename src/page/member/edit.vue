@@ -174,6 +174,9 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
+             setTimeout(function() {
+               window.location.href = "/member/v_index";
+            }, 800);
           }
           _this.SHIFT_LOADING();
         })

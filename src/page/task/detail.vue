@@ -58,7 +58,6 @@
                 </div>
                 <div class="clients-list">
                   <ul class="nav nav-tabs">
-                    <span v-if="personType=='apply'" class="pull-right small text-muted">{{applyCnt}}人申请</span>
                     <li class="active" @click="personTabChange('apply')"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> 申请人</a></li>
                     <li class="" @click="personTabChange('undertake')"><a data-toggle="tab" href="#tab-2"><i class="fa fa-user"></i>  承接人</a></li>
                   </ul>
@@ -275,7 +274,6 @@ export default {
         parentCurrentpage: 1,
         personList:[],
         personType:'apply',
-        applyCnt:'',
         detail: {
           project_no:'',  //  项目编号
           project_name:'',   //  标题
@@ -365,13 +363,12 @@ export default {
 
           // 图片处理   
           if (res.images && res.images.length>0) {
-              let arr = res.images.split(',')
+              let arr = res.images.split(',');
+              let imagesArr = [];
               _this.$lodash.forEach(arr,function(code,index){
-                  _this.detail.imagesList[index] = {
-                      url:  superConst.IMAGE_STATIC_URL + code,
-                      code: code
-                  }
+                  imagesArr.push({url:  superConst.IMAGE_STATIC_URL + code,code: code})
               })
+              res.imagesList = imagesArr;
           }
           res.startDateStr = _this.$moment(res.startDate).format('YYYY/MM/DD')
           res.endDateStr = _this.$moment(res.endDate).format('YYYY/MM/DD')
@@ -413,9 +410,6 @@ export default {
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.pages;
-          if(_this.personType == 'apply') {
-            _this.applyCnt = res.total;
-          }
           let _data = res.list;
           _this.$lodash.forEach(_data,function(item){
             if (item.headImage) {

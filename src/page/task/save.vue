@@ -14,7 +14,7 @@
               <div class="tab-context">
                 <div id="tab-1" class="tab-pane active">
                   <div class="panel-body">
-                    <fieldset class="form-horizontal">
+                    <fieldset class="form-horizontal" style="border:none;">
                       <!-- <div class="form-group" >
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
@@ -88,7 +88,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">项目背景:</label>
                         <div class="col-sm-6">
-                          <textarea class="form-control" maxlength="140" v-model="task.context"></textarea>
+                          <textarea class="form-control" maxlength="1000" v-model="task.context"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
@@ -406,7 +406,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              // window.location.href = "/task/v_index";
+               window.location.href = "/task/v_index";
             }, 800);
           }
         })

@@ -88,7 +88,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">项目背景:</label>
                         <div class="col-sm-6">
-                          <textarea class="form-control" maxlength="140" v-model="task.context"></textarea>
+                          <textarea class="form-control" maxlength="1000" v-model="task.context"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
