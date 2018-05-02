@@ -85,9 +85,9 @@
                                 </td>
                                 <td> 
                                     <button class="btn btn-white btn-sm" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
-                                    <button class="btn btn-white btn-sm" @click="agree" v-if="personType=='apply'" >同意</button> 
-                                    <button class="btn btn-white btn-sm" @click="refuse"  v-if="personType=='apply'">拒绝</button>  
-                                    <button class="btn btn-white btn-sm" @click="showStatusModal" v-if="personType=='apply'" >调整</button>
+                                    <button class="btn btn-white btn-sm" @click="agree(index)" v-if="personType=='apply' && item.status=='wait' " >同意</button> 
+                                    <button class="btn btn-white btn-sm" @click="refuse(index)"  v-if="personType=='apply' && item.status=='wait'" >拒绝</button>  
+                                    <button class="btn btn-white btn-sm" @click="showStatusModal(index)" v-if="personType=='apply' && (item.status=='undertake' || item.status=='refuse') " >调整</button>
                                 </td>
                               </tr>
                             </tbody>
@@ -314,8 +314,9 @@ export default {
             _this.getPersons();
         });
     },
-    showStatusModal: function () {
+    showStatusModal: function (index) {
       let _this = this;
+      _this.userIndex = index;
       _this.bathStatus = 'undertake';
       $("#choose-statue").modal('show');
     },
@@ -509,15 +510,17 @@ export default {
       _this.completeType = 'user';
       $("#remind-info").modal('show');
     },
-    refuse: function () {
+    refuse: function (index) {
         let _this = this;
+        _this.userIndex = index;
         _this.updateStatus('refuse',function(){
             _this.$toast.success('操作成功');
             _this.getPersons();
         });
     },
-    agree: function () {
+    agree: function (index) {
       let _this = this;
+       _this.userIndex = index;
       _this.updateStatus('undertake',function(){
           _this.$toast.success('操作成功');
           _this.getPersons();
