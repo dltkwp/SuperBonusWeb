@@ -3,7 +3,7 @@
       <v-menus></v-menus>
       <div id="page-wrapper" class="gray-bg">
         <v-top></v-top>
-       <div class="wrapper wrapper-context ">
+       <div class="wrapper wrapper-content ">
           <div class="row">
           <div class="col-lg-12">
             <div class="tabs-container">
@@ -11,7 +11,7 @@
                 <li class="active"><a data-toggle="tab" href="#tab-1"> 项目信息</a></li>
                 <!-- <li><a data-toggle="tab" href="#tab-2"> 项目资料</a></li> -->
               </ul>
-              <div class="tab-context">
+              <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">
                   <div class="panel-body">
                     <fieldset class="form-horizontal" style="border:none;">
@@ -78,7 +78,7 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="col-sm-2 control-label">最低等级:</label>
+                        <label class="col-sm-2 control-label">会员等级:</label>
                         <div class="col-sm-6">
                             <select class="form-control" v-model="levelId" @change="leveChange(levelId)">
                               <option v-for="(item,index) in levelList" :key='index' v-bind:value="item.id">{{item.name}}</option>

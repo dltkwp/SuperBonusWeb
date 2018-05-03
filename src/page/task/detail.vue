@@ -23,6 +23,7 @@
                   </p>
 
                   <p><strong>数量：</strong>{{detail.projectNumber}}</p>
+                  <p><strong>悬赏标价：</strong>¥{{detail.pricing}}</p>
                   <p><strong>赏金：</strong>¥{{detail.price}}</p>
                   <p><strong>有效期：</strong>{{detail.startDateStr}}～{{detail.endDateStr}}</p>
                   <p><strong>地区：</strong>{{detail.area}}</p>

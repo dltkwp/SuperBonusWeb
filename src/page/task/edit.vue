@@ -78,7 +78,7 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="col-sm-2 control-label">最低等级:</label>
+                        <label class="col-sm-2 control-label">会员等级:</label>
                         <div class="col-sm-6">
                             <select class="form-control" v-model="levelId" @change="leveChange(levelId)">
                               <option v-for="(item,index) in levelList" :key='index' v-bind:value="item.id">{{item.name}}</option>
