@@ -15,13 +15,13 @@
                 <div id="tab-1" class="tab-pane active">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
-                      <!-- <div class="form-group" >
+                      <div class="form-group" style="margin-top:10px;">
                         <label class="col-sm-2 control-label">编号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入产品编号" readonly disabled maxlength="20" v-model="task.project_no">
+                          <input type="text" class="form-control" placeholder="请输入产品编号" maxlength="20" v-model="task.projectNo">
                         </div>
-                      </div> -->
-                      <div class="form-group" style="margin-top:10px;">
+                      </div>
+                      <div class="form-group" >
                         <label class="col-sm-2 control-label">标题:</label>
                         <div class="col-sm-6">
                           <input type="text" class="form-control" placeholder="请输入项目标题" maxlength="50" v-model="task.projectName">
@@ -282,7 +282,7 @@ export default {
         levelId:'',
         taskId:'',
         task:{
-            project_no:'',  //  项目编号
+            projectNo:'',  //  项目编号
             projectName:'',   //  标题
             intoduction: "", //  简介
             projectNumber:'',     //  产品数量
@@ -338,6 +338,11 @@ export default {
     },
     submit: function () {
       let _this = this;
+      let projectNo = _this.task.projectNo.trim();
+      if(!projectNo) {
+         _this.$toast.warning("编号不可为空");
+        return false;
+      }
       let projectName = _this.task.projectName.trim();
       if(!projectName){
          _this.$toast.warning("标题不可为空");
@@ -396,6 +401,7 @@ export default {
 
       let param = {
           "id": _this.taskId,
+          "projectNo":projectNo,
           "area": _this.task.area,
           "context": _this.task.context,
           "description": _this.task.description,

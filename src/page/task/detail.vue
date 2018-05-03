@@ -84,6 +84,7 @@
                                     <span v-if="item.status=='refuse'">已拒绝</span>
                                     <span v-if="item.status=='done'">已完成</span>
                                 </td>
+                                <td>{{item.introducer ? (item.introducer + '推荐') : ''}}</td>
                                 <td> 
                                     <button class="btn btn-white btn-sm" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
                                     <button class="btn btn-white btn-sm" @click="agree(index)" v-if="personType=='apply' && item.status=='wait' " >同意</button> 
@@ -155,42 +156,57 @@
                           v-model="userId"
                           filterable
                           remote
+                          @on-change="personChange"
                           :remote-method="getUsers"
                           :loading="loading">
                           <Option v-for="(option, index) in users" :value="option.id" :key="index">{{option.realname}}</Option>
                       </Select>
                     </div>
                   </div>
-                  <!-- <div class="form-group">
-                    <label class="col-lg-3 control-label">会员姓名{{curUser}}**</label>
+                  <div class="form-group">
+                    <label class="col-lg-3 control-label">会员姓名</label>
                     <div class="col-lg-8">
-                      <p class="form-control-static">{{curUser.realname||curUser.nickname}}</p>
+                      <p class="form-control-static">{{user.realname||user.nickname}}</p>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-3 control-label">联系电话</label>
                     <div class="col-lg-8">
-                      <p class="form-control-static">{{curUser.phone}}</p>
+                      <p class="form-control-static">{{user.username}}</p>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-3 control-label">等级</label>
                     <div class="col-lg-8">
-                      <p class="form-control-static">{{curUser.levelName}}</p>
+                      <p class="form-control-static">{{user.levelName}}</p>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-3 control-label">企业</label>
                     <div class="col-lg-8">
-                      <p class="form-control-static">{{curUser.enterprise}}</p>
+                      <p class="form-control-static">{{user.enterprise}}</p>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-3 control-label">职位</label>
                     <div class="col-lg-8">
-                      <p class="form-control-static">{{curUser.userPosition}}</p>
+                      <p class="form-control-static">{{user.userPosition}}</p>
                     </div>
-                  </div> -->
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-3 control-label">推荐人</label>
+                    <div class="col-lg-8">
+                      <Select
+                          placeholder="搜索推荐人姓名/手机号（可不填）"
+                          v-model="introducer"
+                          filterable
+                          remote
+                          :remote-method="getQueryIntroducerUsers"
+                          :loading="loading">
+                          <Option v-for="(option, index) in introducerUsers" :value="option.id" :key="index">{{option.realname}}</Option>
+                      </Select>
+                    </div>
+                  </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -291,8 +307,10 @@ export default {
         },
         loading:false,
         userId:'',
+        introducer:'',
         curUser:'',
         users:[],
+        introducerUsers:[],
         user:{},
         completeType:'project', // project - user
         userIndex:-1,
@@ -307,6 +325,13 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    personChange: function (userId){
+        let _this = this;
+        let findObj = _this.$lodash.find(_this.users,function(item){
+          return item.id === userId;
+        });
+        _this.user = findObj;
+    },
     batchSave: function () {
         let _this = this;
         _this.updateStatus(_this.bathStatus,function(){
@@ -438,6 +463,10 @@ export default {
     showApplyPersionModal: function (){
       let _this = this;
       _this.userId = '';
+      _this.introducer = '';
+      _this.user = {};
+      _this.users = [];
+      _this.introducerUsers = [];
       $('#add-user').modal('show');
     },
     setUser: function () {
@@ -446,8 +475,13 @@ export default {
           let _this = this;
           _this.PUSH_LOADING();
           _this.loading = true;
+          let url = "projects/"+_this.taskId+"/users/"+_this.userId;
+          console.log(_this.introducer,222222323238798789);
+          if (_this.introducer) {
+            url = url + '?introducer=' + _this.introducer;
+          }
           _this.$axios
-            .post("projects/"+_this.taskId+"/users/"+_this.userId)
+            .post(url)
             .then(result => {
               let res = result.data;
               if(res.code && res.code >=0) {
@@ -475,6 +509,36 @@ export default {
         return item.id == _this.userId;
       });
       _this.curUser = curUser;
+    },
+    getQueryIntroducerUsers: function (queryKey) {
+      let _this = this;
+      _this.PUSH_LOADING();
+      let param = [];
+      param.push("pageNum=" + 1);
+      param.push("pageSize=" + 5);
+      param.push('queryKey=' + queryKey);
+      _this.loading = true;
+      _this.$axios
+        .get("users?" + param.join('&'))
+        .then(result => {
+          let res = result.data;
+          let arr = [];
+          _this.$lodash.forEach(res.list,function(item){
+            item.realname =  item.realname||item.nickname;
+            let headImageIndex = item.headImage.indexOf('http');
+            if(headImageIndex==-1){
+              item.headImage = superConst.IMAGE_STATIC_URL + item.headImage;
+            }
+            arr.push(item);
+          });
+          _this.introducerUsers = arr;
+          _this.SHIFT_LOADING();
+          _this.loading = false;
+        })
+        .catch(err => {
+          _this.loading = false;
+          _this.SHIFT_LOADING();
+        });
     },
     getUsers: function (queryKey) {
       let _this = this;

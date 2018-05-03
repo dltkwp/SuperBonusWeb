@@ -151,11 +151,11 @@
                     </div>
 
                     </div>
-                    <div class="form-group hide">
+                    <div class="form-group">
                     <label class="col-lg-3 control-label">地区</label>
                     <div class="col-lg-8">
                         <label class="checkbox-inline" v-for="(item,index) in areaList" :key='index'>
-                        <input type="checkbox"  name="inputAreaAdvRearch" @click="advAreaItemClick($event,index)">{{item.name}}</label>
+                        <input type="checkbox" v-bind:checked="areaArr.indexOf(item.key)>=0"  name="inputAreaAdvRearch" @click="advAreaItemClick($event,index)">{{item.name}}</label>
                     </div>
                     </div>
                 </form>
@@ -226,7 +226,6 @@ export default {
     advAreaItemClick: function (event,index){
       let _this = this;
       let cur = _this.areaList[index];
-      console.log(event,index,_this.areaList,3333,cur,4444);
       if(cur.key == 'all') {
         if(event.target.checked){
          _this.areaArr = _this.$lodash.map(_this.areaList,'key');
@@ -249,7 +248,6 @@ export default {
           }
         }
       }
-      _this.parentCallback(1);
     },
     handleChange(date) {
       let _this = this;
@@ -324,7 +322,7 @@ export default {
         param.push('startDate=' + _this.$moment(_this.datePicker[0]).valueOf());
         param.push('endDate=' + _this.$moment(_this.datePicker[1]).valueOf());
       }
-      if(_this.areaArr.length>0){
+      if(_this.areaArr.length>0 && _this.areaArr.indexOf('all')==-1){
           param.push('areas=' + _this.areaArr.join(','));
       }
 
