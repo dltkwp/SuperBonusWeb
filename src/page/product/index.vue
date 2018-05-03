@@ -46,8 +46,8 @@
                   <table class="table table-bordered table-stripped table-hover">
                     <thead>
                       <tr>
-                        <th class="text-center"> 
-                          <input type="checkbox" @click="selectAllClick($event)" class="i-checks" name="selectAll"> 
+                        <th class="text-center">
+                          <input type="checkbox" @click="selectAllClick($event)" class="i-checks" name="selectAll">
                         </th>
                         <th> 名称 </th>
                         <th> 售价 </th>
@@ -147,7 +147,7 @@
 
    </div>
 
-  
+
 
 </template>
 
@@ -192,7 +192,7 @@ export default {
   mounted() {
     let _this = this;
     _this.SHIFT_LOADING();
-    
+
     _this.getProductList();
   },
   methods: {
@@ -205,7 +205,7 @@ export default {
     batchDeleteSubmit: function () {
        let _this = this;
         _this.PUSH_LOADING();
-     
+
         _this.$axios
           .delete("products?productIds=" + _this.productIds.join(','))
           .then(result => {
@@ -268,7 +268,7 @@ export default {
     bathSubmit: function (){
       let _this = this;
       _this.PUSH_LOADING();
-     
+
       _this.$axios
         .post("product/status",{
           productIds: _this.productIds,
@@ -337,7 +337,7 @@ export default {
       }
       if (_this.adv.status != -1) {
         param.push("status=" + _this.adv.status);
-      } 
+      }
       _this.$axios
         .get("products?" + param.join("&"))
         .then(result => {

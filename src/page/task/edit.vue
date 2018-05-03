@@ -36,14 +36,14 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">图片:</label>
                         <div class="col-sm-10">
-
-                             <div class="img-upload" v-for="(item,index) in imagesList" :key="index" @click.stop="uploadImage(index,$event)">
-                                <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
-                                    <i class="fa fa-times-circle"></i>
-                                </div>
+                          <div v-for="(item,index) in imagesList" :key="index" @click.stop="uploadImage(index,$event)">
+                             <div class="img-upload" >
                                 <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
                             </div>
-                          
+                            <div class="btn-delete" v-if="item.url&&item.code" @click.stop="removeImage(index)">
+                                <i class="fa fa-times-circle"></i>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="form-group">
@@ -569,7 +569,7 @@ export default {
         .get("projects/" + _this.taskId+'?hasDesc=true')
         .then(result => {
           let res = result.data;
-          // 图片处理   
+          // 图片处理
           if (res.images && res.images.length>0) {
               let arr = res.images.split(',')
               _this.$lodash.forEach(arr,function(code,index){
