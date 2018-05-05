@@ -131,9 +131,7 @@ export default {
       price: 0,
       status: "1",
       description: "", //  描述
-      editorOption: {
-
-      }
+      editorOption: {}
     };
   },
   mounted() {
@@ -358,7 +356,7 @@ export default {
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
-
+            _this.$toast.error(res.msg);
           }else{
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();

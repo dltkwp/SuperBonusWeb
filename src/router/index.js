@@ -10,6 +10,7 @@ import ProductRouter from './product'
 import ForgetPwdRouter from './forgetPwd'
 import Task from './task'
 import User from './user'
+import Pages from './pages'
 
 import Login from '@/page/login/index.vue'
 import Notfound from '@/page/notfound/index.vue'
@@ -49,7 +50,7 @@ let router = new Router({
     component: IndexRouter
   }].concat(AdvRouter).concat(LoginRouter).concat(MemberRouter)
     .concat(OrderRouter).concat(ProductRouter).concat(ForgetPwdRouter)
-    .concat(Task).concat(User)
+    .concat(Task).concat(User).concat(Pages)
 })
 
 router.beforeEach((to, from, next) => {

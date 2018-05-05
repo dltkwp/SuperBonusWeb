@@ -23,11 +23,10 @@
                           <input type="text" class="form-control" placeholder="请输入会员编号" value="001" disabled>
                         </div>
                       </div>
-
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工姓名" value="张三">
+                          <input type="text" class="form-control" placeholder="请输入员工姓名" v-model="user">
                         </div>
                       </div>
                       <div class="form-group">
@@ -121,12 +120,15 @@ export default {
   },
   data() {
     return {
-      edit:{},
+      edit:{
+
+      },
       pwd:{
         oldPwd:'',
         newPwd:''
       },
-      tabType:'user'
+      tabType:'user',
+      headImageUrl:''
     };
   },
   mounted() {
@@ -195,7 +197,56 @@ export default {
         .catch(err => {
           _this.SHIFT_LOADING();
         });
-    }
+    },
+    uploadImage: function(index) {
+      let _this = this;
+      $("#uploadFile").val(null);
+      if ($("#uploadFile").val()) {
+        document.getElementById("uploadImgForm").reset();
+      }
+      document.getElementById("uploadFile").click();
+    },
+    imgUploadFileChange: function(event) {
+      let _this = this;
+      if (event) {
+        var filePath = "";
+        var size = 0;
+        var updatingCount = 0;
+
+        if (event && event.target && event.target.files) {
+          var file = event.target.files[0];
+          size = file.size || 0;
+          filePath = file.name;
+          var index = filePath.lastIndexOf(".");
+          var suffix = filePath.substring(index, filePath.length);
+
+          if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(suffix)) {
+            _this.$toast.warning("图片类型必须是.gif,jpeg,jpg,png中的一种");
+            return false;
+          }
+
+          var imgSize = size / 1024 / 1024;
+          if (imgSize > 3) {
+            _this.$toast.warning("图片大小超过3M,请上传小于3M的图片.");
+            return false;
+          }
+          var formData = new FormData();
+          formData.append("file", file);
+
+          _this.$axios
+            .post("upload", formData, {
+              headers: { "Content-Type": "multipart/form-data" }
+            })
+            .then(result => {
+              let res = result.data;
+              _this.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
+              _this.edit.headImage = res.fileCode;
+              _this.$toast.success("操作成功");
+            })
+            .catch(err => {});
+        }
+      }
+    },
   }
 };
 </script>

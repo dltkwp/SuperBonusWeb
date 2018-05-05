@@ -16,7 +16,7 @@
                   <img  class="img-responsive" v-bind:src="item.url" v-for="(item,index) in detail.imagesList" :key='index' v-if="index==0">
                 </div>
                 <div class="ibox-content profile-content">
-                  <h3><strong>{{detail.project_name}}</strong></h3>
+                  <h3><strong>{{detail.projectName}}</strong></h3>
 
                   <p class="text-muted m-b-md">
                     {{detail.intoduction}}

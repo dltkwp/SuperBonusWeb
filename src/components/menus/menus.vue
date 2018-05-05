@@ -59,6 +59,11 @@
             <!-- <li class="hide">
               <a href="opinion.html"><i class="fa fa-comment"></i> <span class="nav-label">意见反馈</span> </a>
             </li> -->
+            <li  v-bind:class="{active:parentKey==='Pages'}">
+                 <router-link to="/pages/v_index"> 
+                  <i class="fa fa fa-files-o"></i> <span class="nav-label">单页管理</span>
+                 </router-link>
+            </li>
             <li v-bind:class="{active:parentKey==='SysCfg'}">
               <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
               <ul class="nav nav-second-level">

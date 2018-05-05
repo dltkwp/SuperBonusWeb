@@ -27,7 +27,14 @@
                         </td>
                         <td>
                           <div class="m-t">
-                            <div @click="showSelectProductModal(index)" class="btn btn-sm btn-white">选择产品</div>
+                            <label class="radio-inline"> 
+                                <input type="radio" v-bind:checked="item.type=='product'" @click='typeChange(index,"product")'  v-bind:name="'options-'+index"> 产品 </label>
+                            <label class="radio-inline"> 
+                                <input type="radio" v-bind:checked="item.type=='project'" @click='typeChange(index,"project")'   v-bind:name="'options-'+index"> 项目 </label>
+                            <label class="radio-inline"> 
+                                <input type="radio" v-bind:checked="item.type=='other'" @click='typeChange(index,"other")'   v-bind:name="'options-'+index"> 相关页面 </label>
+
+                            <div @click="showSelectModal(index)" class="btn btn-sm btn-white">选择{{item.typeText}}</div>
                             &nbsp;&nbsp; {{item.name || ''}}
                           </div>
                         </td>
@@ -54,7 +61,7 @@
         <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
       </form>
 
-        <div id="choose-product" class="modal fade" aria-hidden="true" style="display: none;">
+      <div id="choose-product" class="modal fade" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,7 +95,46 @@
             </div>
         </div>
         </div>
-    </div>
+      </div>
+
+      <div id="choose-project" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">选择项目</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>项目名称</th>
+                    <th>发布人</th>
+                    <th>提成金额</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item,index) in projectList" :key="index">
+                    <td>{{index + 1}}</td>
+                    <td>{{item.projectName}}</td>
+                    <td>张三</td>
+                    <td>¥{{item.price}}</td>
+                    <td>
+                      <div @click="selectProjectSubmit(index)"  class="btn btn-primary btn-sm">选择</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <v-empty :isShow="projectTotalPage==0"></v-empty>
+              <pagination :totalPage="projectTotalPage" :currentPage="projectCurrentpage" :changeCallback="projectCallBack"></pagination>
+
+            </div>
+          </div>
+        </div>
+      </div>
 
    </div>
 </template>
@@ -119,19 +165,52 @@ export default {
     return {
       advList: [],
       curIndex: -1,
+
       selectProductIndex: -1,
       productList: [],
       parentTotalPage: 0,
-      parentCurrentpage: 1
+      parentCurrentpage: 1,
+
+      selectProjectIndex: -1,
+      projectList: [],
+      projectTotalPage: 0,
+      projectCurrentpage: 1,
+      
     };
   },
   mounted() {
     let _this = this;
+    _this.SHIFT_LOADING();
     _this.initAdv();
     _this.getAdvList();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    showSelectModal: function (index) {
+      let _this = this;
+      let cur = _this.advList[index];
+      switch (cur.type) {
+        case 'product':{_this.showSelectProductModal(index);}break;
+        case 'project':{_this.showSelectProjectModel(index);}break;
+        case 'custom':{}break;
+      }
+    },
+    typeChange:function (index,key){
+      let _this = this;
+      let cur = _this.advList[index];
+      cur.type = key;
+      switch (key) {
+        case "product":{
+          cur.typeText = '产品';
+        }break;
+        case "project":{
+          cur.typeText = '项目';
+        }break;
+        case "other":{
+          cur.typeText = '相关页面';
+        }break;
+      }
+    },
     sortChange: function() {
       let _this = this;
       _this.advList = _.sortBy(_this.advList, function(o) { return o.sort; });
@@ -142,7 +221,7 @@ export default {
       _this.initAdv();
       _this.PUSH_LOADING();
       _this.$axios
-        .get("advs")
+        .get("advs?client=wechat")
         .then(result => {
           var res = result.data;
           if (res.code && res.code > 0) {
@@ -153,7 +232,19 @@ export default {
               cur.code = item.image;
               cur.image = superConst.IMAGE_STATIC_URL + item.image;
               cur.name = item.name;
+              cur.type = item.type;
               cur.href = item.href;
+              switch (item.type) {
+                  case "product":{
+                    cur.typeText = '产品';
+                  }break;
+                  case "project":{
+                    cur.typeText = '项目';
+                  }break;
+                  case "other":{
+                    cur.typeText = '相关页面';
+                  }break;
+              }
             });
           }
           _this.SHIFT_LOADING();
@@ -165,11 +256,11 @@ export default {
     initAdv: function() {
       let _this = this;
       let arr = [];
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 1, name:'' });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 2, name:'' });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 3, name:'' });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 4, name:'' });
-      arr.push({ image: "", code: "", type: "product", href: "", sort: 5, name:'' });
+      arr.push({ image: "", code: "", type: "product",typeText:'产品', href: "", sort: 1, name:'' });
+      arr.push({ image: "", code: "", type: "product",typeText:'产品', href: "", sort: 2, name:'' });
+      arr.push({ image: "", code: "", type: "product",typeText:'产品', href: "", sort: 3, name:'' });
+      arr.push({ image: "", code: "", type: "product",typeText:'产品', href: "", sort: 4, name:'' });
+      arr.push({ image: "", code: "", type: "product",typeText:'产品', href: "", sort: 5, name:'' });
       _this.advList = arr;
     },
     submit: function() {
@@ -240,6 +331,7 @@ export default {
       $("#choose-product").modal("hide");
       let cur = _this.productList[index];
       if (cur){
+        console.log(cur,_this.selectProductIndex,123123123123);
         _this.advList[_this.selectProductIndex].name = cur.productName;
         _this.advList[_this.selectProductIndex].href = cur.id;
       }
@@ -303,6 +395,47 @@ export default {
             .catch(err => {});
         }
       }
+    },
+    showSelectProjectModel: function (index) {
+      let _this = this;
+      _this.selectProjectIndex = index;
+      _this.projectCurrentpage = 1;
+      _this.getProjectList();
+      $("#choose-project").modal("show");
+    },
+    projectCallBack: function (cPage) {
+      let _this = this;
+      _this.projectCurrentpage = cPage;
+      _this.getProjectList();
+    },
+    getProjectList: function() {
+      let _this = this;
+      _this.PUSH_LOADING();
+      let param = [];
+      param.push("pageNum=" + _this.projectCurrentpage);
+      param.push("pageSize=" + 15);
+
+      _this.$axios
+        .get("projects?" + param.join("&"))
+        .then(result => {
+          let res = result.data;
+          _this.projectTotalPage = res.pages;
+          _this.projectList = res.list;
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    },
+    selectProjectSubmit: function (index) {
+        let _this = this;
+        $("#choose-project").modal("hide");
+        let cur = _this.projectList[index];
+        if (cur){
+          _this.advList[_this.selectProjectIndex].name = cur.productName;
+          _this.advList[_this.selectProjectIndex].href = cur.id;
+        }
+        _this.submit();
     }
   }
 };
