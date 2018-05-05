@@ -52,6 +52,7 @@
                         <th> 名称 </th>
                         <th> 售价 </th>
                         <th> 状态 </th>
+                        <th> 移动 </th>                        
                         <th> 操作 </th>
                       </tr>
                     </thead>
@@ -65,6 +66,10 @@
                         </td>
                         <td> ¥{{item.price}}</td>
                         <td>{{item.statusName || '停售'}}</td>
+                        <td>
+                          <span class="btn btn-default" @click.stop="orderSubmit('up',index)" v-if="index>0" title="向上移动" style="z-index:9999"><i class="fa fa-long-arrow-up"></i></span>
+                          <span class="btn btn-default" @click.stop="orderSubmit('down',index)"  v-if="index<productList.length-1" title="向下移动" style="z-index:9999"><i class="fa fa-long-arrow-down"></i></span>
+                        </td>
                         <td>
                           <router-link :to="{path:'/product/v_detail',query:{ productId: item.id }}" class="btn btn-white btn-sm">查看</router-link>
                         </td>
@@ -197,6 +202,50 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    /**
+     * direct: 方向
+     * index: 当前索引
+     */
+    orderSubmit: function (direct,index) {
+        let _this = this;
+
+        let param = [];
+        let cur = _this.productList[index];
+        switch(direct){
+          case 'up':{
+            let per = _this.productList[index - 1];
+            param.push('productId1=' + cur.id);
+            param.push('productOrder1=' + cur.productOrder);
+            param.push('productId2=' + per.id);
+            param.push('productOrder2=' + per.productOrder);
+          }break;
+          case 'down':{
+            let _next = _this.productList[index + 1];
+            param.push('productId1=' + cur.id);
+            param.push('productId2=' + _next.id);
+            param.push('productOrder1=' + cur.productOrder);
+            param.push('productOrder2=' + _next.productOrder);
+          }break;
+        }
+
+        _this.PUSH_LOADING();
+        _this.$axios
+          .post("product/order?" + param.join('&'))
+          .then(result => {
+            let res = result.data;
+            if (res.code && res.code > 0){
+              _this.$toast.error(res.msg);
+            } else {
+              _this.productIds = [];
+              _this.$toast.success('操作成功');
+              _this.getProductList();
+            }
+            _this.SHIFT_LOADING();
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+    },
     gotoDetail: function (index) {
       let _this = this;
       let cur = _this.productList[index];

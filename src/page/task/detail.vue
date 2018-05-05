@@ -476,7 +476,6 @@ export default {
           _this.PUSH_LOADING();
           _this.loading = true;
           let url = "projects/"+_this.taskId+"/users/"+_this.userId;
-          console.log(_this.introducer,222222323238798789);
           if (_this.introducer) {
             url = url + '?introducer=' + _this.introducer;
           }
