@@ -32,7 +32,7 @@
                             <label class="radio-inline"> 
                                 <input type="radio" v-bind:checked="item.type=='project'" @click='typeChange(index,"project")'   v-bind:name="'options-'+index"> 项目 </label>
                             <label class="radio-inline"> 
-                                <input type="radio" v-bind:checked="item.type=='other'" @click='typeChange(index,"other")'   v-bind:name="'options-'+index"> 相关页面 </label>
+                                <input type="radio" v-bind:checked="item.type=='custom'" @click='typeChange(index,"custom")'   v-bind:name="'options-'+index"> 相关页面 </label>
 
                             <div @click="showSelectModal(index)" class="btn btn-sm btn-white">选择{{item.typeText}}</div>
                             &nbsp;&nbsp; {{item.name || ''}}
@@ -119,7 +119,7 @@
                   <tr v-for="(item,index) in projectList" :key="index">
                     <td>{{index + 1}}</td>
                     <td>{{item.projectName}}</td>
-                    <td>张三</td>
+                    <td>*******</td>
                     <td>¥{{item.price}}</td>
                     <td>
                       <div @click="selectProjectSubmit(index)"  class="btn btn-primary btn-sm">选择</div>
@@ -130,6 +130,48 @@
 
               <v-empty :isShow="projectTotalPage==0"></v-empty>
               <pagination :totalPage="projectTotalPage" :currentPage="projectCurrentpage" :changeCallback="projectCallBack"></pagination>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="choose-page" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">选择单页</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>标题</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- <tr>
+                    <td>1</td>
+                    <td>平台介绍</td>
+                    <td>
+                      <div class="btn btn-default btn-sm">移除</div>
+                    </td>
+                  </tr> -->
+                  <tr v-for="(item,index) in pageList" :key='index'>
+                    <td>{{index + 1}}</td>
+                    <td>{{item.title}}</td>
+                    <td>
+                      <div  @click="selectPageSubmit(index)"  class="btn btn-primary btn-sm">选择</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <v-empty :isShow="pageTotalPage==0"></v-empty>
+              <pagination :totalPage="pageTotalPage" :currentPage="pageCurrentpage" :changeCallback="pageCallBack"></pagination>
 
             </div>
           </div>
@@ -176,6 +218,11 @@ export default {
       projectTotalPage: 0,
       projectCurrentpage: 1,
       
+      selectPageIndex: -1,
+      pageList: [],
+      pageTotalPage:0,
+      pageCurrentpage:1
+
     };
   },
   mounted() {
@@ -192,7 +239,7 @@ export default {
       switch (cur.type) {
         case 'product':{_this.showSelectProductModal(index);}break;
         case 'project':{_this.showSelectProjectModel(index);}break;
-        case 'custom':{}break;
+        case 'custom':{_this.showSelectPageModal(index);}break;
       }
     },
     typeChange:function (index,key){
@@ -436,7 +483,48 @@ export default {
           _this.advList[_this.selectProjectIndex].href = cur.id;
         }
         _this.submit();
-    }
+    },
+    showSelectPageModal: function (index) {
+      let _this = this;
+      _this.selectPageIndex = index;
+      _this.pageCurrentpage = 1;
+      _this.getPageList();
+      $("#choose-page").modal("show");
+    },
+    pageCallBack: function (cPage) {
+      let _this = this;
+      _this.pageCurrentpage = cPage;
+      _this.getProjegetPageListctList();
+    },
+    selectPageSubmit: function (index) {
+        let _this = this;
+        $("#choose-page").modal("hide");
+        let cur = _this.pageList[index];
+        if (cur){
+          _this.advList[_this.selectPageIndex].name = cur.title;
+          _this.advList[_this.selectPageIndex].href = cur.id;
+        }
+        _this.submit();
+    },
+    getPageList: function () {
+        let _this = this;
+        _this.PUSH_LOADING();
+        let param = [];
+        param.push("pageNum=" + _this.pageCurrentpage);
+        param.push("pageSize=" + 15);
+
+        _this.$axios
+          .get("customPages?" + param.join("&"))
+          .then(result => {
+            let res = result.data;
+            _this.pageTotalPage = res.pages;
+            _this.pageList = res.list;
+            _this.SHIFT_LOADING();
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+    },
   }
 };
 </script>

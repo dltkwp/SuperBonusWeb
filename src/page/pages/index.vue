@@ -140,7 +140,7 @@ export default {
       param.push("pageNum=" + _this.parentCurrentpage);
       param.push("pageSize=" + 15);
       _this.$axios
-        .get("products?" + param.join("&"))
+        .get("customPages?" + param.join("&"))
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.pages;

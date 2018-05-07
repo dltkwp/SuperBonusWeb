@@ -197,11 +197,12 @@ export default {
       let param = {
         "title":title,
         "created":created,
-        "description":description
+        "description":description,
+        "type":'custum'
       }
       _this.PUSH_LOADING();
       _this.$axios
-        .post("products",param)
+        .post("customPages",param)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){

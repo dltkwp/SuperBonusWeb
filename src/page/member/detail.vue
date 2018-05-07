@@ -67,13 +67,47 @@
                       <div class="panel-heading">
                         <div class="panel-options">
                           <ul class="nav nav-tabs">
-                            <li class="active"><a href="javascript:;;" >订单记录</a></li>
+                            <li v-bind:class="{active:tabType=='publish'}" @click="tabChange('publish')"><a href="javascript:;;">Ta的发布</a></li>
+                            <li v-bind:class="{active:tabType=='taking'}" @click="tabChange('taking')"><a href="javascript:;;">Ta的承接</a></li>
+                            <li v-bind:class="{active:tabType=='orderRecords'}" @click="tabChange('orderRecords')"><a href="javascript:;;" >订单记录</a></li>
                           </ul>
                         </div>
                       </div>
                       <div class="panel-body">
                         <div class="tab-content">
-                          <div class="tab-pane active">
+                           <div class="tab-pane" v-bind:class="{active:tabType=='publish'||tabType=='taking','':tabType=='orderRecords'}">
+                            <div class="project-list">
+                              <table class="table table-hover">
+                                <tbody>
+                                  <tr v-for="(item,index) in list" :key='index'>
+                                    <td class="project-status">
+                                        <span class="label label-primary" v-if="item.status=='done'">已完成</span>
+                                        <span class="label label-warning" v-if="item.status=='undertake'">已承接</span>
+                                        <span class="label label-danger"  v-if="item.status=='onCall'">待承接</span>
+                                        <span class="label label-danger"  v-if="item.status=='wait'">待审核</span>
+                                    </td>
+                                    <td class="project-title">
+                                      <a href="task-detail.html">{{item.productName}}</a>
+                                      <br/>
+                                      <small>有效期：{{item.startDateStr}}～{{item.endDateStr}}</small>
+                                    </td>
+                                    <td class="project-title">赏金：¥ {{item.price}}</td>
+                                    <td class="project-people">
+                                      <a href="javascript:;;" v-for="(user,uIndex) in item.users" :key="uIndex">
+                                        <img  class="img-circle" v-bind:src="user.headImage">
+                                      </a>
+                                    </td>
+                                    <td class="project-actions">
+                                        <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" class="btn btn-white btn-sm">查看</router-link>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <v-empty :isShow="order.parentTotalPage==0"></v-empty>
+                              <pagination :totalPage="order.parentTotalPage" :currentPage="order.parentCurrentpage" :changeCallback="orderParentCallback"></pagination>
+                            </div>
+                          </div>
+                          <div class="tab-pane"  v-bind:class="{'':tabType=='publish'||tabType=='taking','active':tabType=='orderRecords'}">
                             <table class="table table-striped">
                               <thead>
                                 <tr>
@@ -108,7 +142,7 @@
                                 </tr>
                               </tbody>
                             </table>
-                             <v-empty :isShow="order.parentTotalPage==0"></v-empty>
+                            <v-empty :isShow="order.parentTotalPage==0"></v-empty>
                             <pagination :totalPage="order.parentTotalPage" :currentPage="order.parentCurrentpage" :changeCallback="orderParentCallback"></pagination>
                           </div>
                         </div>
@@ -156,7 +190,9 @@ export default {
         parentCurrentpage: 1
       },
       user:{},
-      memberId:0
+      memberId:0,
+      tabType: 'publish',
+      list:[]
     };
   },
   mounted() {
@@ -168,6 +204,17 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    tabChange: function (key) {
+      let _this = this;
+      _this.tabType = key;
+      _this.order.parentCurrentpage = 1;
+      _this.order.parentTotalPage = 0;
+      switch(key){
+        case "publish":{_this.getTaskList('publish');}break;
+        case "taking":{_this.getTaskList('taking');}break;
+        case "orderRecords":{_this.getOrderList();}break;
+      }
+    },
     orderParentCallback: function(cPage) {
       let _this = this;
       _this.order.parentCurrentpage = cPage;
@@ -198,6 +245,42 @@ export default {
         .catch(err => {
           _this.SHIFT_LOADING();
         });
+    },
+    getTaskList: function (kye) {
+        let _this = this;
+        _this.PUSH_LOADING();
+        let param = [];
+        param.push("pageNum=" + _this.order.parentCurrentpage);
+        param.push("pageSize=" + 15);
+        param.push("userId=" + _this.memberId);
+        param.push("type=" + key);
+        
+        _this.$axios
+          .get("orders?" + param.join("&"))
+          .then(result => {
+            let res = result.data;
+            _this.order.parentTotalPage = res.pages;
+            let arr = [];
+            _this.$lodash.forEach(res.list, function(item) {
+              item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');
+              item.endDateStr = _this.$moment(item.endDate).format('YYYY/MM/DD');
+
+              _this.$lodash.forEach(item.users,function(user){
+                  //  头像处理
+                  let httpIndex = user.headImage.indexOf('http');
+                  if(httpIndex == -1){
+                    user.headImage = superConst.HEAD_IMAGE_DEFAULT + itemuser.headImage;
+                  }
+              });
+             
+              arr.push(item);
+            });
+            _this.list = arr;
+            _this.SHIFT_LOADING();
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
     },
     getUserDetail: function () {
         let _this = this;
