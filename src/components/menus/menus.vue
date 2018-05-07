@@ -50,9 +50,11 @@
             <!-- <li class="hide">
               <a href="merchant.html"><i class="fa fa-user-circle"></i> <span class="nav-label">商户管理</span> </a>
             </li> -->
-            <!-- <li v-bind:class="{active:parentKey==='Employee'}">
-                <a href="worker.html"><i class="fa fa-group"></i> <span class="nav-label">员工管理</span> </a>
-            </li>  -->
+            <li v-bind:class="{active:parentKey==='Employee'}">
+                 <router-link to="/employee/v_index"> 
+                  <i class="fa fa-group"></i> <span class="nav-label">员工管理</span>
+                </router-link>
+            </li> 
             <!-- <li class="hide">
               <a href="question.html"><i class="fa fa-pencil"></i> <span class="nav-label">常见问题</span> </a>
             </li> -->
