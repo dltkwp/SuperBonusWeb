@@ -69,7 +69,9 @@
             <li v-bind:class="{active:parentKey==='SysCfg'}">
               <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
               <ul class="nav nav-second-level">
-                  <!-- <li><a href="set-worker.html">员工设置</a></li> -->
+                  <li v-bind:class="{active:childrenKey==='Employee'}">
+                    <router-link to="/employee/v_config">员工设置</router-link>
+                  </li>
                   <li v-bind:class="{active:childrenKey==='Level'}"><router-link to="/member/v_level">会员等级设置</router-link></li>
               </ul>
             </li>
