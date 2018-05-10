@@ -81,7 +81,7 @@
                     </tbody>
                   </table>
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page  v-if="parentTotalPage>0"  :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                  <page :pageSize="pagePageSize"  v-if="parentTotalPage>0"  :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
                 </div>
               </div>
             </div>
@@ -336,7 +336,8 @@ export default {
   data() {
     return {
       parentTotalPage: 0,
-      parentCurrentpage: 1,
+      pageNo: 1,
+      pageSize: 15,
       queryKey: "",
       employeeList: []
     };
@@ -354,8 +355,8 @@ export default {
       return false; // 尬码
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       if (!_this.$lodash.isEmpty(_this.queryKey)) {
         param.push("queryKey=" + _this.queryKey);
       }
@@ -363,7 +364,7 @@ export default {
         .get("employee?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.parentTotalPage = res.pages;
+          _this.parentTotalPage = res.total;
           try {
             _this.$lodash.forEach(res.list, function(item) {
               if (item.images) {
@@ -389,12 +390,12 @@ export default {
     },
     parentCallback(cPage) {
       let _this = this;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.list();
     },
     searchClick: function() {
       let _this = this;
-      _this.parentCurrentpage = 1;
+      _this.pageNo = 1;
       _this.list();
     },
     showSaveModal: function() {

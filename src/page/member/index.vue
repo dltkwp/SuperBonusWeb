@@ -75,7 +75,7 @@
                   </table>
 
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                  <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
 
                 </div>
               </div>
@@ -115,14 +115,15 @@ export default {
       curLevel: {},
       queryKey: '',
       parentTotalPage: 0,
-      parentCurrentpage: 1,
+      pageNo: 1,
+      pageSize:15,
       userList: []
     };
   },
   mounted() {
     let _this = this;
     _this.SHIFT_LOADING();
-    _this.parentCurrentpage = 1;
+    _this.pageNo = 1;
     _this.getLevelList();
     _this.getMemberList();
   },
@@ -130,27 +131,27 @@ export default {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
     rearchSubmit: function (){
         let _this = this;
-        _this.parentCurrentpage = 1;
+        _this.pageNo = 1;
         _this.getMemberList();
     },
     selectLevel: function (index) {
         let _this = this;
         _this.curLevel = _this.levelList[index];
-        _this.parentCurrentpage = 1;
+        _this.pageNo = 1;
         _this.getMemberList();
     },
     parentCallback(cPage) {
       let _this = this;
       _this.productIds = [];
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.getMemberList();
     },
     getMemberList: function () {
         let _this = this;
 
         let param = [];
-        param.push("pageNum=" + _this.parentCurrentpage);
-        param.push("pageSize=" + 15);
+        param.push("pageNum=" + _this.pageNo);
+        param.push("pageSize=" + _this.pageSize);
         if (!_this.$lodash.isEmpty(_this.queryKey)) {
             param.push("queryKey=" + _this.queryKey);
         }
@@ -163,7 +164,7 @@ export default {
             .get("users?" + param.join('&'))
             .then(result => {
                 let res = result.data;
-                _this.parentTotalPage = res.pages;
+                _this.parentTotalPage = res.total;
                 let arr = [];
                 _this.$lodash.forEach(res.list, function(item) {
                     let image = item.headImage;

@@ -98,7 +98,7 @@
                   </table>
 
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                  <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
 
                 </div>
               </div>
@@ -203,7 +203,8 @@ export default {
     return {
       datePicker: ["", ""],
       parentTotalPage: 0,
-      parentCurrentpage: 1,
+      pageNo: 1,
+      pageSize:15,
       taskIds: [], //  当前页面选择的id集合
       taskList: [], // 页面的数据集合
       checkAll: false, // 页面顶部全部选择的状态
@@ -256,7 +257,7 @@ export default {
     statusItemClick: function (index) {
         let _this = this;
         _this.curStatus = _this.statusList[index];
-        _this.parentCurrentpage = 1;
+        _this.pageNo = 1;
         _this.list();
     },
     showAdvModal: function() {
@@ -303,15 +304,15 @@ export default {
       let _this = this;
       _this.productIds = [];
       _this.checkAll = false;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.list();
     },
     list: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       if (!_this.$lodash.isEmpty(_this.queryKey)) {
         param.push("queryKey=" + _this.queryKey);
       }
@@ -330,7 +331,7 @@ export default {
         .get("projects?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.parentTotalPage = res.pages;
+          _this.parentTotalPage = res.total;
           try {
             _this.$lodash.forEach(res.list, function(item) {
               item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');

@@ -95,7 +95,7 @@
                             </tbody>
                           </table>
                             <v-empty :isShow="parentTotalPage==0"></v-empty>
-                            <page v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                            <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
 
                         </div>
                         <div class="row" v-if="personType=='undertake'">
@@ -288,7 +288,8 @@ export default {
         taskId: -1,
         queryKey: '',
         parentTotalPage: 0,
-        parentCurrentpage: 1,
+        pageNo: 1,
+        pageSize:15,
         personList:[],
         personType:'apply',
         detail: {
@@ -368,7 +369,7 @@ export default {
             let res = result.data;
             _this.$toast.success('操作成功');
             $("#remind-info").modal('hide');
-            _this.parentCurrentpage = 1;
+            _this.pageNo = 1;
             _this.getPersons();
             _this.SHIFT_LOADING();
           })
@@ -381,7 +382,7 @@ export default {
           _this.updateStatus('done',function(){
               _this.$toast.success('操作成功');
               $("#remind-info").modal('hide');
-              _this.parentCurrentpage = 1;
+              _this.pageNo = 1;
               _this.getPersons();
           });
         }
@@ -415,17 +416,17 @@ export default {
     },
     personRearchClick: function () {
       let _this = this;
-      _this.parentCurrentpage = 1;
+      _this.pageNo = 1;
       _this.getPersons();
     },
     parentCallback(cPage) {
       let _this = this;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.getPersons();
     },
     personTabChange: function (key) {
       let _this = this;
-      _this.parentCurrentpage = 1;
+      _this.pageNo = 1;
       _this.personType = key;
       _this.getPersons();
     },
@@ -433,8 +434,8 @@ export default {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       param.push('type=' + _this.personType)
       if(_this.queryKey){
         param.push('name=' + _this.queryKey);
@@ -443,7 +444,7 @@ export default {
         .get("projects/"+_this.taskId+"/users" + '?' + param.join('&'))
         .then(result => {
           let res = result.data;
-          _this.parentTotalPage = res.pages;
+          _this.parentTotalPage = res.total;
           let _data = res.list;
           _this.$lodash.forEach(_data,function(item){
             if (item.headImage) {
@@ -488,7 +489,7 @@ export default {
               }else{
                 _this.$toast.success('操作成功');
                 $('#add-user').modal('hide');
-                _this.parentCurrentpage = 1;
+                _this.pageNo = 1;
                 _this.getPersons();
               }
               _this.SHIFT_LOADING();

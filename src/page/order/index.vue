@@ -66,7 +66,7 @@
                   </table>
 
                 <v-empty :isShow="parentTotalPage==0"></v-empty>
-                <page   v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
 
                 </div>
               </div>
@@ -106,32 +106,33 @@ export default {
       list: [],
       queryKey: '',
       parentTotalPage: 0,
-      parentCurrentpage: 1
+      pageNo: 1,
+      pageSize:15
     };
   },
   mounted() {
     let _this = this;
-    _this.parentCurrentpage = 1;
+    _this.pageNo = 1;
     _this.getOrderList();
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
     rearchSubmit: function() {
         let _this = this;
-        _this.parentCurrentpage = 1;
+        _this.pageNo = 1;
         _this.getOrderList();
     },
     parentCallback(cPage) {
       let _this = this;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.getOrderList();
     },
     getOrderList: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       if (!_this.$lodash.isEmpty(_this.queryKey)) {
         param.push("queryKey=" + _this.queryKey);
       }
@@ -140,7 +141,7 @@ export default {
         .then(result => {
           try{
             let res = result.data;
-            _this.parentTotalPage = res.pages;
+            _this.parentTotalPage = res.total;
             let arr  = [];
             _this.$lodash.forEach(res.list, function(item) {
               let image = item.headImage;

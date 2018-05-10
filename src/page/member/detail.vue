@@ -104,7 +104,7 @@
                                 </tbody>
                               </table>
                               <v-empty :isShow="order.parentTotalPage==0"></v-empty>
-                            <page v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.parentCurrentpage" @on-change="orderParentCallback"></page>
+                            <page :pageSize="order.pageSize" v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.pageNo" @on-change="orderParentCallback"></page>
                             </div>
                           </div>
                           <div class="tab-pane"  v-bind:class="{'':tabType=='publish'||tabType=='taking','active':tabType=='orderRecords'}">
@@ -143,7 +143,7 @@
                               </tbody>
                             </table>
                             <v-empty :isShow="order.parentTotalPage==0"></v-empty>
-                            <page v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.parentCurrentpage" @on-change="orderParentCallback"></page>
+                            <page  :pageSize="order.pageSize" v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.pageNo" @on-change="orderParentCallback"></page>
                           </div>
                         </div>
                       </div>
@@ -187,7 +187,8 @@ export default {
       order: {
         list: [],
         parentTotalPage: 0,
-        parentCurrentpage: 1
+        pageNo: 1,
+        pageSize: 15,
       },
       user:{},
       memberId:0,
@@ -207,7 +208,7 @@ export default {
     tabChange: function (key) {
       let _this = this;
       _this.tabType = key;
-      _this.order.parentCurrentpage = 1;
+      _this.order.pageNo = 1;
       _this.order.parentTotalPage = 0;
       switch(key){
         case "publish":{_this.getTaskList('publish');}break;
@@ -217,22 +218,22 @@ export default {
     },
     orderParentCallback: function(cPage) {
       let _this = this;
-      _this.order.parentCurrentpage = cPage;
+      _this.order.pageNo = cPage;
       _this.getOrderList();
     },
     getOrderList: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.order.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.order.pageNo);
+      param.push("pageSize=" + _this.order.pageSize);
       param.push("userId=" + _this.memberId);
       
       _this.$axios
         .get("orders?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.order.parentTotalPage = res.pages;
+          _this.order.parentTotalPage = res.total;
           let arr = [];
           _this.$lodash.forEach(res.list, function(item) {
             item.createDateStr = _this.$moment(item.createDate).format('YYYY/MM/DD HH:mm');
@@ -250,8 +251,8 @@ export default {
         let _this = this;
         _this.PUSH_LOADING();
         let param = [];
-        param.push("pageNum=" + _this.order.parentCurrentpage);
-        param.push("pageSize=" + 15);
+        param.push("pageNum=" + _this.order.pageNo);
+        param.push("pageSize=" + _this.order.pageSize);
         param.push("userId=" + _this.memberId);
         param.push("type=" + key);
         
@@ -259,7 +260,7 @@ export default {
           .get("orders?" + param.join("&"))
           .then(result => {
             let res = result.data;
-            _this.order.parentTotalPage = res.pages;
+            _this.order.parentTotalPage = res.total;
             let arr = [];
             _this.$lodash.forEach(res.list, function(item) {
               item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');

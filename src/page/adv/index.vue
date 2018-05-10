@@ -90,7 +90,7 @@
                 </tbody>
             </table>
             <v-empty :isShow="parentTotalPage==0"></v-empty>
-            <page  v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+            <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
             </div>
         </div>
         </div>
@@ -128,7 +128,7 @@
               </table>
 
               <v-empty :isShow="projectTotalPage==0"></v-empty>
-              <page  v-if="projectTotalPage>0"  :total="projectTotalPage" show-total :current="projectCurrentpage" @on-change="projectCallBack"></page>
+              <page   :pageSize="projectPageSize" v-if="projectTotalPage>0"  :total="projectTotalPage" show-total :current="projectPageNo" @on-change="projectCallBack"></page>
 
             </div>
           </div>
@@ -170,7 +170,7 @@
               </table>
               
               <v-empty :isShow="pageTotalPage==0"></v-empty>
-              <page v-if="pageTotalPage>0"  :total="pageTotalPage" show-total :current="pageCurrentpage" @on-change="pageCallBack"></page>
+              <page  :pageSize="pagePageSize"  v-if="pageTotalPage>0"  :total="pageTotalPage" show-total :current="pagePageNo" @on-change="pageCallBack"></page>
             </div>
           </div>
         </div>
@@ -209,17 +209,20 @@ export default {
       selectProductIndex: -1,
       productList: [],
       parentTotalPage: 0,
-      parentCurrentpage: 1,
+      pageNo: 1,
+      pageSize:15,
 
       selectProjectIndex: -1,
       projectList: [],
       projectTotalPage: 0,
-      projectCurrentpage: 1,
+      projectPageNo: 1,
+      projectPageSize:15,
       
       selectPageIndex: -1,
       pageList: [],
       pageTotalPage:0,
-      pageCurrentpage:1
+      pagePageNo:1,
+      pagePageSize:15
 
     };
   },
@@ -342,28 +345,28 @@ export default {
     showSelectProductModal: function(index) {
       let _this = this;
       _this.selectProductIndex = index;
-      _this.parentCurrentpage = 1;
+      _this.pageNo = 1;
       _this.getProductList();
       $("#choose-product").modal("show");
     },
     parentCallback(cPage) {
       let _this = this;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.getProductList();
     },
     getProductList: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       param.push("status=1");
 
       _this.$axios
         .get("products?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.parentTotalPage = res.pages;
+          _this.parentTotalPage = res.total;
           _this.productList = res.list;
           _this.SHIFT_LOADING();
         })
@@ -444,27 +447,27 @@ export default {
     showSelectProjectModel: function (index) {
       let _this = this;
       _this.selectProjectIndex = index;
-      _this.projectCurrentpage = 1;
+      _this.projectPageNo = 1;
       _this.getProjectList();
       $("#choose-project").modal("show");
     },
     projectCallBack: function (cPage) {
       let _this = this;
-      _this.projectCurrentpage = cPage;
+      _this.projectPageNo = cPage;
       _this.getProjectList();
     },
     getProjectList: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.projectCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.projectPageNo);
+      param.push("pageSize=" + _this.projectPageSize);
 
       _this.$axios
         .get("projects?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.projectTotalPage = res.pages;
+          _this.projectTotalPage = res.total;
           _this.projectList = res.list;
           _this.SHIFT_LOADING();
         })
@@ -485,13 +488,13 @@ export default {
     showSelectPageModal: function (index) {
       let _this = this;
       _this.selectPageIndex = index;
-      _this.pageCurrentpage = 1;
+      _this.pagePageNo = 1;
       _this.getPageList();
       $("#choose-page").modal("show");
     },
     pageCallBack: function (cPage) {
       let _this = this;
-      _this.pageCurrentpage = cPage;
+      _this.pagePageNo = cPage;
       _this.getProjegetPageListctList();
     },
     selectPageSubmit: function (index) {
@@ -508,14 +511,14 @@ export default {
         let _this = this;
         _this.PUSH_LOADING();
         let param = [];
-        param.push("pageNum=" + _this.pageCurrentpage);
-        param.push("pageSize=" + 15);
+        param.push("pageNum=" + _this.pagePageNo);
+        param.push("pageSize=" + _this.pagePageSize);
 
         _this.$axios
           .get("customPages?" + param.join("&"))
           .then(result => {
             let res = result.data;
-            _this.pageTotalPage = res.pages;
+            _this.pageTotalPage = res.total;
             _this.pageList = res.list;
             _this.SHIFT_LOADING();
           })

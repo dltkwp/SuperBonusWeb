@@ -52,7 +52,7 @@
                   </table>
 
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                  <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
                 </div>
               </div>
             </div>
@@ -121,7 +121,8 @@ export default {
       ids: [],
       checkAll: false,
       parentTotalPage: 0,
-      parentCurrentpage: 1
+      pageNo: 1,
+      pageSize:15
     };
   },
   mounted() {
@@ -189,20 +190,20 @@ export default {
       let _this = this;
       _this.ids = [];
       _this.checkAll = false;
-      _this.parentCurrentpage = cPage;
+      _this.pageNo = cPage;
       _this.list();
     },
     getList: function() {
       let _this = this;
       _this.PUSH_LOADING();
       let param = [];
-      param.push("pageNum=" + _this.parentCurrentpage);
-      param.push("pageSize=" + 15);
+      param.push("pageNum=" + _this.pageNo);
+      param.push("pageSize=" + _this.pageSize);
       _this.$axios
         .get("customPages?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          _this.parentTotalPage = res.pages;
+          _this.parentTotalPage = res.total;
           try {
             _this.$lodash.forEach(res.list, function(item) {
                item.createdStr = _this.$moment(item.created).format('YYYY/MM/DD');
