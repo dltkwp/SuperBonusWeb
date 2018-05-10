@@ -90,8 +90,7 @@
                 </tbody>
             </table>
             <v-empty :isShow="parentTotalPage==0"></v-empty>
-            <pagination :totalPage="parentTotalPage" :currentPage="parentCurrentpage" :changeCallback="parentCallback"></pagination>
-
+            <page  v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
             </div>
         </div>
         </div>
@@ -129,7 +128,7 @@
               </table>
 
               <v-empty :isShow="projectTotalPage==0"></v-empty>
-              <pagination :totalPage="projectTotalPage" :currentPage="projectCurrentpage" :changeCallback="projectCallBack"></pagination>
+              <page  v-if="projectTotalPage>0"  :total="projectTotalPage" show-total :current="projectCurrentpage" @on-change="projectCallBack"></page>
 
             </div>
           </div>
@@ -171,8 +170,7 @@
               </table>
               
               <v-empty :isShow="pageTotalPage==0"></v-empty>
-              <pagination :totalPage="pageTotalPage" :currentPage="pageCurrentpage" :changeCallback="pageCallBack"></pagination>
-
+              <page v-if="pageTotalPage>0"  :total="pageTotalPage" show-total :current="pageCurrentpage" @on-change="pageCallBack"></page>
             </div>
           </div>
         </div>
@@ -189,7 +187,7 @@ import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
 import vEmpty from "@/components/empty/empty.vue";
-import pagination from "@/components/pagination/pagination.vue";
+import { Page } from 'iview'
 
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
@@ -201,7 +199,7 @@ export default {
     vTop,
     vFoot,
     vEmpty,
-    pagination
+    Page
   },
   data() {
     return {

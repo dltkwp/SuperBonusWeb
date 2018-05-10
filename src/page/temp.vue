@@ -18,12 +18,12 @@ import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
 import vEmpty from "@/components/empty/empty.vue";
-import pagination from "@/components/pagination/pagination.vue";
+import {Page,DatePicker } from "iview";
+
 
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
-import { DatePicker } from "iview";
 
 
 export default {
@@ -33,7 +33,7 @@ export default {
     vFoot,
     vEmpty,
     DatePicker,
-    pagination
+    Page
   },
   data() {
     return {};

@@ -81,7 +81,7 @@
                     </tbody>
                   </table>
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <pagination :totalPage="parentTotalPage" :currentPage="parentCurrentpage" :changeCallback="parentCallback"></pagination>
+                  <page  v-if="parentTotalPage>0"  :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
                 </div>
               </div>
             </div>
@@ -90,223 +90,223 @@
       </div>
       </div>
 
-        <!-- 新增员工弹出层 开始 -->
-            <div id="add-worker" class="modal fade" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">新增员工</h4>
-                    </div>
-                    <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">员工姓名</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入员工姓名" class="form-control">
-                            </div>
-                            </div>
-                            <div class="form-group">
-                                    <label class="col-sm-3 control-label">照片:</label>
-                                    <div class="col-sm-9">
-                                    <div class="img-upload">
+    <!-- 新增员工弹出层 开始 -->
+        <div id="add-worker" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">新增员工</h4>
+                </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">员工姓名</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入员工姓名" class="form-control">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                                <label class="col-sm-3 control-label">照片:</label>
+                                <div class="col-sm-9">
+                                <div class="img-upload">
 
-                                    </div>
-                                        <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
-                                    </div>
                                 </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">手机号</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入手机号" class="form-control">
-                            </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">权限</label>
-                            <div class="col-lg-8">
-                                <select class="form-control">
-                                <option></option>
-
-                                <option>客服</option>
-                                    <option>总监</option>
-                                </select>
-                            </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">职位</label>
-                            <div class="col-lg-8">
-                                <select class="form-control">
-                                <option></option>
-                                <option>客服</option>
-                                    <option>总监</option>
-                                </select>
-                            </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">初始登录密码</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入初始登录密码" class="form-control">
-                            </div>
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-
-                    <button type="button" class="btn btn-primary">保存</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div id="worker-set" class="modal fade" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">编辑资料</h4>
-                    </div>
-                    <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">员工姓名</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入员工姓名" class="form-control">
-                            </div>
-
-                            </div>
-                            <div class="form-group">
-                                    <label class="col-sm-3 control-label">照片:</label>
-                                    <div class="col-sm-9">
-                                    <div class="img-upload">
-                                        <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
-                                    </div>
-
-                                    </div>
+                                    <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
                                 </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">手机号</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入手机号" class="form-control">
                             </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">权限</label>
-                            <div class="col-lg-8">
-                                <select class="form-control">
-                                <option></option>
-
-                                <option>客服</option>
-                                    <option>总监</option>
-                                </select>
-                            </div>
-                            </div>
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">职位</label>
-                            <div class="col-lg-8">
-                                <select class="form-control">
-                                <option></option>
-                                <option>客服</option>
-                                    <option>总监</option>
-                                </select>
-                            </div>
-                            </div>
-                        </form>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">手机号</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入手机号" class="form-control">
                         </div>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-                    <button class="btn btn-white pull-left" data-toggle="modal" href="#pwd-set">修改密码</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div id="pwd-set" class="modal fade" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">修改密码</h4>
-                    </div>
-                    <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">新密码</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请输入新密码" class="form-control">
-                            </div>
-
-                            </div>
-
-                            <div class="form-group">
-                            <label class="col-lg-3 control-label">再次输入</label>
-                            <div class="col-lg-8">
-                                <input type="text" placeholder="请再次输入新密码" class="form-control">
-                            </div>
-                            </div>
-
-                        </form>
                         </div>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">权限</label>
+                        <div class="col-lg-8">
+                            <select class="form-control">
+                            <option></option>
 
-                    <button type="button" class="btn btn-primary">保存</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                            <option>客服</option>
+                                <option>总监</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">职位</label>
+                        <div class="col-lg-8">
+                            <select class="form-control">
+                            <option></option>
+                            <option>客服</option>
+                                <option>总监</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">初始登录密码</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入初始登录密码" class="form-control">
+                        </div>
+                        </div>
+                    </form>
                     </div>
                 </div>
+                </div>
+                <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
-            <div id="stop-set" class="modal fade" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">温馨提示</h4>
-                    </div>
-                    <div class="modal-body">
-                    <div class="alert alert-danger">
-                                            确定停用员工吗？停用后，员工将无法登录。
-                                        </div>
-                    </div>
-                    <div class="modal-footer">
+            </div>
+        </div>
+        <div id="worker-set" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑资料</h4>
+                </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">员工姓名</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入员工姓名" class="form-control">
+                        </div>
 
-                    <button type="button" class="btn btn-primary">确定</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                        </div>
+                        <div class="form-group">
+                                <label class="col-sm-3 control-label">照片:</label>
+                                <div class="col-sm-9">
+                                <div class="img-upload">
+                                    <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
+                                </div>
+
+                                </div>
+                            </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">手机号</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入手机号" class="form-control">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">权限</label>
+                        <div class="col-lg-8">
+                            <select class="form-control">
+                            <option></option>
+
+                            <option>客服</option>
+                                <option>总监</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">职位</label>
+                        <div class="col-lg-8">
+                            <select class="form-control">
+                            <option></option>
+                            <option>客服</option>
+                                <option>总监</option>
+                            </select>
+                        </div>
+                        </div>
+                    </form>
                     </div>
                 </div>
+                </div>
+                <div class="modal-footer">
+                <button class="btn btn-white pull-left" data-toggle="modal" href="#pwd-set">修改密码</button>
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
-            <div id="delete-set" class="modal fade" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">温馨提示</h4>
-                    </div>
-                    <div class="modal-body">
-                    <div class="alert alert-danger">
-                                            确定删除员工吗？
-                                        </div>
-                    </div>
-                    <div class="modal-footer">
+            </div>
+        </div>
+        <div id="pwd-set" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">新密码</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入新密码" class="form-control">
+                        </div>
 
-                    <button type="button" class="btn btn-primary">确定</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                        </div>
+
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">再次输入</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请再次输入新密码" class="form-control">
+                        </div>
+                        </div>
+
+                    </form>
                     </div>
                 </div>
+                </div>
+                <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
-        <!-- 新增员工弹出层 结束 -->
+            </div>
+        </div>
+        <div id="stop-set" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">温馨提示</h4>
+                </div>
+                <div class="modal-body">
+                <div class="alert alert-danger">
+                                        确定停用员工吗？停用后，员工将无法登录。
+                                    </div>
+                </div>
+                <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div id="delete-set" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">温馨提示</h4>
+                </div>
+                <div class="modal-body">
+                <div class="alert alert-danger">
+                                        确定删除员工吗？
+                                    </div>
+                </div>
+                <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    <!-- 新增员工弹出层 结束 -->
 
    </div>
 </template>
@@ -319,7 +319,7 @@ import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
 import vEmpty from "@/components/empty/empty.vue";
-import pagination from "@/components/pagination/pagination.vue";
+import { Page } from 'iview'
 
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
@@ -331,7 +331,7 @@ export default {
     vTop,
     vFoot,
     vEmpty,
-    pagination
+    Page
   },
   data() {
     return {

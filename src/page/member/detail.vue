@@ -104,7 +104,7 @@
                                 </tbody>
                               </table>
                               <v-empty :isShow="order.parentTotalPage==0"></v-empty>
-                              <pagination :totalPage="order.parentTotalPage" :currentPage="order.parentCurrentpage" :changeCallback="orderParentCallback"></pagination>
+                            <page v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.parentCurrentpage" @on-change="orderParentCallback"></page>
                             </div>
                           </div>
                           <div class="tab-pane"  v-bind:class="{'':tabType=='publish'||tabType=='taking','active':tabType=='orderRecords'}">
@@ -143,7 +143,7 @@
                               </tbody>
                             </table>
                             <v-empty :isShow="order.parentTotalPage==0"></v-empty>
-                            <pagination :totalPage="order.parentTotalPage" :currentPage="order.parentCurrentpage" :changeCallback="orderParentCallback"></pagination>
+                            <page v-if="order.parentTotalPage>0" :total="order.parentTotalPage" show-total :current="order.parentCurrentpage" @on-change="orderParentCallback"></page>
                           </div>
                         </div>
                       </div>
@@ -167,7 +167,7 @@ import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vFoot from "@/components/foot/foot.vue";
 import vEmpty from "@/components/empty/empty.vue";
-import pagination from "@/components/pagination/pagination.vue";
+import { Page } from 'iview'
 
 import moment from "../../util/moment"
 import superConst from "../../util/super-const";
@@ -180,7 +180,7 @@ export default {
     vTop,
     vFoot,
     vEmpty,
-    pagination
+    Page
   },
   data() {
     return {
