@@ -8,16 +8,16 @@
           <div class="col-lg-12">
             <div class="tabs-container">
               <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-1"> 权限设置</a></li>
-                <li><a data-toggle="tab" href="#tab-2"> 职位设置</a></li>
+                <li v-bind:class="{'active':tabType=='permission'}" @click="tabChange('permission')"><a data-toggle="tab" href="#tab-1"> 权限设置</a></li>
+                <li v-bind:class="{'active':tabType=='position'}"  @click="tabChange('position')"><a data-toggle="tab" href="#tab-2"> 职位设置</a></li>
               </ul>
               <div class="tab-content">
-                <div id="tab-1" class="tab-pane active">
+                <div class="tab-pane" v-bind:class="{'active':tabType=='permission'}" >
                   <div class="panel-body">
                     <div class="row">
                       <div class="col-md-12">
-                        <div class="btn btn-primary" data-toggle="modal" href="#add-power">新增权限</div>
-                        <div class="btn btn-white" data-toggle="modal" href="#edit-power">权限管理</div>
+                        <div class="btn btn-primary" @click="showSavePermissionModal()">新增权限</div>
+                        <div class="btn btn-white" @click="showPermissionManagerModal()">权限管理</div>
                       </div>
                     </div>
                     <fieldset class="form-horizontal m-t-lg">
@@ -76,11 +76,11 @@
 
                   </div>
                 </div>
-                <div id="tab-2" class="tab-pane ">
+                <div class="tab-pane" v-bind:class="{'active':tabType=='position'}" >
                   <div class="panel-body">
                     <div class="row m-b-sm">
                       <div class="col-md-12">
-                        <div class="btn btn-primary" data-toggle="modal" href="#add-duty">新增职位</div>
+                        <div class="btn btn-primary" @click="showSavePositionModal()">新增职位</div>
                       </div>
                     </div>
                     <div class="table-responsive ">
@@ -92,19 +92,16 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr v-for="(item,index) in positionList" :key='index'>
+                            <td>{{'*********1'}}</td>
                             <td>
-                            管理员
-                            </td>
-                            <td>
-                              <a class="btn btn-white btn-sm" data-toggle="modal" href="#duty-set">编辑</a>
-                              <a class="btn btn-white btn-sm" data-toggle="modal" href="#delete-set">删除</a>
+                              <a class="btn btn-white btn-sm" @click="showPositionEditModal(index)">编辑</a>
+                              <a class="btn btn-white btn-sm" @click="showPositionDeleteConfirmModal(index)">删除</a>
                             </td>
                           </tr>
                         </tbody>
                       </table>
-                        <v-empty :isShow="parentTotalPage==0"></v-empty>
-                      <page v-if="parentTotalPage>0"   :total="parentTotalPage" show-total :current="parentCurrentpage" @on-change="parentCallback"></page>
+                        <v-empty :isShow="positionList.length==0"></v-empty>
                     </div>
                   </div>
                 </div>
@@ -116,175 +113,162 @@
       </div>
 
 
-          <div id="add-power" class="modal fade" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title">新增权限</h4>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <form class="form-horizontal">
-                <div class="form-group">
-                  <label class="col-lg-3 control-label">权限名称</label>
-                  <div class="col-lg-8">
-                    <input type="email" placeholder="请输入权限名称" class="form-control">
-                  </div>
+      <div id="add-power" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">新增权限</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-lg-3 control-label">权限名称</label>
+                      <div class="col-lg-8">
+                        <input type="email" placeholder="请输入权限名称" class="form-control">
+                      </div>
 
+                    </div>
+
+                  </form>
                 </div>
-
-              </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">保存</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">保存</button>
-          <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-        </div>
       </div>
-    </div>
-  </div>
 
-  <div id="edit-power" class="modal fade" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title">新增权限</h4>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <table class="table table-bordered table-stripped text-center">
-                <thead>
-                  <tr>
-
-                    <th class="text-center"> 权限名称 </th>
-                    <th class="text-center"> 操作 </th>
-
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-
-                    <td>
-                      <input class="form-control" value="管理员">
-
-                    </td>
-
-                    <td>
-                      <a class="btn btn-white btn-sm" href="#">删除</a>
-                    </td>
-                  </tr>
-                  <tr>
-
-                    <td>
-                      <input class="form-control" value="客服">
-
-                    </td>
-
-                    <td>
-                      <a class="btn btn-white btn-sm" href="#">删除</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      <div id="edit-power" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">新增权限</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <table class="table table-bordered table-stripped text-center">
+                    <thead>
+                      <tr>
+                        <th class="text-center"> 权限名称 </th>
+                        <th class="text-center"> 操作 </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <input class="form-control" value="管理员">
+                        </td>
+                        <td>
+                          <a class="btn btn-white btn-sm" href="#">删除</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <input class="form-control" value="客服">
+                        </td>
+                        <td>
+                          <a class="btn btn-white btn-sm" href="#">删除</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">保存</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">保存</button>
-          <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-        </div>
       </div>
-    </div>
-  </div>
 
-  <div id="delete-set" class="modal fade" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title">温馨提示</h4>
-        </div>
-        <div class="modal-body">
-          <div class="alert alert-danger">
-                                确定删除职位吗？
-                            </div>
-        </div>
-        <div class="modal-footer">
+      <div id="delete-set" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">温馨提示</h4>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-danger">
+                                    确定删除职位吗？
+                                </div>
+            </div>
+            <div class="modal-footer">
 
-          <button type="button" class="btn btn-primary">确定</button>
-          <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div id="add-duty" class="modal fade" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-md">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title">新增职位</h4>
+              <button type="button" class="btn btn-primary">确定</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+            </div>
           </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-sm-12">
-                <form class="form-horizontal">
-                  <div class="form-group">
-                    <label class="col-lg-3 control-label">职位名称</label>
-                    <div class="col-lg-8">
-                      <input type="email" placeholder="请输入职位名称" class="form-control">
-                    </div>
+        </div>
+      </div>
+      
+      <div id="add-duty" class="modal fade" aria-hidden="true" style="display: none;">
+          <div class="modal-dialog modal-md">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">新增职位</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label class="col-lg-3 control-label">职位名称</label>
+                        <div class="col-lg-8">
+                          <input type="email" placeholder="请输入职位名称" class="form-control" maxlength="20" v-model="positionSaveName">
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                </form>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @click="savePositionSubmit()">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">保存</button>
-            <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-          </div>
-        </div>
       </div>
-  </div>
-    
-  <div id="duty-set" class="modal fade" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-md">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title">编辑职位</h4>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-sm-12">
-                <form class="form-horizontal">
-                  <div class="form-group">
-                    <label class="col-lg-3 control-label">职位名称</label>
-                    <div class="col-lg-8">
-                      <input type="text" placeholder="请输入职位名称" class="form-control">
-                    </div>
-
+        
+      <div id="duty-set" class="modal fade" aria-hidden="true" style="display: none;">
+          <div class="modal-dialog modal-md">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑职位</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label class="col-lg-3 control-label">职位名称</label>
+                        <div class="col-lg-8">
+                          <input type="text" placeholder="请输入职位名称" class="form-control" v-model="positionEditName" maxlength="20">
+                        </div>
+                      </div>
+                    </form>
                   </div>
-
-                </form>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @click="positionEditSubmit()">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-
-            <button type="button" class="btn btn-primary">保存</button>
-            <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-          </div>
-        </div>
       </div>
-  </div>
-
-
 
    </div>
 </template>
@@ -299,35 +283,90 @@ import vEmpty from "@/components/empty/empty.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
-import { DatePicker,Page } from "iview";
-
+// import { DatePicker, Page } from "iview";
 
 export default {
   components: {
-   vMenus,
+    vMenus,
     vTop,
     vEmpty,
-    DatePicker,
-    Page
   },
   data() {
     return {
-      parentTotalPage: 0,
-      parentCurrentpage: 1,
-      postitionList:[],
-      tabType: '',
+      tabType: "permission", // 
+      permissionList: [],
+      positionList: [],
+      optionIndex: -1,
+      positionEditName:'',
+      positionSaveName:'',
     };
   },
   mounted() {
     let _this = this;
+    _this.tabChange('permission');
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    parentCallback(cPage) {
+    showSavePermissionModal: function () {
       let _this = this;
-      _this.parentCurrentpage = cPage;
-      _this.list();
     },
+    showSavePositionModal: function () {
+      let _this = this;
+      _this.positionSaveName = '';
+      $('#add-duty').modal('show');
+    },
+    savePositionSubmit: function (){
+        let _this = this;
+        let name = _this.positionSaveName.trim();
+        if(!name) {
+          _this.$toast.warning('职位名称不可为空');
+          return false;
+        }
+    },
+    showPositionDeleteConfirmModal: function (index) {
+      let _this = this;
+      _this.optionIndex = index;
+      $("#delete-set").modal("show");
+    },
+    showPositionEditModal: function (index) {
+      let _this = this;
+      _this.optionIndex = index;
+      let cur = _this.positionList[index];
+      _this.positionEditName = cur.name;
+      $("#duty-set").modal('show');
+    },
+    deleteSubmit: function () {
+      let cur = _this.positionList[_this.optionIndex];
+      // 提交未完成
+    },
+    positionEditSubmit: function () {
+      let _this = this;
+      let cur = _this.positionList[_this.optionIndex];
+      let name = _this.positionEditName.trim();
+      if(!name) {
+         _this.$toast.warning('职位名称不可为空');
+        return false;
+      }
+      // 提交未完成
+    },
+    tabChange: function (key) {
+      let _this = this;
+      _this.tabType = key;
+      switch (key) {
+        case 'permission':{
+          _this.getPermission();
+        }break;
+        case 'position':{
+          _this.getPosition();
+        }break;
+      }
+    },
+    getPermission: function () {
+
+    },
+    getPosition: function () {
+
+    }
   }
 };
 </script>
