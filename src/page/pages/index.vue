@@ -43,7 +43,7 @@
                         <td> {{index + 1}}</td>
                         <td> {{item.title}}</td>
                         <td> {{item.createdStr}}</td>
-                        <td> {{item.creator}}</td>
+                        <td> {{item.realname}}</td>
                         <td>
                            <router-link :to="{path:'/pages/v_detail',query:{ id: item.id }}" class="btn btn-primary btn-sm">查看</router-link>
                         </td>
@@ -204,7 +204,7 @@ export default {
           _this.parentTotalPage = res.total;
           try {
             _this.$lodash.forEach(res.list, function(item) {
-               item.createdStr = _this.$moment(item.created).format('YYYY/MM/DD');
+               item.createdStr = item.createDate ? _this.$moment(item.createDate).format('YYYY/MM/DD'): '';
             });
           } catch (e) {
             console.error(e);

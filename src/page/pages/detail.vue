@@ -186,7 +186,9 @@ export default {
         .get("customPages/" + _this.id)
         .then(result => {
           let res = result.data;
+          res.created = _this.$moment(res.createDate).format('YYYY/MM/DD');
           _this.detail = res;
+          _this.SHIFT_LOADING();
         })
         .catch(err => {
           _this.SHIFT_LOADING();
@@ -209,13 +211,15 @@ export default {
       }
 
       let param = {
+        "id": _this.detail.id,
         "title":title,
-        "created":created,
-        "description":description
+        "createDate":created,
+        "description":description,
+        "type": _this.detail.type
       }
       _this.PUSH_LOADING();
       _this.$axios
-        .post("products",param)
+        .put("customPages",param)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
