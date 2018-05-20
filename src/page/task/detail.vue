@@ -84,7 +84,7 @@
                                     <span v-if="item.status=='refuse'">已拒绝</span>
                                     <span v-if="item.status=='done'">已完成</span>
                                 </td>
-                                <td>{{item.introducer ? (item.introducer + '推荐') : ''}}</td>
+                                <td>{{item.introducerName ? (item.introducerName + '推荐') : ''}}</td>
                                 <td> 
                                     <button class="btn btn-white btn-sm" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
                                     <button class="btn btn-white btn-sm" @click="agree(index)" v-if="personType=='apply' && item.status=='wait' " >同意</button> 
