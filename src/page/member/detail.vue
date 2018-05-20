@@ -245,7 +245,7 @@ export default {
           _this.SHIFT_LOADING();
         });
     },
-    getTaskList: function (kye) {
+    getTaskList: function (key) {
         let _this = this;
         _this.PUSH_LOADING();
         let param = [];

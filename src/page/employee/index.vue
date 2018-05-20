@@ -42,15 +42,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
+                      <tr v-for="(item,index) in employeeList" :key="index">
+                        <td>{{index + 1}}</td>
                           <td>001</td>
                         <td>
-                          <img class="img-sm img-circle" src="img/gallery/2.jpg"> 张三
+                          <img class="img-sm img-circle"  v-bind:src="item.headImage"> {{item.name}}
                         </td>
-                        <td> 152126128988</td>
-                        <td>客服权限</td>
-                        <td>客服</td>
+                        <td> {{item.phone}}</td>
+                        <td>{{item.roleName}}</td>
+                        <td>{{item.userType}}</td>
                         <td>正常</td>
                         <td>
                           <a class="btn btn-white btn-sm" data-toggle="modal" href="#worker-set">编辑</a>
