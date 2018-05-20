@@ -376,10 +376,14 @@ export default {
         _this.$toast.warning('悬赏标价不可为空');
         return false;
       }
-      if(!regex.money(_this.task.price)){
-          _this.$toast.warning('赏金格式不正确');
-          return false;
+       if (!_this.task.price) {
+        _this.$toast.warning('赏金不可为空');
+        return false;
       }
+      // if(!regex.money(_this.task.price)){
+      //     _this.$toast.warning('赏金格式不正确');
+      //     return false;
+      // }
       if(!(_this.datePicker[0] + _this.datePicker[1])){
           _this.$toast.warning('请选择有效期');
           return false;
@@ -476,8 +480,8 @@ export default {
           }
 
           var imgSize = size / 1024 / 1024;
-          if (imgSize > 3) {
-            _this.$toast.warning("图片大小超过3M,请上传小于3M的图片.");
+          if (imgSize > 1) {
+            _this.$toast.warning("图片大小超过1M,请上传小于1M的图片.");
             return false;
           }
           var formData = new FormData();
@@ -520,8 +524,8 @@ export default {
           }
 
           var imgSize = size / 1024 / 1024;
-          if (imgSize > 3) {
-            _this.$toast.warning("图片大小超过3M,请上传小于3M的图片.");
+          if (imgSize > 1) {
+            _this.$toast.warning("图片大小超过1M,请上传小于1M的图片.");
             return false;
           }
           var formData = new FormData();

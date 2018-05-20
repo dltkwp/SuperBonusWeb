@@ -161,8 +161,8 @@ export default {
           }
 
           var imgSize = size / 1024 / 1024;
-          if (imgSize > 3) {
-            _this.$toast.warning("图片大小超过3M,请上传小于3M的图片.");
+          if (imgSize > 1) {
+            _this.$toast.warning("图片大小超过1M,请上传小于1M的图片.");
             return false;
           }
           var formData = new FormData();

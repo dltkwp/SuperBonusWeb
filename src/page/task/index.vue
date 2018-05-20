@@ -76,7 +76,7 @@
                         </td>
                         <td>{{item.projectNumber}}</td>
                         <td>{{item.pricing}}</td>
-                        <td>¥{{item.price}}</td>
+                        <td>{{item.price}}</td>
                         <td >
                             <router-link :to="{path:'/member/v_detail',query:{memberId:user.id}}" v-for="(user,uindex) in item.users" :key="uindex">
                               <img class="img-circle img-sm" v-bind:title="user.realname||user.nickname" v-bind:src="user.headImage">
