@@ -81,9 +81,10 @@
                         <td>{{item.pricing}}</td>
                         <td>{{item.price}}</td>
                         <td >
-                            <router-link :to="{path:'/member/v_detail',query:{memberId:user.id}}" v-for="(user,uindex) in item.users" :key="uindex">
+                            <router-link :to="{path:'/member/v_detail',query:{memberId:user.id}}" v-if="uindex<=5" v-for="(user,uindex) in item.users" :key="uindex">
                               <img class="img-circle img-sm" v-bind:title="user.realname||user.nickname" v-bind:src="user.headImage">
                             </router-link>
+                            <img v-if="item.users.length>=6" class="img-circle img-sm" src="https://bonus.oss-cn-beijing.aliyuncs.com/product/4F4251432490448499239C8CFBDDC62A">
                         </td>
                         <td class="project-status">
                           <span class="label label-danger"  v-if="item.status=='wait'">待审核</span>
