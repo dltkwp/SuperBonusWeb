@@ -11,7 +11,7 @@
                             </span> 
                         </a>
                         <ul class="dropdown-menu  m-t-xs">
-                            <li><router-link to="/user/v_index"> 个人资料 </router-link></li>
+                            <!-- <li><router-link to="/user/v_index"> 个人资料 </router-link></li> -->
                             <li @click="gotoLogout"><a href="javascript:;;">退出</a></li>
                         </ul>
                 </div>

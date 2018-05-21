@@ -93,7 +93,7 @@
                           <span class="label label-primary" v-if="item.status=='done'">已完成</span>
                         </td>
                         <td>
-                          <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" v-if="item.status=='undertake'||item.status=='done'">查看</router-link>
+                          <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" v-if="item.status=='undertake'||item.status=='done'" class="btn btn-white btn-sm">查看</router-link>
                           <router-link :to="{path:'/task/v_detail',query:{taskId:item.id}}" v-if="item.status=='onCall'"  class="btn btn-primary btn-sm">待处理</router-link>
                           <router-link :to="{path:'/task/v_edit',query:{taskId:item.id}}" v-if="item.status=='wait'"  class="btn btn-primary btn-sm">审核</router-link>
                         </td>
