@@ -182,7 +182,9 @@
                         <div class="form-group">
                           <label class="col-sm-2 control-label">图片:</label>
                           <div class="col-sm-6">
-                            <div class="img-upload"></div>
+                            <div class="img-upload" v-for="(item,index) in apply.imagesList" :key="index">
+                               <img v-bind:src="item.url" v-if="item.url&&item.code" style="width:90px;height:90px;">
+                            </div>
                           </div>
                         </div>
                           <div class="hr-line-dashed"></div>
@@ -196,7 +198,10 @@
                           <div class="form-group">
                             <label class="col-sm-2 control-label">销售周期:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">1个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==0'>1个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==1'>3个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==2'>6个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==3'>1年</p>
                             </div>
                           </div>
                           <div class="form-group">
@@ -354,7 +359,7 @@ export default {
           if (res.images && res.images.length>0) {
               let arr = res.images.split(',')
               _this.$lodash.forEach(arr,function(code,index){
-                  _this.imagesList[index] = {
+                  res.imagesList[index] = {
                       url:  superConst.IMAGE_STATIC_URL + code,
                       code: code
                   }
