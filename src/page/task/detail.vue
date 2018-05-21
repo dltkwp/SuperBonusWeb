@@ -583,11 +583,26 @@ export default {
     },
     agree: function (index) {
       let _this = this;
-       _this.userIndex = index;
-      _this.updateStatus('undertake',function(){
-          _this.$toast.success('操作成功');
-          _this.getPersons();
-      });
+      _this.userIndex = index;
+	  _this.PUSH_LOADING();
+      _this.loading = true;
+      let curUser = _this.personList[_this.userIndex];
+      _this.$axios
+        .post("projects/"+_this.taskId+'/users/' + curUser.userId + '/status?status=undertake')
+        .then(result => {
+          let res = result.data;
+          if(res.code && res.code >=0) {
+              _this.$toast.error(res.msg);
+          }else{
+            callback && callback();
+          }
+          _this.SHIFT_LOADING();
+          _this.loading = false;
+        })
+        .catch(err => {
+          _this.loading = false;
+          _this.SHIFT_LOADING();
+        });
     },
     updateStatus: function (status,callback) {
       let _this = this;
