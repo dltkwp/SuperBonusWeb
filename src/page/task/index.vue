@@ -68,9 +68,12 @@
                         <td class="project-title text-left">
                           <img class="img-md pull-left"  v-bind:src='item.imageUrl' v-if="item.imageUrl">
                           <div class="pull-left m-l-sm">
-                            <a href="javascript:;;">
+                            <a href="javascript:;;" v-if="item.startDate&&item.endDate">
                                 {{item.projectName}}<br>
                                 有效期：{{item.startDateStr}}～{{item.endDateStr}}
+                            </a>
+                            <a href="javascript:;;" v-if="!item.startDate&&!item.endDate">
+                                {{item.projectName}}<br>
                             </a>
                           </div>
                         </td>
