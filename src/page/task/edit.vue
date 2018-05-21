@@ -467,7 +467,8 @@ export default {
           "startDate":  _this.$moment(_this.datePicker[0]).valueOf(),
           "target": _this.task.target,
           "levelId":_this.levelId,
-          "pricing":_this.task.pricing
+          "pricing":_this.task.pricing,
+          "status":_this.task.status
         }
       _this.PUSH_LOADING();
       _this.$axios
