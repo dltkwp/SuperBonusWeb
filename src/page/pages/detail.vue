@@ -107,6 +107,7 @@ export default {
           document.getElementById("uploadFileEdit").click();
       }
     }
+    _this.$refs.myQuillEditor.quill.root.setAttribute('data-placeholder', "请输入信息");
     _this.$refs.myQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler);
     _this.getDetail();
   },

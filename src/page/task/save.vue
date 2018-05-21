@@ -309,6 +309,7 @@ export default {
           document.getElementById("uploadFileEdit").click();
       }
     }
+    _this.$refs.taskQuillEditor.quill.root.setAttribute('data-placeholder', "请输入信息");
     _this.$refs.taskQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler);
     _this.initImages();
     _this.getLevelList();

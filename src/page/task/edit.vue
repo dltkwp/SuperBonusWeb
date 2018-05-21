@@ -198,10 +198,10 @@
                           <div class="form-group">
                             <label class="col-sm-2 control-label">销售周期:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static" v-if='apply.cycle==0'>1个月</p>
-                              <p class="form-control-static" v-if='apply.cycle==1'>3个月</p>
-                              <p class="form-control-static" v-if='apply.cycle==2'>6个月</p>
-                              <p class="form-control-static" v-if='apply.cycle==3'>1年</p>
+                              <p class="form-control-static" v-if='apply.cycle==1'>1个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==3'>3个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==6'>6个月</p>
+                              <p class="form-control-static" v-if='apply.cycle==12'>1年</p>
                             </div>
                           </div>
                           <div class="form-group">
@@ -317,6 +317,7 @@ export default {
           document.getElementById("uploadFileEdit").click();
       }
     }
+    _this.$refs.taskQuillEditor.quill.root.setAttribute('data-placeholder', "请输入信息");
     _this.$refs.taskQuillEditor.quill.getModule("toolbar").addHandler("image", imgHandler);
     _this.initImages();
     _this.getLevelList();
@@ -349,24 +350,37 @@ export default {
       this.description = html
     },
     getApplyInfo: function() {
+      debugger;
        let _this = this;
       _this.PUSH_LOADING();
       _this.$axios
         .get("projects/" + _this.taskId+'/apply')
         .then(result => {
-          let res = result.data;
-          // 图片处理
-          if (res.images && res.images.length>0) {
-              let arr = res.images.split(',')
-              _this.$lodash.forEach(arr,function(code,index){
-                  res.imagesList[index] = {
-                      url:  superConst.IMAGE_STATIC_URL + code,
-                      code: code
-                  }
-              })
+          try {
+              let res = result.data;
+              // 图片处理
+              if (res.images && res.images.length>0) {
+                if(res.images.indexOf(',')>=0){
+                    let arr = res.images.split(',')
+                    _this.$lodash.forEach(arr,function(code,index){
+                        res.imagesList[index] = {
+                            url:  superConst.IMAGE_STATIC_URL + code,
+                            code: code
+                        }
+                    })
+                }else{
+                      res.imagesList = [];
+                      res.imagesList[0] = {
+                          url:  superConst.IMAGE_STATIC_URL + res.images,
+                          code: res.images
+                      }
+                }
+              }
+              _this.apply = res;
+              _this.SHIFT_LOADING();
+          } catch (error) {
+            console.error(error);
           }
-          _this.apply = res;
-          _this.SHIFT_LOADING();
         })
         .catch(err => {
           _this.SHIFT_LOADING();
