@@ -350,7 +350,6 @@ export default {
       this.description = html
     },
     getApplyInfo: function() {
-      debugger;
        let _this = this;
       _this.PUSH_LOADING();
       _this.$axios
