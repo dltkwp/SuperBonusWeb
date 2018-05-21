@@ -8,11 +8,11 @@
           <div class="col-lg-12">
             <div class="tabs-container">
               <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#tab-1"> 项目信息</a></li>
-                <!-- <li><a data-toggle="tab" href="#tab-2"> 项目资料</a></li> -->
+                <li  v-bind:class="{active:tabType=='base'}"><a href="javascript:;;" @click="tabChange('base')"> 项目信息</a></li>
+                <li v-bind:class="{active:tabType=='info'}" v-if="task.source=='user'"><a  href="javascript:;;"  @click="tabChange('info')"> 项目资料</a></li>
               </ul>
-              <div class="tab-context">
-                <div id="tab-1" class="tab-pane active">
+              <div class="tab-content">
+                <div class="tab-pane" v-bind:class="{active:tabType=='base'}">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
                       <div class="form-group" style="margin-top:10px;">
@@ -119,26 +119,26 @@
                     </fieldset>
                   </div>
                 </div>
-                <div id="tab-2" class="tab-pane hide">
+                <div v-if="task.source=='user'" class="tab-pane" v-bind:class="{active:tabType=='info'}">
                   <div class="panel-body">
                     <fieldset class="form-horizontal">
                         <h3>企业信息</h3>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">公司名称:</label>
                         <div class="col-sm-6">
-                          <p class="form-control-static">大连乐维科技有限公司</p>
+                          <p class="form-control-static">{{apply.company}}</p>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">联系人:</label>
                         <div class="col-sm-6">
-                          <p class="form-control-static">张三</p>
+                          <p class="form-control-static">{{apply.contact}}</p>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">联系电话:</label>
                         <div class="col-sm-6">
-                          <p class="form-control-static">15242612898</p>
+                          <p class="form-control-static">{{apply.phone}}</p>
                         </div>
                       </div>
                         <div class="hr-line-dashed"></div>
@@ -146,37 +146,37 @@
                         <div class="form-group">
                           <label class="col-sm-2 control-label">项目名称:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">天津户口对外推送</p>
+                            <p class="form-control-static">{{apply.projectName}}</p>
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-2 control-label">地区:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">天津</p>
+                            <p class="form-control-static">{{apply.area}}</p>
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-2 control-label">性质:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">实体产品</p>
+                            <p class="form-control-static">{{apply.properties}}</p>
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-2 control-label">产品价格:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">¥5000</p>
+                            <p class="form-control-static">{{apply.originPrice}}</p>
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-2 control-label">平台价格:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">¥2000</p>
+                            <p class="form-control-static">{{apply.price}}</p>
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-2 control-label">简介:</label>
                           <div class="col-sm-6">
-                            <p class="form-control-static">天津户口对外推荐，5个户口一共20000</p>
+                            <p class="form-control-static">{{apply.intoduction}}</p>
                           </div>
                         </div>
                         <div class="form-group">
@@ -190,7 +190,7 @@
                           <div class="form-group">
                             <label class="col-sm-2 control-label">产品数量:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">5</p>
+                              <p class="form-control-static">{{apply.projectNumber}}</p>
                             </div>
                           </div>
                           <div class="form-group">
@@ -202,31 +202,31 @@
                           <div class="form-group">
                             <label class="col-sm-2 control-label">项目背景:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">项目背景描述文字</p>
+                              <p class="form-control-static">{{apply.context}}</p>
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-sm-2 control-label">目标客户:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">目标客户描述</p>
+                              <p class="form-control-static">{{apply.target}}</p>
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-sm-2 control-label">优劣势:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">产品优劣势描述</p>
+                              <p class="form-control-static">{{apply.superiority}}</p>
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-sm-2 control-label">产品卖点:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">产品卖点描述</p>
+                              <p class="form-control-static">{{apply.sellingPoint}}</p>
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-sm-2 control-label">同行竞品:</label>
                             <div class="col-sm-6">
-                              <p class="form-control-static">同行竞品描述</p>
+                              <p class="form-control-static">{{apply.competitor}}</p>
                             </div>
                           </div>
                     </fieldset>
@@ -263,7 +263,6 @@ import { quillEditor } from 'vue-quill-editor'
 import Quill from 'quill'
 import { DatePicker } from "iview";
 
-
 export default {
   components: {
     vMenus,
@@ -288,8 +287,11 @@ export default {
             area:'',    //地区
             target:'',//   目标客户
             context:'',      //  项目背景
-            description: "", //  详细介绍
-        }
+            description: "", //  详细介绍,
+            source:'', // 来源
+        },
+        tabType:'base', //base : 项目基本信息， info: 项目信息
+        apply:{},
     };
   },
   computed: {
@@ -317,6 +319,13 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    tabChange: function(key){
+      let _this = this;
+      _this.tabType = key;
+      if(key=='info'){
+        _this.getApplyInfo();
+      }
+    },
     leveChange: function (levelId) {
         let _this = this;
         _this.levelId = levelId;
@@ -333,6 +342,30 @@ export default {
     onEditorChange({ quill, html, text }) {
       console.log('editor change!', quill, html, text)
       this.description = html
+    },
+    getApplyInfo: function() {
+       let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("projects/" + _this.taskId+'/apply')
+        .then(result => {
+          let res = result.data;
+          // 图片处理
+          if (res.images && res.images.length>0) {
+              let arr = res.images.split(',')
+              _this.$lodash.forEach(arr,function(code,index){
+                  _this.imagesList[index] = {
+                      url:  superConst.IMAGE_STATIC_URL + code,
+                      code: code
+                  }
+              })
+          }
+          _this.apply = res;
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
     submit: function () {
       let _this = this;
