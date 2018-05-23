@@ -26,40 +26,40 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工姓名" v-model="user">
+                          <input type="text" class="form-control" placeholder="请输入员工姓名" v-model="edit.name" maxlength="20">
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">手机号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工手机号" value="15242612898" disabled>
+                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="edit.phone" disabled readonly>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">照片:</label>
                         <div class="col-sm-6">
-                          <div class="img-upload">
-                            <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
+                          <div class="img-upload" @click="uploadImage">
+                            <img v-bind:src='edit.headImageUrl' v-if="edit.headImageUrl" style="width: 90px; height: 90px;">
+                            <!-- <div class="btn-delete" style="float: right;margin-right: -12px;"><i class="fa fa-times-circle"></i></div> -->
                           </div>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">权限:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" value="管理员" disabled>
+                          <input type="text" class="form-control" v-model="edit.permission" disabled readonly>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" value="管理员" disabled>
+                          <input type="text" class="form-control" v-model="edit.position" readonly disabled>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                          <button class="btn btn-primary" type="submit">保存</button>
-
+                          <button class="btn btn-primary" type="button" @click="updateUser">保存</button>
                         </div>
                       </div>
                     </fieldset>
@@ -95,6 +95,11 @@
         </div>
       </div>
       </div>
+
+    <form action="" id="uploadImgForm" style="display:none;">
+        <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
+    </form>
+
    </div>
 </template>
 
@@ -118,14 +123,18 @@ export default {
   data() {
     return {
       edit:{
-
+        name:'',
+        phone:'',
+        headImage:'',
+        headImageUrl:'',
+        permission:'',
+        position:''
       },
       pwd:{
         oldPwd:'',
         newPwd:''
       },
-      tabType:'user',
-      headImageUrl:''
+      tabType:'user'
     };
   },
   mounted() {
@@ -134,6 +143,32 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    updateUser: function () {
+      let _this = this;
+      let name = _this.edit.name;
+      if(!name){
+        _this.$toast.warning('姓名不可为空');
+        return false;
+      }
+      // 调用接口
+
+      _this.PUSH_LOADING();
+      _this.$axios
+        .put("user/",param)
+        .then(result => {
+          let res = result.data;
+          if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+          }else{
+             _this.$toast.success('操作成功');
+          }
+          _this.SHIFT_LOADING();
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+
+    },
     updatePwd: function () {
       let _this = this;
       let oldPwd = _this.pwd.oldPwd;
@@ -181,21 +216,21 @@ export default {
       return ;
       _this.PUSH_LOADING();
       _this.$axios
-        .put("products",param)
+        .put("user/",param)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
               _this.$toast.error(res.msg);
           }else{
-            _this.SHIFT_LOADING();
-            _this.$toast.success("操作成功");
+            _this.edit = res;
           }
+          _this.SHIFT_LOADING();
         })
         .catch(err => {
           _this.SHIFT_LOADING();
         });
     },
-    uploadImage: function(index) {
+    uploadImage: function() {
       let _this = this;
       $("#uploadFile").val(null);
       if ($("#uploadFile").val()) {
@@ -236,7 +271,7 @@ export default {
             })
             .then(result => {
               let res = result.data;
-              _this.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
+              _this.edit.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
               _this.edit.headImage = res.fileCode;
               _this.$toast.success("操作成功");
             })
