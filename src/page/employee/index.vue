@@ -105,31 +105,29 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">员工姓名</label>
                         <div class="col-lg-8">
-                            <input type="text" placeholder="请输入员工姓名" class="form-control">
+                            <input type="text" placeholder="请输入员工姓名" class="form-control" maxlength="20" v-model="save.username">
                         </div>
                         </div>
                         <div class="form-group">
-                                <label class="col-sm-3 control-label">照片:</label>
-                                <div class="col-sm-9">
-                                <div class="img-upload">
-
+                              <label class="col-sm-3 control-label">照片:</label>
+                              <div class="col-sm-9">
+                                <div class="img-upload" @click="uploadImage">
+                                  <img v-bind:src='headImageUrl' v-if="headImageUrl" style="width: 90px; height: 90px;">
                                 </div>
-                                    <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
-                                </div>
+                              </div>
                             </div>
                         <div class="form-group">
                         <label class="col-lg-3 control-label">手机号</label>
                         <div class="col-lg-8">
-                            <input type="text" placeholder="请输入手机号" class="form-control">
+                            <input type="text" placeholder="请输入手机号" class="form-control" maxlength="11" v-model="save.username">
                         </div>
                         </div>
                         <div class="form-group">
                         <label class="col-lg-3 control-label">权限</label>
                         <div class="col-lg-8">
                             <select class="form-control">
-                            <option></option>
-
-                            <option>客服</option>
+                                <option></option>
+                                <option>客服</option>
                                 <option>总监</option>
                             </select>
                         </div>
@@ -308,6 +306,10 @@
         </div>
     <!-- 新增员工弹出层 结束 -->
 
+        <form action="" id="uploadImgForm" style="display:none;">
+            <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
+        </form>
+
    </div>
 </template>
 
@@ -318,7 +320,7 @@ import * as types from "@/store/mutation-types.js";
 import vMenus from "@/components/menus/menus.vue";
 import vTop from "@/components/top/top.vue";
 import vEmpty from "@/components/empty/empty.vue";
-import { Page } from 'iview'
+import { Page } from "iview";
 
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
@@ -337,7 +339,16 @@ export default {
       pageNo: 1,
       pageSize: 15,
       queryKey: "",
-      employeeList: []
+      employeeList: [],
+      headImageUrl: "",
+      optType:'save',
+      save: {
+        name: "",
+        phone: "",
+        permissionId: "",
+        positionId: "",
+        password: ""
+      }
     };
   },
   mounted() {
@@ -350,7 +361,6 @@ export default {
 
     list: function() {
       let _this = this;
-      return false; // 尬码
       _this.PUSH_LOADING();
       let param = [];
       param.push("pageNum=" + _this.pageNo);
@@ -359,7 +369,7 @@ export default {
         param.push("queryKey=" + _this.queryKey);
       }
       _this.$axios
-        .get("employee?" + param.join("&"))
+        .get("employees?" + param.join("&"))
         .then(result => {
           let res = result.data;
           _this.parentTotalPage = res.total;
@@ -396,14 +406,74 @@ export default {
       _this.pageNo = 1;
       _this.list();
     },
+    showEditModal: function(){
+        let _this = this;
+        _this.headImageUrl = '';
+        _this.optType = "save";
+        $("#add-worker").modal("show");
+    },
     showSaveModal: function() {
-      // 设置初始变量
+      let _this = this;
+      _this.headImageUrl = '';
+      _this.optType = "save";
       $("#add-worker").modal("show");
+    },
+    uploadImage: function() {
+      let _this = this;
+      $("#uploadFile").val(null);
+      if ($("#uploadFile").val()) {
+        document.getElementById("uploadImgForm").reset();
+      }
+      document.getElementById("uploadFile").click();
+    },
+    imgUploadFileChange: function(event) {
+      let _this = this;
+      if (event) {
+        var filePath = "";
+        var size = 0;
+        var updatingCount = 0;
+
+        if (event && event.target && event.target.files) {
+          var file = event.target.files[0];
+          size = file.size || 0;
+          filePath = file.name;
+          var index = filePath.lastIndexOf(".");
+          var suffix = filePath.substring(index, filePath.length);
+
+          if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(suffix)) {
+            _this.$toast.warning("图片类型必须是.gif,jpeg,jpg,png中的一种");
+            return false;
+          }
+
+          var imgSize = size / 1024 / 1024;
+          if (imgSize > 1) {
+            _this.$toast.warning("图片大小超过1M,请上传小于1M的图片.");
+            return false;
+          }
+          var formData = new FormData();
+          formData.append("file", file);
+
+          _this.$axios
+            .post("upload", formData, {
+              headers: { "Content-Type": "multipart/form-data" }
+            })
+            .then(result => {
+              let res = result.data;
+              if(_this.optType=='save'){
+                _this.save.headImage = res.fileCode;
+              }else if(_this.optType =='edit'){
+                _this.edit.headImage = res.fileCode;
+              }
+              _this.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
+              _this.$toast.success("操作成功");
+            })
+            .catch(err => {});
+        }
+      }
     }
   }
 };
 </script>
 
 <style>
-
 </style>

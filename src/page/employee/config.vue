@@ -93,7 +93,7 @@
                         </thead>
                         <tbody>
                           <tr v-for="(item,index) in positionList" :key='index'>
-                            <td>{{'*********1'}}</td>
+                            <td>{{item.name}}</td>
                             <td>
                               <a class="btn btn-white btn-sm" @click="showPositionEditModal(index)">编辑</a>
                               <a class="btn btn-white btn-sm" @click="showPositionDeleteConfirmModal(index)">删除</a>
@@ -322,6 +322,23 @@ export default {
           _this.$toast.warning('职位名称不可为空');
           return false;
         }
+
+        _this.PUSH_LOADING();
+        _this.$axios
+          .post("positions",'name=' + name)
+          .then(result => {
+            let res = result.data;
+              _this.SHIFT_LOADING();
+            if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+            }else{
+              _this.$toast.success("操作成功");
+              _this.getPosition();
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
     },
     showPositionDeleteConfirmModal: function (index) {
       let _this = this;
@@ -336,8 +353,24 @@ export default {
       $("#duty-set").modal('show');
     },
     deleteSubmit: function () {
+      let _this = this;
       let cur = _this.positionList[_this.optionIndex];
-      // 提交未完成
+      _this.PUSH_LOADING();
+      _this.$axios
+        .put("positions/" + cur.id,'')
+        .then(result => {
+          let res = result.data;
+            _this.SHIFT_LOADING();
+          if(res.code&&res.code>0){
+            _this.$toast.error(res.msg);
+          }else{
+            _this.$toast.success("操作成功");
+            _this.getPosition();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
     positionEditSubmit: function () {
       let _this = this;
@@ -347,7 +380,25 @@ export default {
          _this.$toast.warning('职位名称不可为空');
         return false;
       }
-      // 提交未完成
+      _this.PUSH_LOADING();
+      _this.$axios
+        .put("positions",{
+          name:name,
+          id:cur.id
+        })
+        .then(result => {
+          let res = result.data;
+            _this.SHIFT_LOADING();
+          if(res.code&&res.code>0){
+            _this.$toast.error(res.msg);
+          }else{
+            _this.$toast.success("操作成功");
+            _this.getPosition();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
     tabChange: function (key) {
       let _this = this;
@@ -365,7 +416,22 @@ export default {
 
     },
     getPosition: function () {
-
+        let _this = this;
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("positions",'')
+          .then(result => {
+            let res = result.data;
+              _this.SHIFT_LOADING();
+            if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+            }else{
+              _this.positionList = result.data;
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
     }
   }
 };

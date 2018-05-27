@@ -50,11 +50,11 @@
             <!-- <li class="hide">
               <a href="merchant.html"><i class="fa fa-user-circle"></i> <span class="nav-label">商户管理</span> </a>
             </li> -->
-            <!-- <li v-bind:class="{active:parentKey==='Employee'}">
+            <li v-bind:class="{active:parentKey==='Employee'}">
                  <router-link to="/employee/v_index"> 
                   <i class="fa fa-group"></i> <span class="nav-label">员工管理</span>
                 </router-link>
-            </li>  -->
+            </li> 
             <!-- <li class="hide">
               <a href="question.html"><i class="fa fa-pencil"></i> <span class="nav-label">常见问题</span> </a>
             </li> -->
@@ -69,9 +69,9 @@
             <li v-bind:class="{active:parentKey==='SysCfg'}">
               <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
               <ul class="nav nav-second-level">
-                  <!-- <li v-bind:class="{active:childrenKey==='Employee'}">
+                  <li v-bind:class="{active:childrenKey==='Employee'}">
                     <router-link to="/employee/v_config">员工设置</router-link>
-                  </li> -->
+                  </li>
                   <li v-bind:class="{active:childrenKey==='Level'}"><router-link to="/member/v_level">会员等级设置</router-link></li>
               </ul>
             </li>
