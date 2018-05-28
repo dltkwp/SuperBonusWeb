@@ -86,9 +86,9 @@ export default {
                 _this.$toast.warning('手机号格式不正确');
                 return false;
             }
-            
+            debugger;
             _this.PUSH_LOADING();
-            _this.$axios.post('sms/send?phone=' + phone).then((result)=> {
+            _this.$axios.post('forget/sms/send?phone=' + phone).then((result)=> {
                 var res = result.data;
                 if(res.code&&res.code>0){
                     _this.isActiveSms = false;

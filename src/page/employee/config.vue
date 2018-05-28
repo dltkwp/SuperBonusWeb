@@ -24,10 +24,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">权限名称:</label>
                         <div class="col-sm-10">
-                          <div class="btn btn-danger">管理员</div>
-                          <div class="btn btn-default">客服</div>
-                          <div class="btn btn-default">市场</div>
-
+                          <div @click="roleItemClick(index)" class="btn" v-bind:class="{'btn-danger':item.id===curRoleId,'btn-default': item.id!==curRoleId}" v-for="(item,index) in roleList" :key="index">{{item.name}}</div>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -36,44 +33,27 @@
                         <div class="col-sm-10">
                           <table class="table table-bordered">
                             <tbody>
-                              <tr>
+                              <tr v-for="(item,index) in roleList" :key="index">
                                 <td style="width:150px;"><label class="checkbox-inline">
-                                    <input type="checkbox" value="option1" id="inlineCheckbox1">
-                                    会员管理 </label></td>
-                                <td>
-                                  <label class="checkbox-inline w-100"> <input type="checkbox" value="option1" id="inlineCheckbox1"> 新增会员 </label> <label class="checkbox-inline w-100">
-                                      <input type="checkbox" value="option2" id="inlineCheckbox2"> 编辑会员 </label> <label class="checkbox-inline w-100">
-                                      <input type="checkbox" value="option3" id="inlineCheckbox3"> 删除会员 </label>
+                                    <input type="checkbox"  v-bind:checked="item.select" >{{item.name}} </label>
                                 </td>
-                              </tr>
-                              <tr>
-                                <td style="width:150px;"><label class="checkbox-inline">
-                                    <input type="checkbox" value="option1" id="inlineCheckbox1">
-                                    会员管理 </label></td>
                                 <td>
-                                  <label class="checkbox-inline w-100"> <input type="checkbox" value="option1" id="inlineCheckbox1"> 新增会员 </label> <label class="checkbox-inline w-100">
-                                      <input type="checkbox" value="option2" id="inlineCheckbox2"> 编辑会员 </label> <label class="checkbox-inline w-100">
-                                      <input type="checkbox" value="option3" id="inlineCheckbox3"> 删除会员 </label>
+                                  <label class="checkbox-inline w-100" v-for="(sub,index) in item.subs" :key="index"> 
+                                      <input type="checkbox"  v-bind:checked="sub.select" > {{sub.name}} 
+                                  </label> 
                                 </td>
                               </tr>
                             </tbody>
                           </table>
                         </div>
                       </div>
-
-
-
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                          <button class="btn btn-primary" type="submit">保存</button>
-                          <button class="btn btn-white" type="submit">取消</button>
+                          <button class="btn btn-primary" @click="savePermission" type="button">保存</button>
                         </div>
                       </div>
                     </fieldset>
-
-
-
                   </div>
                 </div>
                 <div class="tab-pane" v-bind:class="{'active':tabType=='position'}" >
@@ -283,7 +263,6 @@ import vEmpty from "@/components/empty/empty.vue";
 import superConst from "../../util/super-const";
 import regex from "../../util/regex";
 import util from "../../util/util";
-// import { DatePicker, Page } from "iview";
 
 export default {
   components: {
@@ -294,9 +273,11 @@ export default {
   data() {
     return {
       tabType: "permission", // 
-      permissionList: [],
+      roleList: [],
       positionList: [],
+      permissionList:[],
       optionIndex: -1,
+      curRoleId: -1,
       positionEditName:'',
       positionSaveName:'',
     };
@@ -307,6 +288,17 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    savePermission: function () {
+
+    },
+    roleItemClick: function (index) {
+      let _this = this;
+      let cur = _this.roleList[index];
+      if(cur){
+        _this.curRoleId = cur.id;
+        _this.getPermissionByRoleId(cur.id);
+      }
+    },
     showSavePermissionModal: function () {
       let _this = this;
     },
@@ -405,15 +397,53 @@ export default {
       _this.tabType = key;
       switch (key) {
         case 'permission':{
-          _this.getPermission();
+          _this.getRoles();
         }break;
         case 'position':{
           _this.getPosition();
         }break;
       }
     },
-    getPermission: function () {
-
+    getPermissionByRoleId: function(roleId) {
+        let _this = this;
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("roles/" + roleId,'')
+          .then(result => {
+            let res = result.data;
+              _this.SHIFT_LOADING();
+            if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+            }else{
+              _this.permissionList = result.data;
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+    },
+    getRoles: function () {
+        let _this = this;
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("roles",'')
+          .then(result => {
+            let res = result.data;
+              _this.SHIFT_LOADING();
+            if(res.code&&res.code>0){
+              _this.$toast.error(res.msg);
+            }else{
+              _this.roleList = result.data;
+              if(_this.roleList.length>0){
+                let roleId = _this.roleList[0].id;
+                _this.roleId = roleId;
+                _this.getPermissionByRoleId(roleId);
+              }
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
     },
     getPosition: function () {
         let _this = this;

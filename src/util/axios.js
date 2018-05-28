@@ -33,8 +33,8 @@ export default {
           return Promise.reject(error.response.data)
         } else {
           if (error.message === 'Network Error') {
-            localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
-            window.location.href = '/v_login'
+            // localStorage.setItem(superConst.SUPER_TOKEN_KEY, '')
+            // window.location.href = '/v_login'
           }
           return Promise.reject(error)
         }

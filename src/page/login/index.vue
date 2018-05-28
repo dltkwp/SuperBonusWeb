@@ -14,7 +14,7 @@
                     <input type="password" class="form-control" placeholder="请输入密码" required="" v-model="pwd" maxlength="20">
                 </div>
                 <button type="button" @click="loginSubmit" class="btn btn-primary block full-width m-b">登录</button>
-                <!-- <router-link to="/v_forgetpwd"><small>忘记密码?</small></router-link> -->
+                <router-link to="/v_forgetpwd"><small>忘记密码?</small></router-link>
             </form>
         </div>
     </div>
