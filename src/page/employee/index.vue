@@ -423,6 +423,40 @@ export default {
         _this.$toast.warning("密码格式不正确");
         return false;
       }
+      if(_this.optType == 'save') {
+           _this.PUSH_LOADING();
+          _this.$axios
+            .post("employees",_this.save)
+            .then(result => {
+              let res = result.data;
+              _this.SHIFT_LOADING();
+              if (res.code && res.code > 0) {
+                _this.$toast.error(res.msg);
+              } else {
+                _this.$toast.success('操作成功');
+                _this.employeeList();
+              }
+            })
+            .catch(err => {
+              _this.SHIFT_LOADING();
+            });
+      }else if(_this.optType == 'edit'){
+            _this.$axios
+            .post("employees",_this.save)
+            .then(result => {
+              let res = result.data;
+              _this.SHIFT_LOADING();
+              if (res.code && res.code > 0) {
+                _this.$toast.error(res.msg);
+              } else {
+                _this.$toast.success('操作成功');
+                _this.employeeList();
+              }
+            })
+            .catch(err => {
+              _this.SHIFT_LOADING();
+            });
+      }
     },
     uploadImage: function() {
       let _this = this;
