@@ -46,42 +46,22 @@
                         <td>{{index + 1}}</td>
                           <td>001</td>
                         <td>
-                          <img class="img-sm img-circle"  v-bind:src="item.headImage"> {{item.name}}
+                          <img class="img-sm img-circle" v-if="item.headImage"  v-bind:src="item.headImage"> {{item.realname}}
                         </td>
-                        <td> {{item.phone}}</td>
+                        <td> {{item.username}}</td>
                         <td>{{item.roleName}}</td>
                         <td>{{item.userType}}</td>
-                        <td>正常</td>
+                        <td>{{item.statusName}}</td>
                         <td>
                           <a class="btn btn-white btn-sm" data-toggle="modal" href="#worker-set">编辑</a>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#stop-set">停用</a>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#delete-set">删除</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1</td>
-                          <td>002</td>
-                        <td>
-                          <img class="img-sm img-circle" src="img/gallery/1.jpg"> 李四
-
-                        </td>
-
-                        <td> 152126128988</td>
-                        <td>客服权限</td>
-                        <td>客服</td>
-                        <td>停用</td>
-
-
-                        <td>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#worker-set">编辑</a>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#stop-set">启用</a>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#delete-set">删除</a>
+                          <a class="btn btn-white btn-sm" href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
+                          <a class="btn btn-white btn-sm" data-toggle="modal" href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                   <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page :pageSize="pagePageSize"  v-if="parentTotalPage>0"  :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
+                  <page :pageSize="pageSize"  v-if="parentTotalPage>0"  :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
                 </div>
               </div>
             </div>
@@ -105,7 +85,7 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">员工姓名</label>
                         <div class="col-lg-8">
-                            <input type="text" placeholder="请输入员工姓名" class="form-control" maxlength="20" v-model="save.username">
+                            <input type="text" placeholder="请输入员工姓名" class="form-control" maxlength="20" v-model="save.realname">
                         </div>
                         </div>
                         <div class="form-group">
@@ -135,93 +115,27 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">职位</label>
                         <div class="col-lg-8">
-                            <select class="form-control">
-                            <option></option>
-                            <option>客服</option>
-                                <option>总监</option>
+                            <select class="form-control" v-model="save.positionId">
+                              <option  v-for="(p,index) in positionList" v-bind:value='p.id' :key="index">
+                                  {{p.name}}
+                              </option>
                             </select>
                         </div>
                         </div>
-                        <div class="form-group">
-                        <label class="col-lg-3 control-label">初始登录密码</label>
-                        <div class="col-lg-8">
-                            <input type="text" placeholder="请输入初始登录密码" class="form-control">
-                        </div>
+                        <div class="form-group" v-if="optType=='save'">
+                          <label class="col-lg-3 control-label">初始登录密码</label>
+                          <div class="col-lg-8">
+                              <input type="text" placeholder="请输入初始登录密码" class="form-control" maxlength="20" v-model="save.password">
+                          </div>
                         </div>
                     </form>
                     </div>
                 </div>
                 </div>
                 <div class="modal-footer">
-
-                <button type="button" class="btn btn-primary">保存</button>
-                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div id="worker-set" class="modal fade" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">编辑资料</h4>
-                </div>
-                <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                        <label class="col-lg-3 control-label">员工姓名</label>
-                        <div class="col-lg-8">
-                            <input type="text" placeholder="请输入员工姓名" class="form-control">
-                        </div>
-
-                        </div>
-                        <div class="form-group">
-                                <label class="col-sm-3 control-label">照片:</label>
-                                <div class="col-sm-9">
-                                <div class="img-upload">
-                                    <div class="btn-delete"><i class="fa fa-times-circle"></i></div>
-                                </div>
-
-                                </div>
-                            </div>
-                        <div class="form-group">
-                        <label class="col-lg-3 control-label">手机号</label>
-                        <div class="col-lg-8">
-                            <input type="text" placeholder="请输入手机号" class="form-control">
-                        </div>
-                        </div>
-                        <div class="form-group">
-                        <label class="col-lg-3 control-label">权限</label>
-                        <div class="col-lg-8">
-                            <select class="form-control">
-                            <option></option>
-
-                            <option>客服</option>
-                                <option>总监</option>
-                            </select>
-                        </div>
-                        </div>
-                        <div class="form-group">
-                        <label class="col-lg-3 control-label">职位</label>
-                        <div class="col-lg-8">
-                            <select class="form-control">
-                            <option></option>
-                            <option>客服</option>
-                                <option>总监</option>
-                            </select>
-                        </div>
-                        </div>
-                    </form>
-                    </div>
-                </div>
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-white pull-left" data-toggle="modal" href="#pwd-set">修改密码</button>
-                <button type="button" class="btn btn-primary">保存</button>
-                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                  <button class="btn btn-white pull-left" v-if="optType=='edit'" @click="showUpdatePasswordModal">修改密码</button>
+                  <button type="button" class="btn btn-primary" @click="saveSubmit">保存</button>
+                  <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
             </div>
@@ -238,28 +152,24 @@
                     <div class="col-sm-12">
                     <form class="form-horizontal">
                         <div class="form-group">
-                        <label class="col-lg-3 control-label">新密码</label>
-                        <div class="col-lg-8">
-                            <input type="text" placeholder="请输入新密码" class="form-control">
+                          <label class="col-lg-3 control-label">新密码</label>
+                          <div class="col-lg-8">
+                              <input type="text" placeholder="请输入新密码" class="form-control" maxlength="20" v-model="pwd.pwd">
+                          </div>
                         </div>
-
-                        </div>
-
                         <div class="form-group">
-                        <label class="col-lg-3 control-label">再次输入</label>
-                        <div class="col-lg-8">
-                            <input type="text" placeholder="请再次输入新密码" class="form-control">
+                          <label class="col-lg-3 control-label">再次输入</label>
+                          <div class="col-lg-8">
+                              <input type="text" placeholder="请再次输入新密码" class="form-control"  maxlength="20" v-model="pwd.repwd">
+                          </div>
                         </div>
-                        </div>
-
                     </form>
                     </div>
                 </div>
                 </div>
                 <div class="modal-footer">
-
-                <button type="button" class="btn btn-primary">保存</button>
-                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary">保存</button>
+                  <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
             </div>
@@ -268,18 +178,17 @@
             <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">温馨提示</h4>
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  <h4 class="modal-title">温馨提示</h4>
                 </div>
                 <div class="modal-body">
-                <div class="alert alert-danger">
-                                        确定停用员工吗？停用后，员工将无法登录。
-                                    </div>
+                  <div class="alert alert-danger">
+                      {{statusText}}
+                  </div>
                 </div>
                 <div class="modal-footer">
-
-                <button type="button" class="btn btn-primary">确定</button>
-                <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                  <button type="button" class="btn btn-primary" @click="statusSubmit">确定</button>
+                  <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
                 </div>
             </div>
             </div>
@@ -293,12 +202,12 @@
                 </div>
                 <div class="modal-body">
                 <div class="alert alert-danger">
-                                        确定删除员工吗？
-                                    </div>
+                    确定删除员工吗？
+                </div>
                 </div>
                 <div class="modal-footer">
 
-                <button type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-primary" @click="deleteSubmit">确定</button>
                 <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
                 </div>
             </div>
@@ -335,25 +244,33 @@ export default {
   },
   data() {
     return {
+      optIndex:-1,
       parentTotalPage: 0,
       pageNo: 1,
       pageSize: 15,
       queryKey: "",
       employeeList: [],
       headImageUrl: "",
-      optType:'save',
+      optType: "save",
+      positionList: [],
+      statusText:'',
       save: {
-        name: "",
-        phone: "",
+        realname: "",
+        username: "",
+        headImage: "",
         permissionId: "",
         positionId: "",
         password: ""
+      },
+      pwd:{
+        pwd:'',  
+        repwd:''
       }
     };
   },
   mounted() {
     let _this = this;
-
+    _this.getPositionList();
     _this.list();
   },
   methods: {
@@ -406,17 +323,106 @@ export default {
       _this.pageNo = 1;
       _this.list();
     },
-    showEditModal: function(){
+    updatePwdSubmit: function(){
         let _this = this;
-        _this.headImageUrl = '';
-        _this.optType = "save";
-        $("#add-worker").modal("show");
+        _this.optIndex = index;
+        let cur = _this.employeeList[index];
+        if(cur){
+          let pwd = _this.pwd.pwd;
+          let repwd = _this.pwd.repwd;
+          if(!regex.pwd(pwd)){
+            _this.$toast.warning('新密码格式不正确');
+            return false;
+          }
+          if(!regex.pwd(repwd)){
+            _this.$toast.warning('确认密码格式不正确');
+            return false;
+          }
+          if(pwd!==repwd){
+             _this.$toast.warning('两次密码不相等');
+            return false;
+          }
+
+           _this.PUSH_LOADING();
+          _this.$axios
+            .get("employees/" + cur.id, "password=" + pwd+'&password1=' + repwd)
+            .then(result => {
+              let res = result.data;
+              _this.SHIFT_LOADING();
+              if (res.code && res.code > 0) {
+                _this.$toast.error(res.msg);
+              } else {
+                _this.$toast.success('操作成功');
+                 $("#pwd-set").modal('hide');
+              }
+            })
+            .catch(err => {
+              _this.SHIFT_LOADING();
+            });
+        }
+    },
+    showUpdatePasswordModal: function(){
+       let _this = this;
+        _this.pwd.pwd = '';
+        _this.pwd.repwd = '';
+        $("#pwd-set").modal('show');
+    },
+    showEditModal: function(index) {
+      let _this = this;
+      _this.optIndex = index;
+      let cur = _this.employeeList[index];
+      if(cur){
+        // 进行赋值操作
+        _this.save.id = cur.id;
+        _this.save.realname = cur.realname;
+        _this.save.username = cur.username;
+        _this.save.permissionId = cur.permissionId;
+        _this.save.positionId = cur.positionId;
+      }
+      _this.headImageUrl = "";
+      _this.optType = "edit";
+      $("#add-worker").modal("show");
     },
     showSaveModal: function() {
       let _this = this;
-      _this.headImageUrl = '';
+      _this.headImageUrl = "";
+      _this.optType = "save";
+      _this.save.realname = "";
+      _this.save.username = "";
+      _this.save.headImage = "";
+      _this.save.permissionId = "";
+      _this.save.positionId = "";
+      _this.save.password = "";
       _this.optType = "save";
       $("#add-worker").modal("show");
+    },
+    saveSubmit: function() {
+      let _this = this;
+      let name = _this.save.realname.trim();
+      if (!name) {
+        _this.$toast.warning("名称不可为空");
+        return false;
+      }
+      if (!_this.save.headImage) {
+        _this.$toast.warning("请选择照片");
+        return false;
+      }
+      if (!regex.phone(_this.save.username.trim())) {
+        _this.$toast.warning("手机号格式不正确");
+        return false;
+      }
+      if (!_this.save.permissionId) {
+        _this.$toast.warning("请选择权限");
+        return false;
+      }
+      if (!_this.save.positionId) {
+        _this.$toast.warning("请选择权职位");
+        return false;
+      }
+      if (!regex.pwd(_this.save.password.trim())) {
+        _this.$toast.warning("密码格式不正确");
+        return false;
+      }
     },
     uploadImage: function() {
       let _this = this;
@@ -459,9 +465,9 @@ export default {
             })
             .then(result => {
               let res = result.data;
-              if(_this.optType=='save'){
+              if (_this.optType == "save") {
                 _this.save.headImage = res.fileCode;
-              }else if(_this.optType =='edit'){
+              } else if (_this.optType == "edit") {
                 _this.edit.headImage = res.fileCode;
               }
               _this.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
@@ -470,7 +476,87 @@ export default {
             .catch(err => {});
         }
       }
-    }
+    },
+    showStatusConfirm: function(index){
+      let _this = this;
+      _this.optIndex = index;
+      let cur = _this.employeeList[index];
+      if(cur){
+        _this.statusText = (cur.status == 'use') ? "确定停用员工吗？停用后，员工将无法登录。":"确定启用员工吗？";
+      }
+      $("#delete-set").modal("show");
+    },
+    statusSubmit: function () {
+      let _this = this;
+      let cur = _this.employeeList[_this.optIndex];
+      if(cur) { 
+          _this.PUSH_LOADING();
+          _this.$axios
+            .get("/employees/" + cur.id + "/status", "status="+(cur.status=='use'?"unUse":"use"))
+            .then(result => {
+              let res = result.data;
+              _this.SHIFT_LOADING();
+              if (res.code && res.code > 0) {
+                _this.$toast.error(res.msg);
+              } else {
+                _this.$toast.success('操作成功');
+                _this.employeeList();
+              }
+            })
+            .catch(err => {
+              _this.SHIFT_LOADING();
+            });
+      }
+    },
+    showDeleteConfirm: function(index) {
+      let _this = this;
+      _this.optIndex = index;
+      $("#delete-set").modal("show");
+    },
+    deleteSubmit: function() {
+      let _this = this;
+      let cur = _this.employeeList[_this.optIndex];
+      if(cur) { // /employees
+          _this.PUSH_LOADING();
+          _this.$axios
+            .get("employees/" + cur.id, "")
+            .then(result => {
+              let res = result.data;
+              _this.SHIFT_LOADING();
+              if (res.code && res.code > 0) {
+                _this.$toast.error(res.msg);
+              } else {
+                _this.$toast.success('操作成功');
+                _this.employeeList();
+              }
+            })
+            .catch(err => {
+              _this.SHIFT_LOADING();
+            });
+      }
+    },
+    getPositionList: function() {
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("positions", "")
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.positionList = result.data;
+            if (result.data && result.data.length > 0) {
+              _this.save.positionId = result.data[0].id;
+            }
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    },
+    getPermissionList: function() {}
   }
 };
 </script>
