@@ -6,7 +6,8 @@ const IS_DEBUG = true
 const POINT_INTEVAL = 1000 // 积分整长的步长
 const IMAGE_STATIC_URL = 'https://bonus.oss-cn-beijing.aliyuncs.com/product/'
 const HEAD_IMAGE_DEFAULT = 'https://bonus.oss-cn-beijing.aliyuncs.com/product/C9AFBBE570F0463382463838F21E5677.png'
-const LOGIN_USER_NAME_KEY = 'super-username-key'
+const LOGIN_USER_NAME_KEY = 'super-username-key'// 登录人的手机号存储的key
+const LOGIN_USER_INFO_KEY = 'super-user-info-key'
 
 module.exports = {
   SUPER_TOKEN_KEY,
@@ -15,5 +16,6 @@ module.exports = {
   POINT_INTEVAL,
   IMAGE_STATIC_URL,
   HEAD_IMAGE_DEFAULT,
-  LOGIN_USER_NAME_KEY
+  LOGIN_USER_NAME_KEY,
+  LOGIN_USER_INFO_KEY
 }

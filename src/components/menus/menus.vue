@@ -6,7 +6,7 @@
                 <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                           <span class="clear"> 
-                            <span class="block m-t-xs"> <strong class="font-bold">管理员</strong></span> 
+                            <span class="block m-t-xs"> <strong class="font-bold">{{userInfo.realname}}</strong></span> 
                               <span class="text-muted text-xs block">客服 <b class="caret"></b></span> 
                             </span> 
                         </a>
@@ -87,33 +87,25 @@ export default {
     return {
       parentKey: "Index",
       childrenKey: "Index",
-      userInfo: {
-        userName: "",
-        userType: ""
-      }
+      userInfo: {}
     };
   },
   mounted() {
     let _this = this;
-    // let uType = localStorage.getItem("ksx-user-type", "distributor");
-    // _this.uType = uType;
-
-    // let userInfo = localStorage.getItem("ksx-user-c");
-    // if (!_this.$lodash.isEmpty(userInfo)) {
-    //   let u = JSON.parse(userInfo);
-    //   _this.userInfo.userName = u.realname;
-    //   _this.userInfo.userType = u.userType;
-    // } else {
-    //   _this.$axios
-    //     .get("user")
-    //     .then(result => {
-    //       let res = result.data;
-    //       localStorage.setItem("ksx-user-c", JSON.stringify(result.data));
-    //       _this.userInfo.userName = res.realname;
-    //       _this.userInfo.userType = res.userType;
-    //     })
-    //     .catch(err => {});
-    // }
+    let userInfo = localStorage.getItem(superConst.LOGIN_USER_INFO_KEY);
+    if(!_this.$lodash.isEmpty(userInfo)){
+        let u = JSON.parse(userInfo);
+        _this.userInfo = u;
+    }else{
+          _this.$axios
+          .get("login/info")
+          .then(result => {
+            let res = result.data;
+            localStorage.setItem(superConst.LOGIN_USER_INFO_KEY, JSON.stringify(result.data));
+            _this.userInfo = res;
+          })
+          .catch(err => {});
+    }
     let meta = _this.$route.meta;
     _this.parentKey = meta.parentKey;
     _this.childrenKey = meta.childrenKey;
