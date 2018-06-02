@@ -115,7 +115,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" @click="savePermissionSubmit" class="btn btn-primary">保存</button>
+              <button type="button" @click="savePermissionSubmit()" class="btn btn-primary">保存</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
@@ -353,7 +353,7 @@ export default {
 
       _this.PUSH_LOADING();
       _this.$axios
-        .post("roles", "name=" + name)
+        .post("roles", {name: name})
         .then(result => {
           let res = result.data;
           _this.SHIFT_LOADING();
