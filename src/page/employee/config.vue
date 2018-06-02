@@ -107,17 +107,15 @@
                     <div class="form-group">
                       <label class="col-lg-3 control-label">权限名称</label>
                       <div class="col-lg-8">
-                        <input type="email" placeholder="请输入权限名称" class="form-control">
+                        <input type="email" placeholder="请输入权限名称" class="form-control" maxlength="15" v-model="permissionSaveName">
                       </div>
-
                     </div>
-
                   </form>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">保存</button>
+              <button type="button" @click="savePermissionSubmit" class="btn btn-primary">保存</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
@@ -129,7 +127,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-              <h4 class="modal-title">新增权限</h4>
+              <h4 class="modal-title">权限管理</h4>
             </div>
             <div class="modal-body">
               <div class="row">
@@ -142,20 +140,12 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr v-for="(item,index) in roleListManager" :key="index">
                         <td>
-                          <input class="form-control" value="管理员">
+                          <input class="form-control" value="管理员" maxlength="12" v-model="item.name">
                         </td>
                         <td>
-                          <a class="btn btn-white btn-sm" href="#">删除</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input class="form-control" value="客服">
-                        </td>
-                        <td>
-                          <a class="btn btn-white btn-sm" href="#">删除</a>
+                          <a class="btn btn-white btn-sm" href="javascript:;;" @click="deletePowerConfirm(index)">删除</a>
                         </td>
                       </tr>
                     </tbody>
@@ -164,8 +154,27 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">保存</button>
+              <button type="button" v-if="roleListManager.length>0" class="btn btn-primary">保存</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+       <div id="delete-power" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">温馨提示</h4>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-danger">确定删除权限吗？</div>
+            </div>
+            <div class="modal-footer">
+
+              <button type="button" class="btn btn-primary" @click="deletePowerSubmit">确定</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
             </div>
           </div>
         </div>
@@ -179,9 +188,7 @@
               <h4 class="modal-title">温馨提示</h4>
             </div>
             <div class="modal-body">
-              <div class="alert alert-danger">
-                                    确定删除职位吗？
-                                </div>
+              <div class="alert alert-danger">确定删除职位吗</div>
             </div>
             <div class="modal-footer">
 
@@ -268,94 +275,153 @@ export default {
   components: {
     vMenus,
     vTop,
-    vEmpty,
+    vEmpty
   },
   data() {
     return {
-      tabType: "permission", // 
+      tabType: "permission", //
       roleList: [],
+      roleListManager: [],
       positionList: [],
-      permissionList:[],
+      permissionList: [],
       optionIndex: -1,
       curRoleId: -1,
-      positionEditName:'',
-      positionSaveName:'',
+      positionEditName: "",
+      positionSaveName: "",
+      permissionSaveName: ""
     };
   },
   mounted() {
     let _this = this;
-    _this.tabChange('permission');
+    _this.SHIFT_LOADING();
+    _this.tabChange("permission");
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    savePermission: function () {
-
-    },
-    roleItemClick: function (index) {
+    savePermission: function() {},
+    roleItemClick: function(index) {
       let _this = this;
       let cur = _this.roleList[index];
-      if(cur){
+      if (cur) {
         _this.curRoleId = cur.id;
         _this.getPermissionByRoleId(cur.id);
       }
     },
-    showSavePermissionModal: function () {
+    deletePowerConfirm: function(index) {
       let _this = this;
+      _this.optionIndex = index;
+      $("#delete-power").modal("show");
     },
-    showSavePositionModal: function () {
+    deletePowerSubmit: function() {
       let _this = this;
-      _this.positionSaveName = '';
-      $('#add-duty').modal('show');
-    },
-    savePositionSubmit: function (){
-        let _this = this;
-        let name = _this.positionSaveName.trim();
-        if(!name) {
-          _this.$toast.warning('职位名称不可为空');
-          return false;
-        }
-
+      let cur = _this.roleListManager[_this.optionIndex];
+      if (cur) {
         _this.PUSH_LOADING();
         _this.$axios
-          .post("positions",'name=' + name)
+          .delete("roles/" + cur.id, "")
           .then(result => {
             let res = result.data;
-              _this.SHIFT_LOADING();
-            if(res.code&&res.code>0){
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
               _this.$toast.error(res.msg);
-            }else{
+            } else {
               _this.$toast.success("操作成功");
-              _this.getPosition();
+              $("").modal("hide");
             }
           })
           .catch(err => {
             _this.SHIFT_LOADING();
           });
+      }
     },
-    showPositionDeleteConfirmModal: function (index) {
+    showPermissionManagerModal: function() {
+      let _this = this;
+      $("#edit-power").modal("show");
+    },
+    showSavePermissionModal: function() {
+      let _this = this;
+      _this.permissionSaveName = "";
+      $("#add-power").modal("show");
+    },
+    savePermissionSubmit: function() {
+      let _this = this;
+      let name = _this.permissionSaveName;
+      if (!name) {
+        _this.$toast.warning("名称不可为空");
+        return false;
+      }
+
+      _this.PUSH_LOADING();
+      _this.$axios
+        .post("roles", "name=" + name)
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.$toast.success("操作成功");
+            _this.roleList();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    },
+    showSavePositionModal: function() {
+      let _this = this;
+      _this.positionSaveName = "";
+      $("#add-duty").modal("show");
+    },
+    savePositionSubmit: function() {
+      let _this = this;
+      let name = _this.positionSaveName.trim();
+      if (!name) {
+        _this.$toast.warning("职位名称不可为空");
+        return false;
+      }
+
+      _this.PUSH_LOADING();
+      _this.$axios
+        .post("positions", "name=" + name)
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.$toast.success("操作成功");
+            _this.getPosition();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    },
+    showPositionDeleteConfirmModal: function(index) {
       let _this = this;
       _this.optionIndex = index;
       $("#delete-set").modal("show");
     },
-    showPositionEditModal: function (index) {
+    showPositionEditModal: function(index) {
       let _this = this;
       _this.optionIndex = index;
       let cur = _this.positionList[index];
       _this.positionEditName = cur.name;
-      $("#duty-set").modal('show');
+      $("#duty-set").modal("show");
     },
-    deleteSubmit: function () {
+    deleteSubmit: function() {
       let _this = this;
       let cur = _this.positionList[_this.optionIndex];
       _this.PUSH_LOADING();
       _this.$axios
-        .put("positions/" + cur.id,'')
+        .put("positions/" + cur.id, "")
         .then(result => {
           let res = result.data;
-            _this.SHIFT_LOADING();
-          if(res.code&&res.code>0){
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
             _this.$toast.error(res.msg);
-          }else{
+          } else {
             _this.$toast.success("操作成功");
             _this.getPosition();
           }
@@ -364,26 +430,26 @@ export default {
           _this.SHIFT_LOADING();
         });
     },
-    positionEditSubmit: function () {
+    positionEditSubmit: function() {
       let _this = this;
       let cur = _this.positionList[_this.optionIndex];
       let name = _this.positionEditName.trim();
-      if(!name) {
-         _this.$toast.warning('职位名称不可为空');
+      if (!name) {
+        _this.$toast.warning("职位名称不可为空");
         return false;
       }
       _this.PUSH_LOADING();
       _this.$axios
-        .put("positions",{
-          name:name,
-          id:cur.id
+        .put("positions", {
+          name: name,
+          id: cur.id
         })
         .then(result => {
           let res = result.data;
-            _this.SHIFT_LOADING();
-          if(res.code&&res.code>0){
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
             _this.$toast.error(res.msg);
-          }else{
+          } else {
             _this.$toast.success("操作成功");
             _this.getPosition();
           }
@@ -392,81 +458,85 @@ export default {
           _this.SHIFT_LOADING();
         });
     },
-    tabChange: function (key) {
+    tabChange: function(key) {
       let _this = this;
       _this.tabType = key;
       switch (key) {
-        case 'permission':{
-          _this.getRoles();
-        }break;
-        case 'position':{
-          _this.getPosition();
-        }break;
+        case "permission":
+          {
+            _this.getRoles();
+          }
+          break;
+        case "position":
+          {
+            _this.getPosition();
+          }
+          break;
       }
     },
     getPermissionByRoleId: function(roleId) {
-        let _this = this;
-        _this.PUSH_LOADING();
-        _this.$axios
-          .get("roles/" + roleId,'')
-          .then(result => {
-            let res = result.data;
-              _this.SHIFT_LOADING();
-            if(res.code&&res.code>0){
-              _this.$toast.error(res.msg);
-            }else{
-              _this.permissionList = result.data;
-            }
-          })
-          .catch(err => {
-            _this.SHIFT_LOADING();
-          });
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("roles/" + roleId, "")
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.permissionList = result.data;
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
-    getRoles: function () {
-        let _this = this;
-        _this.PUSH_LOADING();
-        _this.$axios
-          .get("roles",'')
-          .then(result => {
-            let res = result.data;
-              _this.SHIFT_LOADING();
-            if(res.code&&res.code>0){
-              _this.$toast.error(res.msg);
-            }else{
-              _this.roleList = result.data;
-              if(_this.roleList.length>0){
-                let roleId = _this.roleList[0].id;
-                _this.roleId = roleId;
-                _this.getPermissionByRoleId(roleId);
-              }
+    getRoles: function() {
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("roles", "")
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.roleList = result.data;
+            _this.roleListManager = _this.$lodash.cloneDeep(_this.roleList);
+            if (_this.roleList.length > 0) {
+              let roleId = _this.roleList[0].id;
+              _this.roleId = roleId;
+              _this.getPermissionByRoleId(roleId);
             }
-          })
-          .catch(err => {
-            _this.SHIFT_LOADING();
-          });
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     },
-    getPosition: function () {
-        let _this = this;
-        _this.PUSH_LOADING();
-        _this.$axios
-          .get("positions",'')
-          .then(result => {
-            let res = result.data;
-              _this.SHIFT_LOADING();
-            if(res.code&&res.code>0){
-              _this.$toast.error(res.msg);
-            }else{
-              _this.positionList = result.data;
-            }
-          })
-          .catch(err => {
-            _this.SHIFT_LOADING();
-          });
+    getPosition: function() {
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("positions", "")
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.positionList = result.data;
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     }
   }
 };
 </script>
 
 <style>
-
 </style>
