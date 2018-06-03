@@ -44,13 +44,13 @@
                     <tbody>
                       <tr v-for="(item,index) in employeeList" :key="index">
                         <td>{{index + 1}}</td>
-                          <td>001</td>
+                          <td>{{('000' + item.id).substr(-3)}}</td>
                         <td>
-                          <img class="img-sm img-circle" v-if="item.image"  v-bind:src="item.image"> {{item.realname}}
+                          <img class="img-sm img-circle" v-if="item.imageUrl"  v-bind:src="item.imageUrl"> {{item.realname}}
                         </td>
                         <td> {{item.username}}</td>
                         <td>{{item.roleName}}</td>
-                        <td>{{item.userType}}</td>
+                        <td>{{item.positionName}}</td>
                         <td>{{item.statusName}}</td>
                         <td>
                           <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">编辑</a>
@@ -140,6 +140,69 @@
             </div>
             </div>
         </div>
+        <div id="edit-worker" class="modal fade" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑员工</h4>
+                </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">员工姓名</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入员工姓名" class="form-control" maxlength="20" v-model="detail.realname">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                              <label class="col-sm-3 control-label">照片:</label>
+                              <div class="col-sm-9">
+                                <div class="img-upload" @click="uploadImage">
+                                  <img v-bind:src='headImageUrl' v-if="headImageUrl" style="width: 90px; height: 90px;">
+                                </div>
+                              </div>
+                            </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">手机号</label>
+                        <div class="col-lg-8">
+                            <input type="text" placeholder="请输入手机号" class="form-control" maxlength="11" v-model="detail.username">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">权限</label>
+                        <div class="col-lg-8">
+                            <select class="form-control" v-model="detail.permissionId">
+                              <option  v-for="(p,index) in permissionList" v-bind:value='p.id' :key="index">
+                                  {{p.name}}
+                              </option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="col-lg-3 control-label">职位</label>
+                        <div class="col-lg-8">
+                            <select class="form-control" v-model="detail.positionId">
+                              <option  v-for="(p,index) in positionList" v-bind:value='p.id' :key="index">
+                                  {{p.name}}
+                              </option>
+                            </select>
+                        </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-white pull-left" v-if="optType=='edit'" @click="showUpdatePasswordModal">修改密码</button>
+                  <button type="button" class="btn btn-primary" @click="saveSubmit">保存</button>
+                  <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            </div>
+        </div>
         <div id="pwd-set" class="modal fade" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -154,13 +217,13 @@
                         <div class="form-group">
                           <label class="col-lg-3 control-label">新密码</label>
                           <div class="col-lg-8">
-                              <input type="text" placeholder="请输入新密码" class="form-control" maxlength="20" v-model="pwd.pwd">
+                              <input type="password" placeholder="请输入新密码" class="form-control" maxlength="20" v-model="pwd.pwd">
                           </div>
                         </div>
                         <div class="form-group">
                           <label class="col-lg-3 control-label">再次输入</label>
                           <div class="col-lg-8">
-                              <input type="text" placeholder="请再次输入新密码" class="form-control"  maxlength="20" v-model="pwd.repwd">
+                              <input type="password" placeholder="请再次输入新密码" class="form-control"  maxlength="20" v-model="pwd.repwd">
                           </div>
                         </div>
                     </form>
@@ -244,7 +307,7 @@ export default {
   },
   data() {
     return {
-      optIndex:-1,
+      optIndex: -1,
       parentTotalPage: 0,
       pageNo: 1,
       pageSize: 15,
@@ -254,7 +317,7 @@ export default {
       optType: "save",
       positionList: [],
       permissionList: [],
-      statusText:'',
+      statusText: "",
       save: {
         realname: "",
         username: "",
@@ -263,10 +326,11 @@ export default {
         positionId: "",
         password: ""
       },
-      pwd:{
-        pwd:'',  
-        repwd:''
-      }
+      pwd: {
+        pwd: "",
+        repwd: ""
+      },
+      detail: {}
     };
   },
   mounted() {
@@ -294,15 +358,8 @@ export default {
           _this.parentTotalPage = res.total;
           try {
             _this.$lodash.forEach(res.list, function(item) {
-              if (item.images) {
-                let imagesArr = item.images.split(",");
-                if (imagesArr.length > 0) {
-                  item.imageUrl = superConst.IMAGE_STATIC_URL + imagesArr[0];
-                } else {
-                  item.imageUrl = "";
-                }
-              } else {
-                item.imageUrl = "";
+              if (item.image) {
+                item.imageUrl = superConst.IMAGE_STATIC_URL + item.image;
               }
             });
           } catch (e) {
@@ -325,64 +382,71 @@ export default {
       _this.pageNo = 1;
       _this.list();
     },
-    updatePwdSubmit: function(){
-        let _this = this;
-        let cur = _this.employeeList[_this.optIndex];
-        if(cur){
-          let pwd = _this.pwd.pwd;
-          let repwd = _this.pwd.repwd;
-          if(!regex.pwd(pwd)){
-            _this.$toast.warning('新密码格式不正确');
-            return false;
-          }
-          if(!regex.pwd(repwd)){
-            _this.$toast.warning('确认密码格式不正确');
-            return false;
-          }
-          if(pwd!==repwd){
-             _this.$toast.warning('两次密码不相等');
-            return false;
-          }
-
-           _this.PUSH_LOADING();
-          _this.$axios
-            .get("employees/" + cur.id, "password=" + pwd+'&password1=' + repwd)
-            .then(result => {
-              let res = result.data;
-              _this.SHIFT_LOADING();
-              if (res.code && res.code > 0) {
-                _this.$toast.error(res.msg);
-              } else {
-                _this.$toast.success('操作成功');
-                 $("#pwd-set").modal('hide');
-              }
-            })
-            .catch(err => {
-              _this.SHIFT_LOADING();
-            });
+    updatePwdSubmit: function() {
+      let _this = this;
+      let cur = _this.employeeList[_this.optIndex];
+      if (cur) {
+        let pwd = _this.pwd.pwd;
+        let repwd = _this.pwd.repwd;
+        if (!regex.pwd(pwd)) {
+          _this.$toast.warning("新密码格式不正确");
+          return false;
         }
+        if (!regex.pwd(repwd)) {
+          _this.$toast.warning("确认密码格式不正确");
+          return false;
+        }
+        if (pwd !== repwd) {
+          _this.$toast.warning("两次密码不一至");
+          return false;
+        }
+
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("employees/" + cur.id, "password=" + pwd + "&password1=" + repwd)
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.$toast.success("操作成功");
+              $("#pwd-set").modal("hide");
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+      }
     },
-    showUpdatePasswordModal: function(){
-       let _this = this;
-        _this.pwd.pwd = '';
-        _this.pwd.repwd = '';
-        $("#pwd-set").modal('show');
+    showUpdatePasswordModal: function() {
+      let _this = this;
+      _this.pwd.pwd = "";
+      _this.pwd.repwd = "";
+      $("#pwd-set").modal("show");
     },
     showEditModal: function(index) {
       let _this = this;
       _this.optIndex = index;
       let cur = _this.employeeList[index];
-      if(cur){
-        // 进行赋值操作
-        _this.save.id = cur.id;
-        _this.save.realname = cur.realname;
-        _this.save.username = cur.username;
-        _this.save.permissionId = cur.permissionId;
-        _this.save.positionId = cur.positionId;
+      if (cur) {
+         _this.$axios
+          .get("employees/" + cur.id)
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.detail = res;
+              _this.headImageUrl = res.image  ? superConst.IMAGE_STATIC_URL + cur.image  : "";
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
       }
-      _this.headImageUrl = "";
-      _this.optType = "edit";
-      $("#add-worker").modal("show");
+      $("#edit-worker").modal("show");
     },
     showSaveModal: function() {
       let _this = this;
@@ -392,6 +456,13 @@ export default {
       _this.save.username = "";
       _this.save.image = "";
       _this.save.password = "";
+      //设定 权限和职位的id
+      if (_this.permissionList.length > 0) {
+        _this.save.permissionId = _this.permissionList[0].id;
+      }
+      if (_this.positionList.length > 0) {
+        _this.save.positionId = _this.positionList[0].id;
+      }
       _this.optType = "save";
       $("#add-worker").modal("show");
     },
@@ -422,39 +493,44 @@ export default {
         _this.$toast.warning("密码格式不正确");
         return false;
       }
-      if(_this.optType == 'save') {
-           _this.PUSH_LOADING();
-          _this.$axios
-            .post("employees",_this.save)
-            .then(result => {
-              let res = result.data;
-              _this.SHIFT_LOADING();
-              if (res.code && res.code > 0) {
-                _this.$toast.error(res.msg);
-              } else {
-                _this.$toast.success('操作成功');
-                _this.employeeList();
-              }
-            })
-            .catch(err => {
-              _this.SHIFT_LOADING();
-            });
-      }else if(_this.optType == 'edit'){
-            _this.$axios
-            .post("employees",_this.save)
-            .then(result => {
-              let res = result.data;
-              _this.SHIFT_LOADING();
-              if (res.code && res.code > 0) {
-                _this.$toast.error(res.msg);
-              } else {
-                _this.$toast.success('操作成功');
-                _this.employeeList();
-              }
-            })
-            .catch(err => {
-              _this.SHIFT_LOADING();
-            });
+      if (_this.optType == "save") {
+        _this.save.id = "";
+        _this.save.roleId = _this.save.permissionId;
+
+        _this.PUSH_LOADING();
+        _this.$axios
+          .post("employees", _this.save)
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.$toast.success("操作成功");
+              $("#add-worker").modal("hide");
+              _this.pageNo = 1;
+              _this.list();
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+      } else if (_this.optType == "edit") {
+        _this.$axios
+          .post("employees", _this.save)
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.$toast.success("操作成功");
+              _this.list();
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
       }
     },
     uploadImage: function() {
@@ -510,35 +586,41 @@ export default {
         }
       }
     },
-    showStatusConfirm: function(index){
+    showStatusConfirm: function(index) {
       let _this = this;
       _this.optIndex = index;
       let cur = _this.employeeList[index];
-      if(cur){
-        _this.statusText = (cur.status == 'use') ? "确定停用员工吗？停用后，员工将无法登录。":"确定启用员工吗？";
+      if (cur) {
+        _this.statusText =
+          cur.status == "use"
+            ? "确定停用员工吗？停用后，员工将无法登录。"
+            : "确定启用员工吗？";
       }
       $("#delete-set").modal("show");
     },
-    statusSubmit: function () {
+    statusSubmit: function() {
       let _this = this;
       let cur = _this.employeeList[_this.optIndex];
-      if(cur) { 
-          _this.PUSH_LOADING();
-          _this.$axios
-            .get("/employees/" + cur.id + "/status", "status="+(cur.status=='use'?"unUse":"use"))
-            .then(result => {
-              let res = result.data;
-              _this.SHIFT_LOADING();
-              if (res.code && res.code > 0) {
-                _this.$toast.error(res.msg);
-              } else {
-                _this.$toast.success('操作成功');
-                _this.employeeList();
-              }
-            })
-            .catch(err => {
-              _this.SHIFT_LOADING();
-            });
+      if (cur) {
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get(
+            "/employees/" + cur.id + "/status",
+            "status=" + (cur.status == "use" ? "unUse" : "use")
+          )
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.$toast.success("操作成功");
+              _this.employeeList();
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
       }
     },
     showDeleteConfirm: function(index) {
@@ -549,23 +631,24 @@ export default {
     deleteSubmit: function() {
       let _this = this;
       let cur = _this.employeeList[_this.optIndex];
-      if(cur) { // /employees
-          _this.PUSH_LOADING();
-          _this.$axios
-            .get("employees/" + cur.id, "")
-            .then(result => {
-              let res = result.data;
-              _this.SHIFT_LOADING();
-              if (res.code && res.code > 0) {
-                _this.$toast.error(res.msg);
-              } else {
-                _this.$toast.success('操作成功');
-                _this.employeeList();
-              }
-            })
-            .catch(err => {
-              _this.SHIFT_LOADING();
-            });
+      if (cur) {
+        // /employees
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("employees/" + cur.id, "")
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.$toast.success("操作成功");
+              _this.employeeList();
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
       }
     },
     getPositionList: function() {
@@ -590,25 +673,25 @@ export default {
         });
     },
     getPermissionList: function() {
-        let _this = this;
-        _this.PUSH_LOADING();
-        _this.$axios
-          .get("roles", "")
-          .then(result => {
-            let res = result.data;
-            _this.SHIFT_LOADING();
-            if (res.code && res.code > 0) {
-              _this.$toast.error(res.msg);
-            } else {
-              _this.permissionList = result.data;
-              if (result.data && result.data.length > 0) {
-                _this.save.permissionId = result.data[0].id;
-              }
+      let _this = this;
+      _this.PUSH_LOADING();
+      _this.$axios
+        .get("roles", "")
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.permissionList = result.data;
+            if (result.data && result.data.length > 0) {
+              _this.save.permissionId = result.data[0].id;
             }
-          })
-          .catch(err => {
-            _this.SHIFT_LOADING();
-          });
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
     }
   }
 };
