@@ -20,11 +20,11 @@
                         <div class="btn btn-white" @click="showPermissionManagerModal()">权限管理</div>
                       </div>
                     </div>
-                    <fieldset class="form-horizontal m-t-lg">
+                    <fieldset class="form-horizontal m-t-lg"  v-if="roleList.length>0">
                       <div class="form-group">
                         <label class="col-sm-2 control-label">权限名称:</label>
                         <div class="col-sm-10">
-                          <div @click="roleItemClick(index)" class="btn" v-bind:class="{'btn-danger':item.id===curRoleId,'btn-default': item.id!==curRoleId}" v-for="(item,index) in roleList" :key="index">{{item.name}}</div>
+                          <div style="margin-right:10px" @click="roleItemClick(index)" class="btn" v-bind:class="{'btn-danger':item.id===curRoleId,'btn-default': item.id!==curRoleId}" v-for="(item,index) in roleList" :key="index">{{item.name}}</div>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -33,7 +33,7 @@
                         <div class="col-sm-10">
                           <table class="table table-bordered">
                             <tbody>
-                              <tr v-for="(item,index) in roleList" :key="index">
+                              <tr v-for="(item,index) in permissionList" :key="index">
                                 <td style="width:150px;"><label class="checkbox-inline">
                                     <input type="checkbox"  v-bind:checked="item.select" >{{item.name}} </label>
                                 </td>
@@ -54,6 +54,7 @@
                         </div>
                       </div>
                     </fieldset>
+                    <v-empty :isShow="roleList.length==0"></v-empty>
                   </div>
                 </div>
                 <div class="tab-pane" v-bind:class="{'active':tabType=='position'}" >
@@ -150,6 +151,7 @@
                       </tr>
                     </tbody>
                   </table>
+                   <v-empty :isShow="roleListManager.length==0"></v-empty>
                 </div>
               </div>
             </div>
@@ -161,7 +163,7 @@
         </div>
       </div>
 
-       <div id="delete-power" class="modal fade" aria-hidden="true" style="display: none;">
+      <div id="delete-power" class="modal fade" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-md">
           <div class="modal-content">
             <div class="modal-header">
@@ -326,7 +328,8 @@ export default {
               _this.$toast.error(res.msg);
             } else {
               _this.$toast.success("操作成功");
-              $("").modal("hide");
+              $("#delete-power").modal("hide");
+              _this.getRoles();
             }
           })
           .catch(err => {
@@ -361,7 +364,8 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
-            _this.roleList();
+            $("#add-power").modal("hide");
+            _this.getRoles();
           }
         })
         .catch(err => {
@@ -507,7 +511,7 @@ export default {
             _this.roleListManager = _this.$lodash.cloneDeep(_this.roleList);
             if (_this.roleList.length > 0) {
               let roleId = _this.roleList[0].id;
-              _this.roleId = roleId;
+              _this.curRoleId = roleId;
               _this.getPermissionByRoleId(roleId);
             }
           }

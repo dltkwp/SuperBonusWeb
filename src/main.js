@@ -11,6 +11,19 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>'
+})
+
+Vue.directive('permission', {
+  inserted: function (el) {
+    /**
+     * 权限控制过滤
+     * 1: 权限存储至localStory 中，这个位置进行读取并操作
+     */
+    // let origain = localStorage.getItem('super-auth-key')
+
+  }
 })
