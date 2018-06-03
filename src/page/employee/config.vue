@@ -156,7 +156,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" v-if="roleListManager.length>0" class="btn btn-primary">保存</button>
+              <button type="button" @click="bathRolesSubmit()" v-if="roleListManager.length>0" class="btn btn-primary">保存</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
             </div>
           </div>
@@ -194,7 +194,7 @@
             </div>
             <div class="modal-footer">
 
-              <button type="button" class="btn btn-primary">确定</button>
+              <button type="button" @click="deletePositionSubmit()" class="btn btn-primary">确定</button>
               <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
             </div>
           </div>
@@ -387,7 +387,7 @@ export default {
 
       _this.PUSH_LOADING();
       _this.$axios
-        .post("positions", "name=" + name)
+        .post("positions", {"name":name})
         .then(result => {
           let res = result.data;
           _this.SHIFT_LOADING();
@@ -395,7 +395,8 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
-            _this.getPosition();
+            $("#add-duty").modal("hide");
+            _this.getPositions();
           }
         })
         .catch(err => {
@@ -414,12 +415,12 @@ export default {
       _this.positionEditName = cur.name;
       $("#duty-set").modal("show");
     },
-    deleteSubmit: function() {
+    deletePositionSubmit: function() {
       let _this = this;
       let cur = _this.positionList[_this.optionIndex];
       _this.PUSH_LOADING();
       _this.$axios
-        .put("positions/" + cur.id, "")
+        .delete("positions/" + cur.id, "")
         .then(result => {
           let res = result.data;
           _this.SHIFT_LOADING();
@@ -427,7 +428,8 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
-            _this.getPosition();
+            $("#delete-set").modal("hide");
+            _this.getPositions();
           }
         })
         .catch(err => {
@@ -455,7 +457,7 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
-            _this.getPosition();
+            _this.getPositions();
           }
         })
         .catch(err => {
@@ -473,7 +475,7 @@ export default {
           break;
         case "position":
           {
-            _this.getPosition();
+            _this.getPositions();
           }
           break;
       }
@@ -520,7 +522,7 @@ export default {
           _this.SHIFT_LOADING();
         });
     },
-    getPosition: function() {
+    getPositions: function() {
       let _this = this;
       _this.PUSH_LOADING();
       _this.$axios
@@ -537,6 +539,33 @@ export default {
         .catch(err => {
           _this.SHIFT_LOADING();
         });
+    },
+    bathRolesSubmit: function() {
+      let _this = this;
+
+      let tmpList = _this.$lodash.filter(roleListManager,function(o){ 
+         return o.name == '';
+      });
+
+      if(tmpList.length>0){
+        _this.$toast.warning("名称不可为空");
+      }else{
+         _this.PUSH_LOADING();
+        _this.$axios
+          .get("positions", "")
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.positionList = result.data;
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+      }
     }
   }
 };
