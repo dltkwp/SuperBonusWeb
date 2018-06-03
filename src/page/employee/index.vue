@@ -105,7 +105,7 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">权限</label>
                         <div class="col-lg-8">
-                            <select class="form-control" v-model="save.permissionId">
+                            <select class="form-control" v-model="save.roleId">
                               <option  v-for="(p,index) in permissionList" v-bind:value='p.id' :key="index">
                                   {{p.name}}
                               </option>
@@ -174,7 +174,7 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">权限</label>
                         <div class="col-lg-8">
-                            <select class="form-control" v-model="detail.permissionId">
+                            <select class="form-control" v-model="detail.roleId">
                               <option  v-for="(p,index) in permissionList" v-bind:value='p.id' :key="index">
                                   {{p.name}}
                               </option>
@@ -197,7 +197,7 @@
                 </div>
                 <div class="modal-footer">
                   <button class="btn btn-white pull-left" v-if="optType=='edit'" @click="showUpdatePasswordModal">修改密码</button>
-                  <button type="button" class="btn btn-primary" @click="saveSubmit">保存</button>
+                  <button type="button" class="btn btn-primary" @click="editSubmit()">保存</button>
                   <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -322,7 +322,7 @@ export default {
         realname: "",
         username: "",
         image: "",
-        permissionId: "",
+        roleId: "",
         positionId: "",
         password: ""
       },
@@ -448,6 +448,46 @@ export default {
       }
       $("#edit-worker").modal("show");
     },
+    editSubmit: function(){
+      let _this = this;
+      let name = _this.detail.realname.trim();
+      if (!name) {
+        _this.$toast.warning("名称不可为空");
+        return false;
+      }
+      if (!_this.detail.image) {
+        _this.$toast.warning("请选择照片");
+        return false;
+      }
+      if (!regex.phone(_this.detail.username.trim())) {
+        _this.$toast.warning("手机号格式不正确");
+        return false;
+      }
+      if (!_this.detail.roleId) {
+        _this.$toast.warning("请选择权限");
+        return false;
+      }
+      if (!_this.detail.positionId) {
+        _this.$toast.warning("请选择权职位");
+        return false;
+      }
+      _this.$axios
+        .put("employees", _this.detail)
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.$toast.success("操作成功");
+            $("#edit-worker").modal('hide');
+            _this.list();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+    },
     showSaveModal: function() {
       let _this = this;
       _this.headImageUrl = "";
@@ -458,7 +498,7 @@ export default {
       _this.save.password = "";
       //设定 权限和职位的id
       if (_this.permissionList.length > 0) {
-        _this.save.permissionId = _this.permissionList[0].id;
+        _this.save.roleId = _this.permissionList[0].id;
       }
       if (_this.positionList.length > 0) {
         _this.save.positionId = _this.positionList[0].id;
@@ -481,7 +521,7 @@ export default {
         _this.$toast.warning("手机号格式不正确");
         return false;
       }
-      if (!_this.save.permissionId) {
+      if (!_this.save.roleId) {
         _this.$toast.warning("请选择权限");
         return false;
       }
@@ -495,8 +535,6 @@ export default {
       }
       if (_this.optType == "save") {
         _this.save.id = "";
-        _this.save.roleId = _this.save.permissionId;
-
         _this.PUSH_LOADING();
         _this.$axios
           .post("employees", _this.save)
@@ -632,10 +670,9 @@ export default {
       let _this = this;
       let cur = _this.employeeList[_this.optIndex];
       if (cur) {
-        // /employees
         _this.PUSH_LOADING();
         _this.$axios
-          .get("employees/" + cur.id, "")
+          .delete("employees/" + cur.id)
           .then(result => {
             let res = result.data;
             _this.SHIFT_LOADING();
@@ -643,7 +680,8 @@ export default {
               _this.$toast.error(res.msg);
             } else {
               _this.$toast.success("操作成功");
-              _this.employeeList();
+              $("#delete-set").modal('hide');
+              _this.list();
             }
           })
           .catch(err => {
@@ -685,7 +723,7 @@ export default {
           } else {
             _this.permissionList = result.data;
             if (result.data && result.data.length > 0) {
-              _this.save.permissionId = result.data[0].id;
+              _this.save.roleId = result.data[0].id;
             }
           }
         })
