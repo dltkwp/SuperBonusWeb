@@ -46,7 +46,7 @@
                         <td>{{index + 1}}</td>
                           <td>001</td>
                         <td>
-                          <img class="img-sm img-circle" v-if="item.headImage"  v-bind:src="item.headImage"> {{item.realname}}
+                          <img class="img-sm img-circle" v-if="item.image"  v-bind:src="item.image"> {{item.realname}}
                         </td>
                         <td> {{item.username}}</td>
                         <td>{{item.roleName}}</td>
@@ -105,10 +105,10 @@
                         <div class="form-group">
                         <label class="col-lg-3 control-label">权限</label>
                         <div class="col-lg-8">
-                            <select class="form-control">
-                                <option></option>
-                                <option>客服</option>
-                                <option>总监</option>
+                            <select class="form-control" v-model="save.permissionId">
+                              <option  v-for="(p,index) in permissionList" v-bind:value='p.id' :key="index">
+                                  {{p.name}}
+                              </option>
                             </select>
                         </div>
                         </div>
@@ -253,11 +253,12 @@ export default {
       headImageUrl: "",
       optType: "save",
       positionList: [],
+      permissionList: [],
       statusText:'',
       save: {
         realname: "",
         username: "",
-        headImage: "",
+        image: "",
         permissionId: "",
         positionId: "",
         password: ""
@@ -271,6 +272,7 @@ export default {
   mounted() {
     let _this = this;
     _this.getPositionList();
+    _this.getPermissionList();
     _this.list();
   },
   methods: {
@@ -389,9 +391,7 @@ export default {
       _this.optType = "save";
       _this.save.realname = "";
       _this.save.username = "";
-      _this.save.headImage = "";
-      _this.save.permissionId = "";
-      _this.save.positionId = "";
+      _this.save.image = "";
       _this.save.password = "";
       _this.optType = "save";
       $("#add-worker").modal("show");
@@ -403,7 +403,7 @@ export default {
         _this.$toast.warning("名称不可为空");
         return false;
       }
-      if (!_this.save.headImage) {
+      if (!_this.save.image) {
         _this.$toast.warning("请选择照片");
         return false;
       }
@@ -500,9 +500,9 @@ export default {
             .then(result => {
               let res = result.data;
               if (_this.optType == "save") {
-                _this.save.headImage = res.fileCode;
+                _this.save.image = res.fileCode;
               } else if (_this.optType == "edit") {
-                _this.edit.headImage = res.fileCode;
+                _this.edit.image = res.fileCode;
               }
               _this.headImageUrl = superConst.IMAGE_STATIC_URL + res.fileCode;
               _this.$toast.success("操作成功");
@@ -590,7 +590,27 @@ export default {
           _this.SHIFT_LOADING();
         });
     },
-    getPermissionList: function() {}
+    getPermissionList: function() {
+        let _this = this;
+        _this.PUSH_LOADING();
+        _this.$axios
+          .get("roles", "")
+          .then(result => {
+            let res = result.data;
+            _this.SHIFT_LOADING();
+            if (res.code && res.code > 0) {
+              _this.$toast.error(res.msg);
+            } else {
+              _this.permissionList = result.data;
+              if (result.data && result.data.length > 0) {
+                _this.save.permissionId = result.data[0].id;
+              }
+            }
+          })
+          .catch(err => {
+            _this.SHIFT_LOADING();
+          });
+    }
   }
 };
 </script>
