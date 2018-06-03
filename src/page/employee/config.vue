@@ -34,8 +34,10 @@
                           <table class="table table-bordered">
                             <tbody>
                               <tr v-for="(item,index) in permissionList" :key="index">
-                                <td style="width:150px;"><label class="checkbox-inline">
-                                    <input type="checkbox"  v-bind:checked="item.select" >{{item.name}} </label>
+                                <td style="width:150px;">
+                                  <label class="checkbox-inline">
+                                    <input type="checkbox"  v-bind:checked="item.select" >{{item.name}} 
+                                  </label>
                                 </td>
                                 <td>
                                   <label class="checkbox-inline w-100" v-for="(sub,index) in item.subs" :key="index"> 
@@ -300,6 +302,8 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
+    parentNodeClick: function(){},
+    childNodeClick: function(){},
     savePermission: function() {},
     roleItemClick: function(index) {
       let _this = this;
