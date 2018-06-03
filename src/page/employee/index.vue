@@ -53,9 +53,9 @@
                         <td>{{item.userType}}</td>
                         <td>{{item.statusName}}</td>
                         <td>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="#worker-set">编辑</a>
-                          <a class="btn btn-white btn-sm" href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
-                          <a class="btn btn-white btn-sm" data-toggle="modal" href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
+                          <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">编辑</a>
+                          <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
+                          <a class="btn btn-white btn-sm"  href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
                         </td>
                       </tr>
                     </tbody>
@@ -168,7 +168,7 @@
                 </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-primary">保存</button>
+                  <button type="button" @click="updatePwdSubmit()" class="btn btn-primary">保存</button>
                   <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -327,8 +327,7 @@ export default {
     },
     updatePwdSubmit: function(){
         let _this = this;
-        _this.optIndex = index;
-        let cur = _this.employeeList[index];
+        let cur = _this.employeeList[_this.optIndex];
         if(cur){
           let pwd = _this.pwd.pwd;
           let repwd = _this.pwd.repwd;
