@@ -54,7 +54,7 @@
                         <td>{{item.statusName}}</td>
                         <td>
                           <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">编辑</a>
-                          <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
+                          <a class="btn btn-white btn-sm"  @click="showStatusConfirm(index)"   href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
                           <a class="btn btn-white btn-sm"  href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
                         </td>
                       </tr>
@@ -629,12 +629,9 @@ export default {
       _this.optIndex = index;
       let cur = _this.employeeList[index];
       if (cur) {
-        _this.statusText =
-          cur.status == "use"
-            ? "确定停用员工吗？停用后，员工将无法登录。"
-            : "确定启用员工吗？";
+        _this.statusText = cur.status == "use" ? "确定停用员工吗？停用后，员工将无法登录。"  : "确定启用员工吗？";
       }
-      $("#delete-set").modal("show");
+      $("#stop-set").modal("show");
     },
     statusSubmit: function() {
       let _this = this;
@@ -642,10 +639,7 @@ export default {
       if (cur) {
         _this.PUSH_LOADING();
         _this.$axios
-          .get(
-            "/employees/" + cur.id + "/status",
-            "status=" + (cur.status == "use" ? "unUse" : "use")
-          )
+          .put("employees/" + cur.id + "/status","status=" + (cur.status == "use" ? "unUse" : "use"))
           .then(result => {
             let res = result.data;
             _this.SHIFT_LOADING();
@@ -653,7 +647,8 @@ export default {
               _this.$toast.error(res.msg);
             } else {
               _this.$toast.success("操作成功");
-              _this.employeeList();
+              $("#stop-set").modal("hide");
+              _this.list();
             }
           })
           .catch(err => {
