@@ -82,7 +82,7 @@
                           </tr>
                         </tbody>
                       </table>
-                        <v-empty :isShow="positionList.length==0"></v-empty>
+                      <v-empty :isShow="positionList.length==0"></v-empty>
                     </div>
                   </div>
                 </div>
@@ -339,6 +339,7 @@ export default {
     },
     showPermissionManagerModal: function() {
       let _this = this;
+      _this.roleListManager = _this.$lodash.cloneDeep(_this.roleList);
       $("#edit-power").modal("show");
     },
     showSavePermissionModal: function() {
@@ -382,6 +383,12 @@ export default {
       let name = _this.positionSaveName.trim();
       if (!name) {
         _this.$toast.warning("职位名称不可为空");
+        return false;
+      }
+
+      let findIndex = _this.$lodash.findIndex(_this.positionList,{name:name});
+      if(findIndex>=0){
+         _this.$toast.warning("名称已存在");
         return false;
       }
 
@@ -444,6 +451,15 @@ export default {
         _this.$toast.warning("职位名称不可为空");
         return false;
       }
+
+      let tmpArr = _this.$lodash.filter(_this.positionList,function(o){
+        return o.name==name&&o.id!==cur.id;
+      });
+      if(tmpArr.length>0){
+         _this.$toast.warning("名称已存在");
+        return false;
+      }
+
       _this.PUSH_LOADING();
       _this.$axios
         .put("positions", {
@@ -457,6 +473,7 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
+            $("#duty-set").modal("hide");
             _this.getPositions();
           }
         })
@@ -543,7 +560,7 @@ export default {
     bathRolesSubmit: function() {
       let _this = this;
 
-      let tmpList = _this.$lodash.filter(roleListManager,function(o){ 
+      let tmpList = _this.$lodash.filter(_this.roleListManager,function(o){ 
          return o.name == '';
       });
 
@@ -551,15 +568,18 @@ export default {
         _this.$toast.warning("名称不可为空");
       }else{
          _this.PUSH_LOADING();
+         
         _this.$axios
-          .get("positions", "")
+          .post("/roles/batch/names", {roles:_this.roleListManager})
           .then(result => {
             let res = result.data;
             _this.SHIFT_LOADING();
             if (res.code && res.code > 0) {
               _this.$toast.error(res.msg);
             } else {
-              _this.positionList = result.data;
+              _this.$toast.success("操作成功");
+              $("#edit-power").modal("hide");
+              _this.getRoles();
             }
           })
           .catch(err => {
