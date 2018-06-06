@@ -18,12 +18,22 @@ new Vue({
 })
 
 Vue.directive('permission', {
-  inserted: function (el) {
+  inserted: function (el, binding) {
     /**
      * 权限控制过滤
      * 1: 权限存储至localStory 中，这个位置进行读取并操作
      */
-    // let origain = localStorage.getItem('super-auth-key')
-
+    debugger
+    console.log(Vue.$lodash)
+    let origain = JSON.parse(localStorage.getItem('super-auth-key'))
+    let isExist = false
+    origain.forEach(element => {
+      if (!isExist && element.code === binding.value.code) {
+        isExist = true
+      }
+    })
+    if (!isExist) {
+      el.remove()
+    }
   }
 })

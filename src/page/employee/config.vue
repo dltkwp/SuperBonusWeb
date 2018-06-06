@@ -41,7 +41,7 @@
                                 </td>
                                 <td>
                                   <label class="checkbox-inline w-100" v-for="(sub,cIndex) in item.subs" :key="cIndex"> 
-                                      <input type="checkbox"  v-bind:checked="sub.select" @click="childNodeClick(aIndex,cIndex,$event)"> {{sub.name}} 
+                                      <input type="checkbox"  v-bind:checked="sub.select" @click="childNodeClick(pIndex,cIndex,$event)"> {{sub.name}} 
                                   </label> 
                                 </td>
                               </tr>
@@ -302,17 +302,19 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    parentNodeClick: function(index,event){
+    parentNodeClick: function(pIndex,event){
         let _this = this;
-        let cur = _this.permissionList[index];
+        let cur = _this.permissionList[pIndex];
         if(cur){
             if(event.target.checked){
+                cur.select = true;
                _this.$lodash.forEach(cur.subs,function(o){
-                 o.select = false;
+                 o.select = true;
                });
             }else{
+                cur.select = false;
               _this.$lodash.forEach(cur.subs,function(o){
-                 o.select = true;
+                 o.select = false;
                });
             }
         }
@@ -323,15 +325,52 @@ export default {
       let childNode = parentNode.subs[cIndex];
 
       if(event.target.checked){
+          childNode.select = true;
           parentNode.select = true;
       }else{
+        childNode.select = false;
         let selectArr = _this.$lodash.filter(parentNode.subs,{select:true});
         if(selectArr.length==0){
           parentNode.select = false;
         }
       }
     },
-    savePermission: function() {},
+    savePermission: function() {
+      let _this = this;
+      let roleInfoId = [];
+      _this.$lodash.forEach(_this.permissionList,function(item){
+        if(item.select){
+          roleInfoId.push(item.id);
+          _this.$lodash.forEach(item.subs,function(sub){
+            if(sub.select){
+              roleInfoId.push(sub.id);
+            }
+          });
+        }
+      });
+
+      if(roleInfoId.length==0){
+        _this.$toast.warning("请选择权限");
+        return false;
+      }
+      _this.PUSH_LOADING();
+      _this.$axios
+        .post("roles/" + _this.curRoleId, {roleInfoId:roleInfoId})
+        .then(result => {
+          let res = result.data;
+          _this.SHIFT_LOADING();
+          if (res.code && res.code > 0) {
+            _this.$toast.error(res.msg);
+          } else {
+            _this.$toast.success("操作成功");
+            _this.getRoles();
+          }
+        })
+        .catch(err => {
+          _this.SHIFT_LOADING();
+        });
+
+    },
     roleItemClick: function(index) {
       let _this = this;
       let cur = _this.roleList[index];
