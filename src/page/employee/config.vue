@@ -33,15 +33,15 @@
                         <div class="col-sm-10">
                           <table class="table table-bordered">
                             <tbody>
-                              <tr v-for="(item,index) in permissionList" :key="index">
+                              <tr v-for="(item,pIndex) in permissionList" :key="pIndex">
                                 <td style="width:150px;">
                                   <label class="checkbox-inline">
-                                    <input type="checkbox"  v-bind:checked="item.select" >{{item.name}} 
+                                    <input type="checkbox"  v-bind:checked="item.select" @click="parentNodeClick(pIndex,$event)">{{item.name}} 
                                   </label>
                                 </td>
                                 <td>
-                                  <label class="checkbox-inline w-100" v-for="(sub,index) in item.subs" :key="index"> 
-                                      <input type="checkbox"  v-bind:checked="sub.select" > {{sub.name}} 
+                                  <label class="checkbox-inline w-100" v-for="(sub,cIndex) in item.subs" :key="cIndex"> 
+                                      <input type="checkbox"  v-bind:checked="sub.select" @click="childNodeClick(aIndex,cIndex,$event)"> {{sub.name}} 
                                   </label> 
                                 </td>
                               </tr>
@@ -302,8 +302,35 @@ export default {
   },
   methods: {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
-    parentNodeClick: function(){},
-    childNodeClick: function(){},
+    parentNodeClick: function(index,event){
+        let _this = this;
+        let cur = _this.permissionList[index];
+        if(cur){
+            if(event.target.checked){
+               _this.$lodash.forEach(cur.subs,function(o){
+                 o.select = false;
+               });
+            }else{
+              _this.$lodash.forEach(cur.subs,function(o){
+                 o.select = true;
+               });
+            }
+        }
+    },
+    childNodeClick: function(pIndex,cIndex,event){
+      let _this = this;
+      let parentNode = _this.permissionList[pIndex];
+      let childNode = parentNode.subs[cIndex];
+
+      if(event.target.checked){
+          parentNode.select = true;
+      }else{
+        let selectArr = _this.$lodash.filter(parentNode.subs,{select:true});
+        if(selectArr.length==0){
+          parentNode.select = false;
+        }
+      }
+    },
     savePermission: function() {},
     roleItemClick: function(index) {
       let _this = this;

@@ -8,6 +8,7 @@ const IMAGE_STATIC_URL = 'https://bonus.oss-cn-beijing.aliyuncs.com/product/'
 const HEAD_IMAGE_DEFAULT = 'https://bonus.oss-cn-beijing.aliyuncs.com/product/C9AFBBE570F0463382463838F21E5677.png'
 const LOGIN_USER_NAME_KEY = 'super-username-key'// 登录人的手机号存储的key
 const LOGIN_USER_INFO_KEY = 'super-user-info-key'
+const SUPER_AUTH_KEY = 'super-auth-key'
 
 module.exports = {
   SUPER_TOKEN_KEY,
@@ -17,5 +18,6 @@ module.exports = {
   IMAGE_STATIC_URL,
   HEAD_IMAGE_DEFAULT,
   LOGIN_USER_NAME_KEY,
-  LOGIN_USER_INFO_KEY
+  LOGIN_USER_INFO_KEY,
+  SUPER_AUTH_KEY
 }

@@ -96,6 +96,7 @@ export default {
     if(!_this.$lodash.isEmpty(userInfo)){
         let u = JSON.parse(userInfo);
         _this.userInfo = u;
+        _this.getPermission(u.roleId);
     }else{
           _this.$axios
           .get("login/info")
@@ -103,6 +104,7 @@ export default {
             let res = result.data;
             localStorage.setItem(superConst.LOGIN_USER_INFO_KEY, JSON.stringify(result.data));
             _this.userInfo = res;
+            _this.getPermission(u.roleId);
           })
           .catch(err => {});
     }
@@ -111,6 +113,15 @@ export default {
     _this.childrenKey = meta.childrenKey;
   },
   methods: {
+    getPermission:function(roleId){
+      let _this = this;
+      _this.$axios
+        .get("/roles/" + roleId)
+        .then(result => {
+          localStorage.setItem(superConst.SUPER_AUTH_KEY, JSON.stringify(result.data));
+        })
+        .catch(err => {});
+    },
     gotoLogout: function() {
       let _this = this;
       _this.$axios

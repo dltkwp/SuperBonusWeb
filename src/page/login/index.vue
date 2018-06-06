@@ -66,6 +66,7 @@ export default {
                     _this.$toast.error(res.msg);
                 }else{
                     // localStorage 登录账号
+                    localStorage.setItem(superConst.SUPER_AUTH_KEY,'');
                     localStorage.setItem(superConst.LOGIN_USER_NAME_KEY,phone);
                     localStorage.setItem(superConst.SUPER_TOKEN_KEY, JSON.stringify(res));
                     window.location.href = 'v_index';
