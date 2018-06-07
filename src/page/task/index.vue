@@ -13,9 +13,9 @@
                   <div class="col-lg-12">
                   <div class="pull-left">
 
-                    <router-link to="/task/v_save" class="btn btn-primary btn-sm">新增项目</router-link>
+                    <router-link v-permission="{code:'project_insert'}" to="/task/v_save" class="btn btn-primary btn-sm">新增项目</router-link>
                     
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm" v-permission="{code:'project_delete'}">
                         <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li ><a  href="javascript:;;" @click="showBathDelConfirmModal">删除</a></li>

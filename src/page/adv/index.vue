@@ -44,7 +44,8 @@
                                 onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" 
                                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
                         </td>
-                        <td><button class="btn btn-white" @click="removeItem(index)" style="cursor:pointer;"><i class="fa fa-trash"></i> </button></td>
+                        
+                        <td><button v-permission="{code:'adv_delete'}" class="btn btn-white" @click="removeItem(index)" style="cursor:pointer;"><i class="fa fa-trash"></i> </button></td>
                       </tr>
                     </tbody>
                   </table>
