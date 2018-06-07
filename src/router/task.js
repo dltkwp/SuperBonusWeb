@@ -9,7 +9,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Task',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'project'
   },
   component: TaskIndex
 }, {

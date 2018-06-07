@@ -6,7 +6,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Order',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'order'
   },
   component: Order
 }]

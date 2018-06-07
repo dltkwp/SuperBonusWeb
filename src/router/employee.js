@@ -7,7 +7,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Employee',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'employee'
   },
   component: Employee
 },

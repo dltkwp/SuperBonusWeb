@@ -10,7 +10,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Member',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'user'
   },
   component: MemberIndex
 },

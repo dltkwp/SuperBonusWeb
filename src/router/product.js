@@ -8,7 +8,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Product',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'product'
   },
   component: ProductIndex
 },

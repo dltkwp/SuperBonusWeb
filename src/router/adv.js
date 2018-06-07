@@ -6,7 +6,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'Adv',
-    childrenKey: 'Index'
+    childrenKey: 'Index',
+    code: 'adv'
   },
   component: Adv
 }]

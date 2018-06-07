@@ -65,8 +65,8 @@ export default {
                 if(res.code){
                     _this.$toast.error(res.msg);
                 }else{
-                    // localStorage 登录账号
-                    localStorage.setItem(superConst.SUPER_AUTH_KEY,'');
+                    console.log(res.roles,12345789);
+                    localStorage.setItem(superConst.SUPER_AUTH_KEY,JSON.stringify(res.roles));
                     localStorage.setItem(superConst.LOGIN_USER_NAME_KEY,phone);
                     localStorage.setItem(superConst.SUPER_TOKEN_KEY, JSON.stringify(res));
                     window.location.href = 'v_index';

@@ -14,7 +14,8 @@ import Pages from './pages'
 import Employee from './employee'
 
 import Login from '@/page/login/index.vue'
-import Notfound from '@/page/notfound/index.vue'
+import Notfound from '@/page/common/404.vue'
+import NoAuth from '@/page/common/NoAuth.vue'
 
 Vue.use(Router)
 
@@ -41,6 +42,16 @@ let router = new Router({
     component: Notfound
   },
   {
+    path: '/no_auth',
+    name: 'NoAuth',
+    meta: {
+      isShowBack: false,
+      parentKey: 'NoAuth',
+      childrenKey: 'NoAuth'
+    },
+    component: NoAuth
+  },
+  {
     path: '/v_index',
     name: 'Index',
     meta: {
@@ -55,10 +66,29 @@ let router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.matched.length) {
-    next('/404')
+  /**
+   * 权限控制处理
+   */
+  console.log('to->', to, 'from-->', from)
+  if (to.meta && to.meta.code) {
+    let origain = JSON.parse(localStorage.getItem('super-auth-key'))
+    let isExist = false
+    origain.forEach(element => {
+      if (!isExist && element.code === to.meta.code) {
+        isExist = true
+      }
+    })
+    if (!isExist) {
+      next('/no_auth')
+    } else {
+      next()
+    }
   } else {
-    next()
+    if (!to.matched.length) {
+      next('/404')
+    } else {
+      next()
+    }
   }
 })
 

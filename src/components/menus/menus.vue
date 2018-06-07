@@ -107,28 +107,14 @@
       let meta = _this.$route.meta;
       _this.parentKey = meta.parentKey;
       _this.childrenKey = meta.childrenKey;
-      _this.getPermission();
     },
     methods: {
-      getPermission: function() {
-        let _this = this;
-        _this.$axios
-          .get("login/roles")
-          .then(result => {
-            console.log(result);
-            localStorage.setItem(
-              superConst.SUPER_AUTH_KEY,
-              JSON.stringify(result.data)
-            );
-          })
-          .catch(err => {});
-      },
       gotoLogout: function() {
         let _this = this;
         _this.$axios
           .get("logout")
           .then(result => {
-            localStorage.setItem(superConst.SUPER_TOKEN_KEY, ""); //清理user信息,登陆后如果为空则再次查询
+            localStorage.setItem(superConst.SUPER_TOKEN_KEY, ""); 
             window.location.href = "/v_login";
           })
           .catch(err => {});
