@@ -18,7 +18,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'SysCfg',
-    childrenKey: 'Employee'
+    childrenKey: 'Employee',
+    code: 'setting_employee'
   },
   component: EmployeeConfig
 }]
