@@ -13,12 +13,12 @@
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
                   <div class="pull-left">
-                      <router-link to="/product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
+                      <router-link v-permission="{code:'product_insert'}" to="/product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
                       <div class="btn-group btn-group-sm">
                           <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
                           <ul class="dropdown-menu">
                               <li><a href="javascript:;;"  @click="showBathOptModal">设置</a></li>
-                              <li><a href="javascript:;;"  @click="showBathDelConfirmModal">删除</a></li>
+                              <li  v-permission="{code:'product_delete'}"><a href="javascript:;;"  @click="showBathDelConfirmModal">删除</a></li>
                           </ul>
                       </div>
                   </div>

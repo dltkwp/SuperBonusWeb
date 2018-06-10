@@ -76,7 +76,7 @@
                             </quill-editor>
                         </div>
                       </div>
-                      <div class="form-group" style=" margin-top:  82px">
+                      <div class="form-group" style=" margin-top:  82px"  v-permission="{code:'product_insert'}">
                         <div class="col-sm-4 col-sm-offset-2">
                           <button class="btn btn-primary" type="button" @click="saveSubmit">保存</button>
                         </div>
