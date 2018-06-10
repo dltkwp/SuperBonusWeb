@@ -327,9 +327,28 @@ export default {
       if(event.target.checked){
           childNode.select = true;
           parentNode.select = true;
+          let curSelect = _this.$lodash.find(parentNode.subs,function(o){
+            return o.code.indexOf('_select')>=0
+          })
+          if(!curSelect.select) {
+            curSelect.select = true
+          }
       }else{
-        childNode.select = false;
+        if (childNode.code.indexOf('_select') >= 0){
+          let checkCnt = _this.$lodash.filter(parentNode.subs,function(o){
+            return o.code.indexOf('_select') == -1 && o.select
+          })
+          if (checkCnt.length >0) {
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            childNode.select = false;
+          }
+        }else {
+          childNode.select = false;
+        }
         let selectArr = _this.$lodash.filter(parentNode.subs,{select:true});
+        console.log(selectArr,1111)
         if(selectArr.length==0){
           parentNode.select = false;
         }

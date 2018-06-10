@@ -589,7 +589,7 @@ export default {
       _this.loading = true;
       let curUser = _this.personList[_this.userIndex];
       _this.$axios
-        .post("projects/"+_this.taskId+'/users/' + curUser.userId + '/status?status=undertake')
+        .post("projects/"+_this.taskId+'/users/' + curUser.id + '/status?status=undertake')
         .then(result => {
           let res = result.data;
           if(res.code && res.code >=0) {
@@ -612,7 +612,7 @@ export default {
       _this.loading = true;
       let curUser = _this.personList[_this.userIndex];
       _this.$axios
-        .post("projects/"+_this.taskId+'/users/' + curUser.userId + '?status=' + status)
+        .post("projects/"+_this.taskId+'/users/' + curUser.id + '/status?status=' + status)
         .then(result => {
           let res = result.data;
           if(res.code && res.code >=0) {
