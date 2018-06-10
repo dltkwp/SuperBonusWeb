@@ -7,7 +7,7 @@
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
               <span class="clear"> 
                               <span class="block m-t-xs"> <strong class="font-bold">{{userInfo.realname}}</strong></span>
-              <span class="text-muted text-xs block">客服 <b class="caret"></b></span>
+              <span class="text-muted text-xs block">{{userInfo.positionName || ''}} <b class="caret"></b></span>
               </span>
             </a>
             <ul class="dropdown-menu  m-t-xs">

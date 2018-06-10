@@ -362,7 +362,7 @@ export default {
       if(_this.completeType == 'project') {
         _this.PUSH_LOADING();
         _this.$axios
-          .post("projects/"+_this.taskId)
+          .post("projects/"+_this.taskId + "/done")
           .then(result => {
             let res = result.data;
             _this.$toast.success('操作成功');

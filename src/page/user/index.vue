@@ -40,7 +40,6 @@
                         <div class="col-sm-6">
                           <div class="img-upload" @click="uploadImage">
                             <img v-bind:src='edit.headImageUrl' v-if="edit.headImageUrl" style="width: 90px; height: 90px;">
-                            <!-- <div class="btn-delete" style="float: right;margin-right: -12px;"><i class="fa fa-times-circle"></i></div> -->
                           </div>
                         </div>
                       </div>
@@ -78,6 +77,12 @@
                         <label class="col-sm-2 control-label">新密码:</label>
                         <div class="col-sm-6">
                           <input type="password" class="form-control" placeholder="请输入会员新密码"  v-model="pwd.newPwd"  maxlength="20">
+                        </div>
+                      </div> 
+                     <div class="form-group">
+                        <label class="col-sm-2 control-label">新密码:</label>
+                        <div class="col-sm-6">
+                          <input type="password" class="form-control" placeholder="请输入会员新密码"  v-model="pwd.rePwd"  maxlength="20">
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -131,8 +136,9 @@ export default {
         position:''
       },
       pwd:{
-        oldPwd:'',
-        newPwd:''
+        oldPwd: '',
+        newPwd: '',
+        rePwd: ''
       },
       tabType:'user'
     };
@@ -171,14 +177,23 @@ export default {
     },
     updatePwd: function () {
       let _this = this;
-      let oldPwd = _this.pwd.oldPwd;
-      let newPwd = _this.pwd.newPwd;
+      let oldPwd = _this.pwd.oldPwd
+      let newPwd = _this.pwd.newPwd
+      let rePwd =  _this.pwd.rePwd
       
       if(!oldPwd) {
         _this.$toast.warning("旧密码不可为空");return false;
       }
       if (!regex.pwd(newPwd)) {
         _this.$toast.warning('新密码格式不正确');
+        return false;
+      }
+      if (!regex.pwd(rePwd)) {
+        _this.$toast.warning('确认密码格式不正确');
+        return false;
+      }
+      if(newPwd!==rePwd) {
+        _this.$toast.warning('两次密码不匹配');
         return false;
       }
 
