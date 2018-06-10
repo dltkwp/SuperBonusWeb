@@ -33,9 +33,9 @@
                   <div class="user-button m-t-md">
                     <div class="row">
                       <div class="col-md-6">
-                        <router-link :to="{path:'/task/v_edit',query:{taskId:taskId}}" class="btn btn-default btn-sm btn-block"><i class="fa fa-pencil"></i> 编辑项目</router-link>
+                        <router-link  v-permission="{code:'project_update'}" :to="{path:'/task/v_edit',query:{taskId:taskId}}" class="btn btn-default btn-sm btn-block"><i class="fa fa-pencil"></i> 编辑项目</router-link>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-6"   v-permission="{code:'project_approval'}">
                         <a href="javascript:;;" v-if="detail.status!='done'" @click="showOverModal" class="btn btn-default btn-sm btn-block" ><i class="fa fa-check"></i> 项目完成</a>
                       </div>
                     </div>
@@ -86,10 +86,10 @@
                                 </td>
                                 <td>{{item.introducerName ? (item.introducerName + '推荐') : ''}}</td>
                                 <td> 
-                                    <button class="btn btn-white btn-sm" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
-                                    <button class="btn btn-white btn-sm" @click="agree(index)" v-if="personType=='apply' && item.status=='wait' " >同意</button> 
-                                    <button class="btn btn-white btn-sm" @click="refuse(index)"  v-if="personType=='apply' && item.status=='wait'" >拒绝</button>  
-                                    <button class="btn btn-white btn-sm" @click="showStatusModal(index)" v-if="personType=='apply' && (item.status=='undertake' || item.status=='refuse') " >调整</button>
+                                    <button class="btn btn-white btn-sm" v-permission="{code:'project_approval'}" v-if="personType=='undertake' && item.status!='done'" @click="showUserCompleteModal(index)">完成项目</button>
+                                    <button class="btn btn-white btn-sm" v-permission="{code:'project_approval'}" @click="agree(index)" v-if="personType=='apply' && item.status=='wait' " >同意</button> 
+                                    <button class="btn btn-white btn-sm" v-permission="{code:'project_approval'}" @click="refuse(index)"  v-if="personType=='apply' && item.status=='wait'" >拒绝</button>  
+                                    <button class="btn btn-white btn-sm" v-permission="{code:'project_approval'}" @click="showStatusModal(index)" v-if="personType=='apply' && (item.status=='undertake' || item.status=='refuse') " >调整</button>
                                 </td>
                               </tr>
                             </tbody>
@@ -99,7 +99,7 @@
 
                         </div>
                         <div class="row" v-if="personType=='undertake'">
-                          <div class="col-md-6 col-md-offset-3"><div class="btn btn-primary btn-block" @click="showApplyPersionModal" >新增承接人</div></div>
+                          <div v-permission="{code:'project_update'}" class="col-md-6 col-md-offset-3"><div class="btn btn-primary btn-block" @click="showApplyPersionModal" >新增承接人</div></div>
                         </div>
                       </div>
                     </div>

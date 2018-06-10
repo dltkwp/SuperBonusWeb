@@ -14,10 +14,10 @@
                   <div class="col-lg-12">
                   <div class="pull-left">
                       <router-link v-permission="{code:'product_insert'}" to="/product/v_save" class="btn btn-primary btn-sm">新增产品</router-link>
-                      <div class="btn-group btn-group-sm">
+                      <div class="btn-group btn-group-sm"  v-permission="{code:'project_update,product_delete'}">
                           <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
                           <ul class="dropdown-menu">
-                              <li><a href="javascript:;;"  @click="showBathOptModal">设置</a></li>
+                              <li  v-permission="{code:'project_update'}"><a href="javascript:;;"  @click="showBathOptModal">设置</a></li>
                               <li  v-permission="{code:'product_delete'}"><a href="javascript:;;"  @click="showBathDelConfirmModal">删除</a></li>
                           </ul>
                       </div>
@@ -67,8 +67,8 @@
                         <td> ¥{{item.price}}</td>
                         <td>{{item.statusName || '停售'}}</td>
                         <td>
-                          <span class="btn btn-default" @click.stop="orderSubmit('up',index)" v-if="index>0" title="向上移动" style="z-index:9999"><i class="fa fa-long-arrow-up"></i></span>
-                          <span class="btn btn-default" @click.stop="orderSubmit('down',index)"  v-if="index<productList.length-1" title="向下移动" style="z-index:9999"><i class="fa fa-long-arrow-down"></i></span>
+                          <span  v-permission="{code:'project_update'}" class="btn btn-default" @click.stop="orderSubmit('up',index)" v-if="index>0" title="向上移动" style="z-index:9999"><i class="fa fa-long-arrow-up"></i></span>
+                          <span  v-permission="{code:'project_update'}" class="btn btn-default" @click.stop="orderSubmit('down',index)"  v-if="index<productList.length-1" title="向下移动" style="z-index:9999"><i class="fa fa-long-arrow-down"></i></span>
                         </td>
                         <td>
                           <router-link :to="{path:'/product/v_detail',query:{ productId: item.id }}" class="btn btn-white btn-sm">查看</router-link>

@@ -381,7 +381,7 @@ export default {
             _this.$toast.error(res.msg);
           } else {
             _this.$toast.success("操作成功");
-            _this.getRoles();
+            _this.getPermissionByRoleId(_this.curRoleId);
           }
         })
         .catch(err => {

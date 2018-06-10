@@ -41,9 +41,9 @@
                             </div>
                           </div>
                         </div>
-                        <div class="form-group" style=" margin-top:  82px"   v-permission="{code:'page_insert'}">
+                        <div class="form-group" style=" margin-top:  82px" >
                           <div class="col-sm-4 col-sm-offset-2">
-                            <button class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
+                            <button  v-permission="{code:'page_insert'}" class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
                           </div>
                         </div>
                       </fieldset>
