@@ -236,9 +236,9 @@
                       <label class="col-lg-3 control-label">状态</label>
                       <div class="col-lg-8">
                         <label class="radio-inline">
-                          <input type="radio"   name="changeStatus" v-bind:checked='bathStatus=="undertake"' v-model="bathStatus" value="undertake">同意承接 </label>
+                          <input type="radio"   name="changeStatusA" v-bind:checked='bathStatus=="undertake"' v-model="bathStatus" value="undertake">同意承接 </label>
                         <label class="radio-inline">
-                          <input type="checkbox" name="changeStatus" v-bind:checked='bathStatus=="refuse"'  v-model="bathStatus"  value="refuse">拒绝承接 </label>
+                          <input type="radio"   name="changeStatusA" v-bind:checked='bathStatus=="refuse"'    v-model="bathStatus"  value="refuse">拒绝承接 </label>
                       </div>
                     </div>
                   </form>
