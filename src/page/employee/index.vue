@@ -12,7 +12,7 @@
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
                     <div class="pull-left">
-                      <a class="btn btn-primary btn-sm" @click="showSaveModal">新增员工</a>
+                      <a v-permission="{code:'employee_insert'}" class="btn btn-primary btn-sm" @click="showSaveModal">新增员工</a>
                     </div>
                     <div class=" pull-right text-right">
                       <div class="search-box">
@@ -53,9 +53,9 @@
                         <td>{{item.positionName}}</td>
                         <td>{{item.statusName}}</td>
                         <td>
-                          <a class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">编辑</a>
-                          <a class="btn btn-white btn-sm"  @click="showStatusConfirm(index)"   href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
-                          <a class="btn btn-white btn-sm"  href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
+                          <a  v-permission="{code:'employee_update'}"  class="btn btn-white btn-sm"  @click="showEditModal(index)"   href="javascript:;;">编辑</a>
+                          <a  v-permission="{code:'employee_update'}"   class="btn btn-white btn-sm"  @click="showStatusConfirm(index)"   href="javascript:;;">{{item.status=="use"?"停用":"启用"}}</a>
+                          <a  v-permission="{code:'employee_delete'}"   class="btn btn-white btn-sm"  href="javascript:;;" @click="showDeleteConfirm(index)">删除</a>
                         </td>
                       </tr>
                     </tbody>

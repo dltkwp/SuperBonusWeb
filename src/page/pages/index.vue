@@ -12,9 +12,9 @@
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
                     <div class="pull-left">
-                      <router-link to="/pages/v_save" class="btn btn-primary btn-sm">新增单页</router-link>
+                      <router-link   v-permission="{code:'page_insert'}"   to="/pages/v_save" class="btn btn-primary btn-sm">新增单页</router-link>
 
-                      <div class="btn-group btn-group-sm">
+                      <div class="btn-group btn-group-sm"  v-permission="{code:'page_delete'}"   >
                         <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                           <li @click="showBathDelConfirmModal"><a  href="javascript:;;">删除</a></li>

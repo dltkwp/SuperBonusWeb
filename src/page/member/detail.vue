@@ -57,7 +57,7 @@
                       </table>
                     </div>
                   </div>
-                  <div class="col-md-2 col-md-offset-2 text-right">
+                  <div class="col-md-2 col-md-offset-2 text-right"  v-permission="{code:'user_update'}" >
                       <router-link :to="{path:'/member/v_edit',query:{ memberId: user.id }}" class="btn btn-white">编辑资料</router-link>
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                                       <br/>
                                       <small>有效期：{{item.startDateStr}}～{{item.endDateStr}}</small>
                                     </td>
-                                    <td class="project-title">赏金：¥ {{item.price}}</td>
+                                    <td class="project-title">赏金：¥ {{item.payment}}</td>
                                     <td class="project-people">
                                       <a href="javascript:;;" v-for="(user,uIndex) in item.users" :key="uIndex">
                                         <img  class="img-circle" v-bind:src="user.headImage">
@@ -257,25 +257,29 @@ export default {
         _this.$axios
           .get("orders?" + param.join("&"))
           .then(result => {
-            let res = result.data;
-            _this.order.parentTotalPage = res.total;
-            let arr = [];
-            _this.$lodash.forEach(res.list, function(item) {
-              item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');
-              item.endDateStr = _this.$moment(item.endDate).format('YYYY/MM/DD');
+            try {
+                   let res = result.data;
+                  _this.order.parentTotalPage = res.total;
+                  let arr = [];
+                  _this.$lodash.forEach(res.list, function(item) {
+                    item.startDateStr = _this.$moment(item.startDate).format('YYYY/MM/DD');
+                    item.endDateStr = _this.$moment(item.endDate).format('YYYY/MM/DD');
 
-              _this.$lodash.forEach(item.users,function(user){
-                  //  头像处理
-                  let httpIndex = user.headImage.indexOf('http');
-                  if(httpIndex == -1){
-                    user.headImage = superConst.HEAD_IMAGE_DEFAULT + itemuser.headImage;
-                  }
-              });
-             
-              arr.push(item);
-            });
-            _this.list = arr;
-            _this.SHIFT_LOADING();
+                    _this.$lodash.forEach(item.users,function(user){
+                        //  头像处理
+                        let httpIndex = user.headImage.indexOf('http');
+                        if(httpIndex == -1){
+                          user.headImage = superConst.HEAD_IMAGE_DEFAULT + itemuser.headImage;
+                        }
+                    });
+                  
+                    arr.push(item);
+                  });
+                  _this.list = arr;
+                  _this.SHIFT_LOADING();
+            } catch (error) {
+                console.error(error)
+            }
           })
           .catch(err => {
             _this.SHIFT_LOADING();
@@ -302,8 +306,7 @@ export default {
                   }
                   _this.user = res;
                   _this.SHIFT_LOADING();
-                  _this.getOrderList();
-
+                  _this.getTaskList('publish');
                 }catch (e) {
                   console.error(e);
                 }

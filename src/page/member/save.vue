@@ -79,7 +79,7 @@
                       <div class="hr-line-dashed"></div>
                       <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                          <button class="btn btn-primary" @click="submit" type="button">保存</button>
+                          <button  v-permission="{code:'user_insert'}" class="btn btn-primary" @click="submit" type="button">保存</button>
                         </div>
                       </div>
                     </fieldset>

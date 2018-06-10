@@ -12,7 +12,7 @@
                 <div class="row m-b-sm ">
                   <div class="col-lg-12">
                      <div class="pull-left">
-                        <router-link :to="{path:'/member/v_save'}" class="btn btn-primary btn-sm">新增会员</router-link>
+                        <router-link  v-permission="{code:'user_insert'}" :to="{path:'/member/v_save'}" class="btn btn-primary btn-sm">新增会员</router-link>
                     </div>
                     <div class=" pull-right text-right">
                       <div class="btn-group btn-group-sm">

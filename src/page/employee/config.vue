@@ -348,7 +348,6 @@ export default {
           childNode.select = false;
         }
         let selectArr = _this.$lodash.filter(parentNode.subs,{select:true});
-        console.log(selectArr,1111)
         if(selectArr.length==0){
           parentNode.select = false;
         }
