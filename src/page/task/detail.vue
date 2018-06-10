@@ -368,6 +368,7 @@ export default {
             _this.$toast.success('操作成功');
             $("#remind-info").modal('hide');
             _this.pageNo = 1;
+            _this.getDetail();
             _this.getPersons();
             _this.SHIFT_LOADING();
           })
@@ -594,7 +595,8 @@ export default {
           if(res.code && res.code >=0) {
               _this.$toast.error(res.msg);
           }else{
-            callback && callback();
+            _this.$toast.success('操作成功');
+            _this.getPersons()
           }
           _this.SHIFT_LOADING();
           _this.loading = false;
