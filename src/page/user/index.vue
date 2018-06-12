@@ -216,6 +216,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.pwd.oldPwd = '';
             _this.pwd.newPwd = '';
+            _this.pwd.rePwd = '';
           }
         })
         .catch(err => {
