@@ -13,7 +13,7 @@ Vue.directive('permission', {
     let origain = JSON.parse(localStorage.getItem('super-auth-key'))
     let isExist = false
     origain.forEach(element => {
-      if (!isExist && element.code === binding.value.code) {
+      if (!isExist && binding.value.code.indexOf(element.code) >= 0) {
         isExist = true
       }
     })

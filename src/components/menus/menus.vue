@@ -26,35 +26,35 @@
             <i class="fa fa-home"></i> <span class="nav-label">首页</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Adv'}" v-permission="{code:'adv'}">
+        <li v-bind:class="{active:parentKey==='Adv'}" >
           <router-link to="/adv/v_index">
             <i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Task'}" v-permission="{code:'project'}">
+        <li v-bind:class="{active:parentKey==='Task'}">
           <router-link to="/task/v_index">
             <i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Product'}" v-permission="{code:'product'}">
+        <li v-bind:class="{active:parentKey==='Product'}">
           <router-link to="/product/v_index">
             <i class="fa fa-folder"></i> <span class="nav-label">产品管理</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Member'}"  v-permission="{code:'user'}">
+        <li v-bind:class="{active:parentKey==='Member'}">
           <router-link to="/member/v_index"> <i class="fa fa-address-book"></i> <span class="nav-label">会员管理</span> </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Order'}"  v-permission="{code:'order'}">
+        <li v-bind:class="{active:parentKey==='Order'}">
           <router-link to="/order/v_index">
             <i class="fa fa-file-text"></i> <span class="nav-label">订单管理</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Employee'}"  v-permission="{code:'employee'}">
+        <li v-bind:class="{active:parentKey==='Employee'}">
           <router-link to="/employee/v_index">
             <i class="fa fa-group"></i> <span class="nav-label">员工管理</span>
           </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Pages'}"  v-permission="{code:'page'}">
+        <li v-bind:class="{active:parentKey==='Pages'}">
           <router-link to="/pages/v_index">
             <i class="fa fa fa-files-o"></i> <span class="nav-label">单页管理</span>
           </router-link>

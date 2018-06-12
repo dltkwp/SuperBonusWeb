@@ -38,7 +38,8 @@ export default [{
   meta: {
     isShowBack: false,
     parentKey: 'SysCfg',
-    childrenKey: 'Level'
+    childrenKey: 'Level',
+    code: 'setting_employee'
   },
   component: MemberLevel
 },

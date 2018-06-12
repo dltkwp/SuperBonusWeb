@@ -69,7 +69,6 @@ router.beforeEach((to, from, next) => {
   /**
    * 权限控制处理
    */
-  console.log('to->', to, 'from-->', from)
   if (to.meta && to.meta.code) {
     let origain = JSON.parse(localStorage.getItem('super-auth-key'))
     let isExist = false
