@@ -26,13 +26,13 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">姓名:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工姓名" v-model="edit.name" maxlength="20">
+                          <input type="text" class="form-control" placeholder="请输入员工姓名" v-model="edit.realname" maxlength="20">
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">手机号:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="edit.phone" disabled readonly>
+                          <input type="text" class="form-control" placeholder="请输入员工手机号" v-model="edit.username" disabled readonly>
                         </div>
                       </div>
                       <div class="form-group">
@@ -46,13 +46,13 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">权限:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" v-model="edit.permission" disabled readonly>
+                          <input type="text" class="form-control" v-model="edit.roleName" disabled readonly>
                         </div>
                       </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">职位:</label>
                         <div class="col-sm-6">
-                          <input type="text" class="form-control" v-model="edit.position" readonly disabled>
+                          <input type="text" class="form-control" v-model="edit.positionName" readonly disabled>
                         </div>
                       </div>
                       <div class="hr-line-dashed"></div>
@@ -128,12 +128,12 @@ export default {
   data() {
     return {
       edit:{
-        name:'',
-        phone:'',
+        realname:'',
+        username:'',
         headImage:'',
         headImageUrl:'',
-        permission:'',
-        position:''
+        roleName:'',
+        positionName:''
       },
       pwd:{
         oldPwd: '',
@@ -151,16 +151,22 @@ export default {
     ...mapActions([types.LOADING.PUSH_LOADING, types.LOADING.SHIFT_LOADING]),
     updateUser: function () {
       let _this = this;
-      let name = _this.edit.name;
+      let name = _this.edit.realname;
       if(!name){
         _this.$toast.warning('姓名不可为空');
         return false;
       }
+
+      let param = {
+        id: _this.edit.id,
+        realname: _this.edit.realname,
+        image: _this.edit.headImage
+      };
       // 调用接口
 
       _this.PUSH_LOADING();
       _this.$axios
-        .put("user/",param)
+        .put("employees", param)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
@@ -182,7 +188,8 @@ export default {
       let rePwd =  _this.pwd.rePwd
       
       if(!oldPwd) {
-        _this.$toast.warning("旧密码不可为空");return false;
+        _this.$toast.warning("旧密码不可为空");
+        return false;
       }
       if (!regex.pwd(newPwd)) {
         _this.$toast.warning('新密码格式不正确');
@@ -197,10 +204,9 @@ export default {
         return false;
       }
 
-      return ;
       _this.PUSH_LOADING();
       _this.$axios
-        .put("user/",param)
+        .put("employees/" + _this.edit.id + "?oldPassword=" + oldPwd + "&password=" + newPwd + "&password1=" + rePwd)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
@@ -228,15 +234,18 @@ export default {
     },
     getUser: function () {
       let _this = this;
-      return ;
       _this.PUSH_LOADING();
+      let id = JSON.parse(localStorage.getItem(superConst.LOGIN_USER_INFO_KEY)).id
       _this.$axios
-        .put("user/",param)
+        .get("employees/" + id)
         .then(result => {
           let res = result.data;
           if(res.code&&res.code>0){
               _this.$toast.error(res.msg);
           }else{
+            res.headImage = res.image;
+            
+            res.image && (res.headImageUrl = superConst.IMAGE_STATIC_URL + res.image)
             _this.edit = res;
           }
           _this.SHIFT_LOADING();
