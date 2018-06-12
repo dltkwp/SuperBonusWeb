@@ -39,7 +39,7 @@
                         <label class="col-sm-2 control-label">照片:</label>
                         <div class="col-sm-6">
                           <div class="img-upload" @click="uploadImage">
-                            <img v-bind:src='edit.headImageUrl' v-if="edit.headImageUrl" style="width: 90px; height: 90px;">
+                            <img v-bind:src="edit.headImageUrl" v-if="edit.headImageUrl" style="width: 90px; height: 90px;">
                           </div>
                         </div>
                       </div>
@@ -246,7 +246,8 @@ export default {
           }else{
             res.headImage = res.image;
             
-            res.image && (res.headImageUrl = superConst.IMAGE_STATIC_URL + res.image)
+            res.headImageUrl = res.image ? superConst.IMAGE_STATIC_URL + res.image : ''
+            
             _this.edit = res;
           }
           _this.SHIFT_LOADING();
