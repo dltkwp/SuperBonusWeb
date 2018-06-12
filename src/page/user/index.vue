@@ -145,6 +145,7 @@ export default {
   },
   mounted() {
     let _this = this;
+    _this.SHIFT_LOADING();
     _this.getUser();
   },
   methods: {
@@ -173,6 +174,13 @@ export default {
               _this.$toast.error(res.msg);
           }else{
              _this.$toast.success('操作成功');
+             try {
+               let u =  JSON.parse(localStorage.getItem(superConst.LOGIN_USER_INFO_KEY))
+               u.realname = name
+               localStorage.setItem(superConst.LOGIN_USER_INFO_KEY,JSON.stringify(u));
+             } catch (error) {
+               console.error(error)
+             }
           }
           _this.SHIFT_LOADING();
         })
@@ -247,7 +255,7 @@ export default {
             res.headImage = res.image;
             
             res.headImageUrl = res.image ? superConst.IMAGE_STATIC_URL + res.image : ''
-            
+
             _this.edit = res;
           }
           _this.SHIFT_LOADING();
