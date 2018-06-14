@@ -225,6 +225,7 @@ export default {
             _this.pwd.oldPwd = '';
             _this.pwd.newPwd = '';
             _this.pwd.rePwd = '';
+            _this.gotoLogout()
           }
         })
         .catch(err => {
@@ -240,6 +241,16 @@ export default {
           _this.pwd.newPwd = '';
         }break;      
       }
+    },
+    gotoLogout: function() {
+        let _this = this;
+        _this.$axios
+          .get("logout")
+          .then(result => {
+            localStorage.setItem(superConst.SUPER_TOKEN_KEY, ""); 
+            window.location.href = "/v_login";
+          })
+          .catch(err => {});
     },
     getUser: function () {
       let _this = this;
