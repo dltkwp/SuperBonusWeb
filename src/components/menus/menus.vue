@@ -61,7 +61,7 @@
         </li>
         <li v-bind:class="{active:parentKey==='SysCfg'}">
           <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
-          <ul class="nav nav-second-level">
+          <ul class="nav nav-second-level collapse">
             <li v-bind:class="{active:childrenKey==='Employee'}">
               <router-link to="/employee/v_config">员工设置</router-link>
             </li>
@@ -107,6 +107,10 @@
       let meta = _this.$route.meta;
       _this.parentKey = meta.parentKey;
       _this.childrenKey = meta.childrenKey;
+
+      setTimeout(function() {
+        $("#side-menu").metisMenu();
+      } ,9)
     },
     methods: {
       gotoLogout: function() {
