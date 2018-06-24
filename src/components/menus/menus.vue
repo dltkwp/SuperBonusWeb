@@ -27,10 +27,19 @@
           </router-link>
         </li>
         <li v-bind:class="{active:parentKey==='Adv'}" >
-          <router-link to="/adv/v_index">
-            <i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span>
-          </router-link>
+           <a href="javascript:;;"><i class="fa fa-podcast"></i> <span class="nav-label">广告管理</span><span class="fa arrow"></span> </a>
+
+            <ul class="nav nav-second-level collapse">
+              <li v-bind:class="{active:childrenKey==='MinAdv'}">
+                <router-link to="/adv/v_min">小程序广告管理</router-link>
+              </li>
+              <li v-bind:class="{active:childrenKey==='PcAdv'}">
+                <router-link to="/adv/v_pc">PC广告管理</router-link>
+              </li>
+            </ul>
         </li>
+
+
         <li v-bind:class="{active:parentKey==='Task'}">
           <router-link to="/task/v_index">
             <i class="fa fa-globe"></i> <span class="nav-label">项目大厅</span>
@@ -58,6 +67,16 @@
           <router-link to="/pages/v_index">
             <i class="fa fa fa-files-o"></i> <span class="nav-label">单页管理</span>
           </router-link>
+        </li>
+        <li v-bind:class="{active:parentKey==='Meet'}">
+            <router-link to="/meet/v_meet">
+              <i class="fa fa-trophy"></i> <span class="nav-label">圆桌会管理</span>
+            </router-link>
+        </li>
+        <li v-bind:class="{active:parentKey==='Activity'}">
+            <router-link to="/news/v_new">
+              <i class="fa fa-fire"></i> <span class="nav-label">活动管理</span>
+            </router-link>
         </li>
         <li v-bind:class="{active:parentKey==='SysCfg'}">
           <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>

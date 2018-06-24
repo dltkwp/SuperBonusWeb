@@ -319,7 +319,8 @@ export default {
             type: item.type,
             href: item.href||'',
             image: item.code,
-            name: item.name ||''
+            name: item.name ||'',
+            client: 'wechat'
           });
         }
       });
@@ -378,7 +379,6 @@ export default {
       $("#choose-product").modal("hide");
       let cur = _this.productList[index];
       if (cur){
-        console.log(cur,_this.selectProductIndex,123123123123);
         _this.advList[_this.selectProductIndex].name = cur.productName;
         _this.advList[_this.selectProductIndex].href = cur.id;
       }
