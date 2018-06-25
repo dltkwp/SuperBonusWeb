@@ -329,6 +329,7 @@ export default {
       _this.PUSH_LOADING();
       _this.$axios
         .post("advs", {
+          client: 'pc',
           advs: param
         })
         .then(result => {

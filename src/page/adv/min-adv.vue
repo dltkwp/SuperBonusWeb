@@ -327,6 +327,7 @@ export default {
       _this.PUSH_LOADING();
       _this.$axios
         .post("advs", {
+          client: 'wechat',
           advs: param
         })
         .then(result => {
