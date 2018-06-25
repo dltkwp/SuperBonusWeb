@@ -31,7 +31,7 @@
                                 <input type="radio" v-bind:checked="item.type=='product'" @click='typeChange(index,"product")'  v-bind:name="'options-'+index"> 产品 </label>
                             <label class="radio-inline"> 
                                 <input type="radio" v-bind:checked="item.type=='project'" @click='typeChange(index,"project")'   v-bind:name="'options-'+index"> 项目 </label>
-                            <label class="radio-inline"> 
+                            <label class="radio-inline hide"> 
                                 <input type="radio" v-bind:checked="item.type=='custom'" @click='typeChange(index,"custom")'   v-bind:name="'options-'+index"> 相关页面 </label>
 
                             <div @click="showSelectModal(index)" class="btn btn-sm btn-white">选择{{item.typeText}}</div>
