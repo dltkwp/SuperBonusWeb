@@ -9,7 +9,7 @@ export default [{
     isShowBack: false,
     parentKey: 'Meet',
     childrenKey: 'Index',
-    code: 'meet'
+    code: 'adv'
   },
   component: Meet
 },
@@ -20,7 +20,7 @@ export default [{
     isShowBack: false,
     parentKey: 'Meet',
     childrenKey: 'Add',
-    code: 'meet'
+    code: 'adv'
   },
   component: AddMeet
 },
@@ -31,7 +31,7 @@ export default [{
     isShowBack: false,
     parentKey: 'Meet',
     childrenKey: 'Edit',
-    code: 'meet'
+    code: 'adv'
   },
   component: EditMeet
 }]

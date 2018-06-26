@@ -3,62 +3,62 @@
       <v-menus></v-menus>
       <div id="page-wrapper" class="gray-bg">
         <v-top></v-top>
-       <div class="wrapper wrapper-content ">
-           <div class="row">
-          <div class="col-lg-12">
-            <div class="ibox">
-              <div class="ibox-title">单页列表</div>
-              <div class="ibox-content">
-                <div class="row m-b-sm ">
-                  <div class="col-lg-12">
-                    <div class="pull-left">
-                      <router-link   v-permission="{code:'page_insert'}"   to="/pages/v_save" class="btn btn-primary btn-sm">新增单页</router-link>
+        <div class="wrapper wrapper-content ">
+            <div class="row">
+            <div class="col-lg-12">
+              <div class="ibox">
+                <div class="ibox-title">单页列表</div>
+                <div class="ibox-content">
+                  <div class="row m-b-sm ">
+                    <div class="col-lg-12">
+                      <div class="pull-left">
+                        <router-link   v-permission="{code:'page_insert'}"   to="/pages/v_save" class="btn btn-primary btn-sm">新增单页</router-link>
 
-                      <div class="btn-group btn-group-sm"  v-permission="{code:'page_delete'}"   >
-                        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                          <li @click="showBathDelConfirmModal"><a  href="javascript:;;">删除</a></li>
-                        </ul>
+                        <div class="btn-group btn-group-sm"  v-permission="{code:'page_delete'}"   >
+                          <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">批量操作 <span class="caret"></span></button>
+                          <ul class="dropdown-menu">
+                            <li @click="showBathDelConfirmModal"><a  href="javascript:;;">删除</a></li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="table-responsive">
-                  <table class="table table-bordered table-stripped table-hover ">
-                    <thead>
-                      <tr>
-                       <th class="text-center"> <input type="checkbox"  class="i-checks" v-model="checkAll" v-bind:checked="checkAll" @click="selectAllClick($event)"> </th>
-                        <th> # </th>
-                        <th> 标题 </th>
-                        <th> 发布时间 </th>
-                        <th> 发布人 </th>
-                        <th> 操作 </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item,index) in list" :key='index'>
-                        <td class="text-center">
-                          <input type="checkbox"  class="i-checks" v-bind:checked="ids.indexOf(item.id)>=0" @click="itemClick($event,index)">
-                        </td>
-                        <td> {{index + 1}}</td>
-                        <td> {{item.title}}</td>
-                        <td> {{item.createdStr}}</td>
-                        <td> {{item.realname}}</td>
-                        <td>
-                           <router-link :to="{path:'/pages/v_detail',query:{ id: item.id }}" class="btn btn-primary btn-sm">查看</router-link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-stripped table-hover ">
+                      <thead>
+                        <tr>
+                        <th class="text-center"> <input type="checkbox"  class="i-checks" v-model="checkAll" v-bind:checked="checkAll" @click="selectAllClick($event)"> </th>
+                          <th> # </th>
+                          <th> 标题 </th>
+                          <th> 发布时间 </th>
+                          <th> 发布人 </th>
+                          <th> 操作 </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item,index) in list" :key='index'>
+                          <td class="text-center">
+                            <input type="checkbox"  class="i-checks" v-bind:checked="ids.indexOf(item.id)>=0" @click="itemClick($event,index)">
+                          </td>
+                          <td> {{index + 1}}</td>
+                          <td> {{item.title}}</td>
+                          <td> {{item.createdStr}}</td>
+                          <td> {{item.realname}}</td>
+                          <td>
+                            <router-link :to="{path:'/pages/v_detail',query:{ id: item.id }}" class="btn btn-primary btn-sm">查看</router-link>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-                  <v-empty :isShow="parentTotalPage==0"></v-empty>
-                  <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
+                    <v-empty :isShow="parentTotalPage==0"></v-empty>
+                    <page :pageSize="pageSize" v-if="parentTotalPage>0" :total="parentTotalPage" show-total :current="pageNo" @on-change="parentCallback"></page>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
 

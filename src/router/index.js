@@ -12,6 +12,7 @@ import Task from './task'
 import User from './user'
 import Pages from './pages'
 import Employee from './employee'
+import Meet from './meet'
 
 import Login from '@/page/login/index.vue'
 import Notfound from '@/page/common/404.vue'
@@ -63,6 +64,7 @@ let router = new Router({
   }].concat(AdvRouter).concat(LoginRouter).concat(MemberRouter)
     .concat(OrderRouter).concat(ProductRouter).concat(ForgetPwdRouter)
     .concat(Task).concat(User).concat(Pages).concat(Employee)
+    .concat(Meet)
 })
 
 router.beforeEach((to, from, next) => {

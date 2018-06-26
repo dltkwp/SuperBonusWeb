@@ -73,11 +73,6 @@
               <i class="fa fa-trophy"></i> <span class="nav-label">圆桌会管理</span>
             </router-link>
         </li>
-        <li v-bind:class="{active:parentKey==='Activity'}">
-            <router-link to="/news/v_new">
-              <i class="fa fa-fire"></i> <span class="nav-label">活动管理</span>
-            </router-link>
-        </li>
         <li v-bind:class="{active:parentKey==='SysCfg'}">
           <a href="javascript:;;"><i class="fa fa-cog"></i> <span class="nav-label">系统设置</span><span class="fa arrow"></span> </a>
           <ul class="nav nav-second-level collapse">
