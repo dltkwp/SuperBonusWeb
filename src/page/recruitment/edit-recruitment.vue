@@ -8,7 +8,7 @@
             <div class="col-lg-12">
               <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#tab-1"> 圆桌会议信息</a></li>
+                  <li class="active"><a data-toggle="tab" href="#tab-1"> 招聘信息</a></li>
                 </ul>
                 <div class="tab-content">
                   <div id="tab-1" class="tab-pane active">
@@ -17,7 +17,7 @@
                         <div class="form-group">
                           <label class="col-sm-2 control-label">名称:</label>
                           <div class="col-sm-6">
-                            <input type="text" class="form-control" placeholder="请输入圆桌会名称" maxlength="12" v-model="title">
+                            <input type="text" class="form-control" placeholder="请输入名称" maxlength="12" v-model="title">
                           </div>
                         </div>
 
@@ -67,7 +67,7 @@
                         </div>
                         <div class="form-group" style=" margin-top:  82px" >
                           <div class="col-sm-4 col-sm-offset-2">
-                            <button  v-permission="{code:'meeting_update'}"  class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
+                            <button  v-permission="{code:'recruitment_update'}"  class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
                           </div>
                         </div>
                       </fieldset>
@@ -101,7 +101,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>分类名称</th>
-
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -110,17 +109,17 @@
                                 <td>{{index + 1}}</td>
                                 <td v-if="item.type != 'edit'">{{item.name}}</td>
                                 <td v-if="item.type == 'edit'">
-                                    <input class="form-control" placeholder="请输入圆桌会分类名称" v-model="item.name" maxlength="15">
+                                    <input class="form-control" placeholder="请输入分类名称" v-model="item.name" maxlength="15">
                                 </td>
                                 <td>
-                                    <div  v-permission="{code:'meeting_category_update'}"   class="btn btn-default btn-sm" v-if="item.type != 'edit'" @click="categoryEdit(index)">编辑</div>
-                                    <div  v-permission="{code:'meeting_category_update'}"  class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
-                                    <div  v-permission="{code:'meeting_category_delete'}"  class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
+                                    <div class="btn btn-default btn-sm" v-if="item.type != 'edit'" @click="categoryEdit(index)">编辑</div>
+                                    <div class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
+                                    <div class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
                                 </td>
                             </tr>
-                            <tr v-permission="{code:'meeting_category_insert'}" >
+                            <tr>
                                 <td>{{categoryList.length + 1}}</td>
-                                <td><input class="form-control" placeholder="请输入圆桌会分类名称" v-model="categoryName" maxlength="15"></td>
+                                <td><input class="form-control" placeholder="请输入分类名称" v-model="categoryName" maxlength="15"></td>
                                 <td>
                                     <div class="btn btn-primary btn-sm" @click="saveCategorySubmit">保存</div>
                                 </td>
@@ -351,7 +350,7 @@ export default {
         imageCode:_this.imgCode,
         created: created,
         description: description,
-        type: "desk"
+        type: "recruitment"
       };
       _this.PUSH_LOADING();
       _this.$axios
@@ -364,7 +363,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              window.location.href = "/meet/v_meet";
+              window.location.href = "/recruitment/v_recruitment";
             }, 800);
           }
         })
@@ -383,7 +382,7 @@ export default {
         _this.PUSH_LOADING();
         _this.categoryId  = -1
         _this.$axios
-            .get("newsCategory?type=desk")
+            .get("newsCategory?type=recruitment")
             .then(result => {
                 let list = result.data
                 _this.$lodash.forEach(list,(item) => {
@@ -411,7 +410,7 @@ export default {
         _this.PUSH_LOADING();
         _this.$axios
             .post("newsCategory",{
-                type:'desk',
+                type:'recruitment',
                 name: categoryName
             })
             .then(result => {

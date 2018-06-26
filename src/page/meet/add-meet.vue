@@ -101,7 +101,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>分类名称</th>
-
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -113,12 +112,12 @@
                                     <input class="form-control" placeholder="请输入圆桌会分类名称" v-model="item.name" maxlength="15">
                                 </td>
                                 <td>
-                                    <div class="btn btn-default btn-sm" v-if="item.type != 'edit'" @click="categoryEdit(index)">编辑</div>
-                                    <div class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
-                                    <div class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
+                                    <div  v-permission="{code:'meeting_category_update'}"  class="btn btn-default btn-sm" v-if="item.type != 'edit'" @click="categoryEdit(index)">编辑</div>
+                                    <div  v-permission="{code:'meeting_category_update'}"  class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
+                                    <div  v-permission="{code:'meeting_category_delete'}"  class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr v-permission="{code:'meeting_category_insert'}" >
                                 <td>{{categoryList.length + 1}}</td>
                                 <td><input class="form-control" placeholder="请输入圆桌会分类名称" v-model="categoryName" maxlength="15"></td>
                                 <td>

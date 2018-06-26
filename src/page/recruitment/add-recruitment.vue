@@ -8,7 +8,7 @@
             <div class="col-lg-12">
               <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#tab-1"> 圆桌会议信息</a></li>
+                  <li class="active"><a data-toggle="tab" href="#tab-1"> 招聘信息</a></li>
                 </ul>
                 <div class="tab-content">
                   <div id="tab-1" class="tab-pane active">
@@ -17,7 +17,7 @@
                         <div class="form-group">
                           <label class="col-sm-2 control-label">名称:</label>
                           <div class="col-sm-6">
-                            <input type="text" class="form-control" placeholder="请输入圆桌会名称" maxlength="12" v-model="title">
+                            <input type="text" class="form-control" placeholder="请输入名称" maxlength="12" v-model="title">
                           </div>
                         </div>
 
@@ -39,7 +39,7 @@
                             <label class="col-sm-2 control-label">略缩图:</label>
                             <div class="col-sm-10">
                             <div class="img-upload" @click.stop="uploadImage($event)">
-                                <img :src="img" style="width:90px;height:90px;">
+                                <img :src="img" style="width:90px;height:90px;" v-if="img">
                             </div>
                         </div>
                         </div>
@@ -67,7 +67,7 @@
                         </div>
                         <div class="form-group" style=" margin-top:  82px" >
                           <div class="col-sm-4 col-sm-offset-2">
-                            <button  v-permission="{code:'meeting_update'}"  class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
+                            <button  v-permission="{code:'recruitment_insert'}" class="btn btn-primary" type="buttion" @click="saveSubmit">保存</button>
                           </div>
                         </div>
                       </fieldset>
@@ -80,7 +80,7 @@
       </div>
       </div>
 
-      <form action="" id="uploadImgForm" style="display:none;">
+       <form action="" id="uploadImgForm" style="display:none;">
         <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
       </form>
 
@@ -110,17 +110,17 @@
                                 <td>{{index + 1}}</td>
                                 <td v-if="item.type != 'edit'">{{item.name}}</td>
                                 <td v-if="item.type == 'edit'">
-                                    <input class="form-control" placeholder="请输入圆桌会分类名称" v-model="item.name" maxlength="15">
+                                    <input class="form-control" placeholder="请输入分类名称" v-model="item.name" maxlength="15">
                                 </td>
                                 <td>
                                     <div  v-permission="{code:'meeting_category_update'}"   class="btn btn-default btn-sm" v-if="item.type != 'edit'" @click="categoryEdit(index)">编辑</div>
-                                    <div  v-permission="{code:'meeting_category_update'}"  class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
-                                    <div  v-permission="{code:'meeting_category_delete'}"  class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
+                                    <div  v-permission="{code:'meeting_category_update'}"   class="btn btn-primary btn-sm" v-if="item.type == 'edit'" @click="categoryEditSave(index)">保存</div>
+                                    <div  v-permission="{code:'meeting_category_delete'}"   class="btn btn-default btn-sm" v-if="item.type == 'edit'" @click="showCategoryDeleteModal(index)">删除</div>
                                 </td>
                             </tr>
-                            <tr v-permission="{code:'meeting_category_insert'}" >
+                            <tr   v-permission="{code:'meeting_category_insert'}"   >
                                 <td>{{categoryList.length + 1}}</td>
-                                <td><input class="form-control" placeholder="请输入圆桌会分类名称" v-model="categoryName" maxlength="15"></td>
+                                <td><input class="form-control" placeholder="请输入分类名称" v-model="categoryName" maxlength="15"></td>
                                 <td>
                                     <div class="btn btn-primary btn-sm" @click="saveCategorySubmit">保存</div>
                                 </td>
@@ -183,7 +183,6 @@ export default {
   },
   data() {
     return {
-      id: '',
       title: "",
       created: "",
       description: "", //  描述
@@ -199,7 +198,6 @@ export default {
   mounted() {
     let _this = this;
     _this.SHIFT_LOADING();
-    _this.id = _this.$route.query.id
     let imgHandler = async function(state) {
       if (state) {
         $("#uploadFileEdit").val(null);
@@ -216,10 +214,7 @@ export default {
     _this.$refs.myQuillEditor.quill
       .getModule("toolbar")
       .addHandler("image", imgHandler);
-      _this.queryCategoryList(() => {
-          _this.queryMeetDetail()
-      })
-
+      _this.queryCategoryList()
   },
   computed: {
     editor() {
@@ -244,30 +239,6 @@ export default {
     handleChange: function(date) {
       let _this = this;
       _this.created = date;
-    },
-    queryMeetDetail () {
-      let _this = this
-      _this.PUSH_LOADING();
-      _this.$axios
-        .get("news/" + _this.id)
-        .then(result => {
-          let res = result.data;
-          if (res.code && res.code > 0) {
-            _this.$toast.error(res.msg);
-          } else {
-            _this.SHIFT_LOADING();
-
-            _this.title = res.title
-            _this.created = _this.$moment(res.created).format('YYYY/MM/DD')
-            _this.description = res.description
-            _this.img = superConst.IMAGE_STATIC_URL + res.imageCode
-            _this.imgCode = res.imageCode
-            _this.categoryId = res.category
-          }
-        })
-        .catch(err => {
-          _this.SHIFT_LOADING();
-        });
     },
     imgUploadEditFileChange: function(event) {
       let _this = this;
@@ -345,17 +316,16 @@ export default {
       }
 
       let param = {
-        id:_this.id,
         title: title,
         category: categoryId,
         imageCode:_this.imgCode,
         created: created,
         description: description,
-        type: "desk"
+        type: "recruitment"
       };
       _this.PUSH_LOADING();
       _this.$axios
-        .put("news", param)
+        .post("news", param)
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0) {
@@ -364,7 +334,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              window.location.href = "/meet/v_meet";
+              window.location.href = "/recruitment/v_recruitment";
             }, 800);
           }
         })
@@ -378,12 +348,12 @@ export default {
         $("#type-setting").modal('show')
         _this.queryCategoryList ()
     },
-    queryCategoryList (callback) {
+    queryCategoryList () {
         let _this = this;
         _this.PUSH_LOADING();
         _this.categoryId  = -1
         _this.$axios
-            .get("newsCategory?type=desk")
+            .get("newsCategory?type=recruitment")
             .then(result => {
                 let list = result.data
                 _this.$lodash.forEach(list,(item) => {
@@ -394,7 +364,6 @@ export default {
                 }
                 _this.categoryList = list
                 _this.SHIFT_LOADING();
-                callback && callback()
             })
             .catch(err => {
                 _this.SHIFT_LOADING();
@@ -411,7 +380,7 @@ export default {
         _this.PUSH_LOADING();
         _this.$axios
             .post("newsCategory",{
-                type:'desk',
+                type:'recruitment',
                 name: categoryName
             })
             .then(result => {
@@ -450,7 +419,7 @@ export default {
             _this.$axios
                 .put("newsCategory",{
                     id: cur.id,
-                    type:'desk',
+                    type:'recruitment',
                     name: categoryName
                 })
                 .then(result => {
