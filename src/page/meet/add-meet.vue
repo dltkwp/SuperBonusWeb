@@ -24,23 +24,24 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">分类:</label>
                             <div class="col-sm-6">
-                            <select class="form-control">
-                                <option>分类1</option>
-                                <option>分类2</option>
+                            <select class="form-control" v-model="categoryId">
+                              <option  v-for="(p,index) in categoryList" v-bind:value='p.id' :key="index">
+                                  {{p.name}}
+                              </option>
                             </select>
                             </div>
                             <div class="col-sm-2">
-                            <div class="btn btn-default" @click="showCategoryModal">分类设置</div>
+                                <div class="btn btn-default" @click="showCategoryModal">分类设置</div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label">略缩图:</label>
                             <div class="col-sm-10">
-                            <div class="img-upload">
-                                <img src="img/gallery/2.jpg" style="width:90px;height:90px;">
+                            <div class="img-upload" @click.stop="uploadImage($event)">
+                                <img :src="img" style="width:90px;height:90px;">
                             </div>
-                            <div class="btn-delete"><i class="fa fa-times-circle"></i></div></div>
+                        </div>
                         </div>
 
                         <div class="form-group">
@@ -78,6 +79,10 @@
           </div>
       </div>
       </div>
+
+       <form action="" id="uploadImgForm" style="display:none;">
+        <input type="file" name="uploadFile" id="uploadFile" multiple="multiple" style="display:none;" @change="imgUploadFileChange($event)">
+      </form>
 
       <form action="" id="uploadImgFormEdit" style="display:none;">
         <input type="file" name="uploadFileEdit" id="uploadFileEdit" multiple="multiple" style="display:none;" @change="imgUploadEditFileChange($event)">
@@ -181,7 +186,10 @@ export default {
       title: "",
       created: "",
       description: "", //  描述
+      img:'',
+      imgCode:'',
       editorOption: {},
+      categoryId: -1,
       categoryList: [], // 分类列表
       categoryName: '',
       categoryIndex: -1,
@@ -206,6 +214,7 @@ export default {
     _this.$refs.myQuillEditor.quill
       .getModule("toolbar")
       .addHandler("image", imgHandler);
+      _this.queryCategoryList()
   },
   computed: {
     editor() {
@@ -282,13 +291,22 @@ export default {
       }
     },
     saveSubmit: function() {
-      let _this = this;
-      let title = _this.title;
-      let created = _this.created;
-      let description = _this.description;
+      let _this = this
+      let title = _this.title
+      let categoryId = _this.categoryId
+      let created = _this.created
+      let description = _this.description
 
       if (title == "") {
         _this.$toast.warning("名称不可为空");
+        return false;
+      }
+      if (categoryId == -1) {
+        _this.$toast.warning("请选择分类")
+        return false;
+      }
+      if (!_this.imgCode) {
+        _this.$toast.warning("图片不可为空")
         return false;
       }
       if (!created) {
@@ -299,13 +317,15 @@ export default {
 
       let param = {
         title: title,
+        category: categoryId,
+        imageCode:_this.imgCode,
         created: created,
         description: description,
-        type: "custum"
+        type: "desk"
       };
       _this.PUSH_LOADING();
       _this.$axios
-        .post("customPages", param)
+        .post("news", param)
         .then(result => {
           let res = result.data;
           if (res.code && res.code > 0) {
@@ -314,7 +334,7 @@ export default {
             _this.$toast.success("操作成功");
             _this.SHIFT_LOADING();
             setTimeout(function() {
-              window.location.href = "/pages/v_index";
+              window.location.href = "/meet/v_meet";
             }, 800);
           }
         })
@@ -331,6 +351,7 @@ export default {
     queryCategoryList () {
         let _this = this;
         _this.PUSH_LOADING();
+        _this.categoryId  = -1
         _this.$axios
             .get("newsCategory?type=desk")
             .then(result => {
@@ -338,6 +359,9 @@ export default {
                 _this.$lodash.forEach(list,(item) => {
                     item.type = ''
                 })
+                if (list.length > 0) {
+                    _this.categoryId = list[0].id
+                }
                 _this.categoryList = list
                 _this.SHIFT_LOADING();
             })
@@ -441,7 +465,56 @@ export default {
                     _this.SHIFT_LOADING();
                 });
         }
-    }
+    },
+    uploadImage: function(index) {
+      let _this = this;
+      $("#uploadFile").val(null);
+      if ($("#uploadFile").val()) {
+        document.getElementById("uploadImgForm").reset();
+      }
+      document.getElementById("uploadFile").click();
+    },
+    imgUploadFileChange: function(event) {
+      let _this = this;
+      if (event) {
+        var filePath = "";
+        var size = 0;
+        var updatingCount = 0;
+
+        if (event && event.target && event.target.files) {
+          var file = event.target.files[0];
+          size = file.size || 0;
+          filePath = file.name;
+          var index = filePath.lastIndexOf(".");
+          var suffix = filePath.substring(index, filePath.length);
+
+          if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(suffix)) {
+            _this.$toast.warning("图片类型必须是.gif,jpeg,jpg,png中的一种");
+            return false;
+          }
+
+          var imgSize = size / 1024 / 1024;
+          if (imgSize > 1) {
+            _this.$toast.warning("图片大小超过1M,请上传小于1M的图片.");
+            return false;
+          }
+          var formData = new FormData();
+          formData.append("file", file);
+
+          _this.$axios
+            .post("upload", formData, {
+              headers: { "Content-Type": "multipart/form-data" }
+            })
+            .then(result => {
+              let res = result.data;
+              _this.img = superConst.IMAGE_STATIC_URL + res.fileCode
+              _this.imgCode = res.fileCode
+              _this.$toast.success("操作成功");
+            })
+            .catch(err => {});
+        }
+      }
+    },
 
   }
 };

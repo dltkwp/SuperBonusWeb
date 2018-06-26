@@ -37,14 +37,12 @@
                                     <tbody>
                                         <tr v-for="(item,index) in list" :key='index'>
                                             <td><input type="checkbox"  class="i-checks" v-bind:checked="ids.indexOf(item.id)>=0" @click="itemClick($event,index)"></td>
-                                            <td> </td>
-                                            <td> 圆桌会1</td>
-                                            <td>2018/05/01 12:20
-                                            </td>
-                                            <td> 张三</td>
+                                            <td> {{item.title}}</td>
+                                            <td> {{item.categoryName}}</td>
+                                            <td> {{item.createdStr}}</td>
+                                            <td> {{item.realname}}</td>
                                             <td>
-                                            <a class="btn btn-white btn-sm" href="add-news.html">查看</a>
-
+                                                <router-link class="btn btn-white btn-sm"  :to="{path:'/meet/v_edit', query:{id:item.id}}">查看</router-link>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -172,7 +170,7 @@ export default {
         .get("news?" + param.join("&"))
         .then(result => {
           let res = result.data;
-          if (res.code && (res.code == 200 || res.code == 201)) {
+          if (!res.code) {
             _this.parentTotalPage = res.total;
             try {
                 _this.$lodash.forEach(res.list, function(item) {
