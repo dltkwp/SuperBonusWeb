@@ -179,7 +179,7 @@ export default {
         _this.checkAll = _this.list.length == _this.ids.length;
       } else {
         if (curIndex >= 0) {
-          _this.ids.split(curIndex, 1);
+          _this.ids.splice(curIndex, 1);
           _this.checkAll = false;
         }
       }
