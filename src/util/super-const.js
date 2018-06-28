@@ -9,6 +9,15 @@ const HEAD_IMAGE_DEFAULT = 'https://bonus.oss-cn-beijing.aliyuncs.com/product/C9
 const LOGIN_USER_NAME_KEY = 'super-username-key'// 登录人的手机号存储的key
 const LOGIN_USER_INFO_KEY = 'super-user-info-key'
 const SUPER_AUTH_KEY = 'super-auth-key'
+const PAGE_TYPES_LIST = [
+  {name: '超级悬赏', value: 'superBonus'},
+  {name: '企业文化', value: 'corporateCulture'},
+  {name: '合作联盟', value: 'cooperate'},
+  {name: '联系我们', value: 'contactUs'},
+  {name: '隐私权政策', value: 'privacyPolicy'},
+  {name: '法律声明', value: 'legalStatement'},
+  {name: '广告', value: 'adv'}
+]
 
 module.exports = {
   SUPER_TOKEN_KEY,
@@ -19,5 +28,6 @@ module.exports = {
   HEAD_IMAGE_DEFAULT,
   LOGIN_USER_NAME_KEY,
   LOGIN_USER_INFO_KEY,
-  SUPER_AUTH_KEY
+  SUPER_AUTH_KEY,
+  PAGE_TYPES_LIST
 }

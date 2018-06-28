@@ -30,6 +30,7 @@
                         <th class="text-center"> <input type="checkbox"  class="i-checks" v-model="checkAll" v-bind:checked="checkAll" @click="selectAllClick($event)"> </th>
                           <th> # </th>
                           <th> 标题 </th>
+                          <th> 类型 </th>
                           <th> 发布时间 </th>
                           <th> 发布人 </th>
                           <th> 操作 </th>
@@ -38,10 +39,11 @@
                       <tbody>
                         <tr v-for="(item,index) in list" :key='index'>
                           <td class="text-center">
-                            <input type="checkbox"  class="i-checks" v-bind:checked="ids.indexOf(item.id)>=0" @click="itemClick($event,index)">
+                            <input type="checkbox" :readonly="!item.type=='adv'" :disabled="!item.type=='adv'"  class="i-checks" v-bind:checked="ids.indexOf(item.id)>=0" @click="itemClick($event,index)">
                           </td>
                           <td> {{index + 1}}</td>
                           <td> {{item.title}}</td>
+                          <td> {{item.typeName}}</td>
                           <td> {{item.createdStr}}</td>
                           <td> {{item.realname}}</td>
                           <td>
@@ -74,7 +76,7 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="alert alert-danger">
-                    确定要删除吗？
+                    确定要删除吗？<br/> 只能删除广告类型的单页面
                   </div>
                 </div>
               </div>
@@ -162,7 +164,8 @@ export default {
     selectAllClick: function(event) {
       let _this = this;
       if (event.target.checked) {
-        let tempIds = _this.$lodash.map(_this.list, "id");
+        let advArr = _this.$lodash.filter(_this.list,{type:"adv"})
+        let tempIds = _this.$lodash.map(advArr, "id");
         _this.ids = tempIds;
       } else {
         _this.ids = [];
@@ -205,6 +208,7 @@ export default {
           try {
             _this.$lodash.forEach(res.list, function(item) {
                item.createdStr = item.createDate ? _this.$moment(item.createDate).format('YYYY/MM/DD'): '';
+               item.typeName = _this.$lodash.find(superConst.PAGE_TYPES_LIST,{value:item.type}).name
             });
           } catch (e) {
             console.error(e);
