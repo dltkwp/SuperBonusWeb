@@ -11,7 +11,7 @@ const LOGIN_USER_INFO_KEY = 'super-user-info-key'
 const SUPER_AUTH_KEY = 'super-auth-key'
 const PAGE_TYPES_LIST = [
   {name: '超级悬赏', value: 'superBonus'},
-  {name: '企业文化', value: 'corporateCulture'},
+  {name: '企业文化', value: 'corporateCulver'},
   {name: '合作联盟', value: 'cooperate'},
   {name: '联系我们', value: 'contactUs'},
   {name: '隐私权政策', value: 'privacyPolicy'},
